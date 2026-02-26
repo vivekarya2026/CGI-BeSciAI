@@ -1,6 +1,5 @@
 
-  # Capstone V2 Opus
-
+  # Capstone MPD Team Green
   This is a code bundle for Capstone V2 Opus. The original project is available at https://www.figma.com/design/AUCxhBHGCYvEXZagBiwnHJ/Capstone-V2-Opus.
 
   ## Running the code
