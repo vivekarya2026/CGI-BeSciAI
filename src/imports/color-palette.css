@@ -1,0 +1,534 @@
+.Text__CGIDefault{
+  background: #333333;
+}
+.Text__CGILinks{
+  background: #5236ab;
+}
+.Text__CGIDisabled{
+  background: rgba(21, 21, 21, 0.45);
+}
+.Text__CGIIcons{
+  background: #151515;
+}
+.Primary__CGIPurple{
+  background: #5236ab;
+}
+.Primary__CGIGray{
+  background: #333333;
+}
+.Primary__CGIRed{
+  background: #e31937;
+}
+.Primary__White{
+  background: #ffffff;
+}
+.Primary__CGIPurple__CGIPurple900{
+  background: #200a58;
+}
+.Primary__CGIPurple__CGIPurple800{
+  background: #2d1e5e;
+}
+.Primary__CGIPurple__CGIPurple700{
+  background: #3a2679;
+}
+.Primary__CGIPurple__CGIPurple500{
+  background: #755ebc;
+}
+.Primary__CGIPurple__CGIPurple400{
+  background: #9e83f5;
+}
+.Primary__CGIPurple__CGIPurple300{
+  background: #afa3d8;
+}
+.Primary__CGIPurple__CGIPurple200{
+  background: #cbc3e6;
+}
+.Primary__CGIPurple__CGIPurple100{
+  background: #e6e3f3;
+}
+.Primary__CGIPurple__CGIPurple50{
+  background: #f2f1f9;
+}
+.Primary__CGIGray__CGIGray900{
+  background: #151515;
+}
+.Primary__CGIGray__CGIGray800{
+  background: #1c1c1c;
+}
+.Primary__CGIGray__CGIGray700{
+  background: #242424;
+}
+.Primary__CGIGray__CGIGray600{
+  background: #2e2e2e;
+}
+.Primary__CGIGray__CGIGray400{
+  background: #5c5c5c;
+}
+.Primary__CGIGray__CGIGray300{
+  background: #767676;
+}
+.Primary__CGIGray__CGIGray200{
+  background: #a8a8a8;
+}
+.Primary__CGIGray__CGIGray100{
+  background: #c0c0c0;
+}
+.Primary__CGIGray__CGIGray50{
+  background: #efefef;
+}
+.Primary__CGIRed__CGIRed900{
+  background: #600a17;
+}
+.Primary__CGIRed__CGIRed800{
+  background: #7d0d1e;
+}
+.Primary__CGIRed__CGIRed700{
+  background: #a21127;
+}
+.Primary__CGIRed__CGIRed600{
+  background: #cf1632;
+}
+.Primary__CGIRed__CGIRed400{
+  background: #e9465f;
+}
+.Primary__CGIRed__CGIRed300{
+  background: #ed6479;
+}
+.Primary__CGIRed__CGIRed200{
+  background: #f395a3;
+}
+.Primary__CGIRed__CGIRed100{
+  background: #f7b7c1;
+}
+.Primary__CGIRed__CGIRed50{
+  background: #fce8eb;
+}
+.Primary__White__White700{
+  background: #ebeef2;
+}
+.Primary__White__White600{
+  background: #f0f3f6;
+}
+.Primary__White__White500{
+  background: #f2f4f7;
+}
+.Primary__White__White400{
+  background: #f5f7f9;
+}
+.Primary__White__White300{
+  background: #f6f8f9;
+}
+.Primary__White__White200{
+  background: #f9fafb;
+}
+.Primary__White__White100{
+  background: #fcfdfd;
+}
+.Secondary__Magenta{
+  background: #a82465;
+}
+.Secondary__Success{
+  background: #1ab977;
+}
+.Secondary__Warning{
+  background: #f1a425;
+}
+.Secondary__Error{
+  background: #b00020;
+}
+.Secondary__Magenta__Magenta600{
+  background: #7e1b4c;
+}
+.Secondary__Magenta__Magenta300{
+  background: #a82465;
+}
+.Secondary__Magenta__Magenta200{
+  background: #cb7ca3;
+}
+.Secondary__Success__Success900{
+  background: #0b4e32;
+}
+.Secondary__Success__Success800{
+  background: #0e6641;
+}
+.Secondary__Success__Success700{
+  background: #128354;
+}
+.Secondary__Success__Success600{
+  background: #18a86c;
+}
+.Secondary__Success__Success400{
+  background: #48c792;
+}
+.Secondary__Success__Success300{
+  background: #66d0a4;
+}
+.Secondary__Success__Success200{
+  background: #96dfc0;
+}
+.Secondary__Success__Success100{
+  background: #b8e9d5;
+}
+.Secondary__Success__Success50{
+  background: #e8f8f1;
+}
+.Secondary__Warning__Warning900{
+  background: #654510;
+}
+.Secondary__Warning__Warning800{
+  background: #855a14;
+}
+.Secondary__Warning__Warning700{
+  background: #ab741a;
+}
+.Secondary__Warning__Warning600{
+  background: #db9522;
+}
+.Secondary__Warning__Warning400{
+  background: #f4b651;
+}
+.Secondary__Warning__Warning300{
+  background: #f6c26d;
+}
+.Secondary__Warning__Warning200{
+  background: #f9d59b;
+}
+.Secondary__Warning__Warning100{
+  background: #fbe3bb;
+}
+.Secondary__Warning__Warning50{
+  background: #fef6e9;
+}
+.Secondary__Error__Error900{
+  background: #4a000d;
+}
+.Secondary__Error__Error800{
+  background: #610012;
+}
+.Secondary__Error__Error700{
+  background: #7d0017;
+}
+.Secondary__Error__Error600{
+  background: #a0001d;
+}
+.Secondary__Error__Error400{
+  background: #c0334d;
+}
+.Secondary__Error__Error300{
+  background: #ca546a;
+}
+.Secondary__Error__Error200{
+  background: #db8a98;
+}
+.Secondary__Error__Error100{
+  background: #e7b0ba;
+}
+.Secondary__Error__Error50{
+  background: #f7e6e9;
+}
+.Gradients__GradientAVertical{
+  background: linear-gradient(90deg, #e31937 0%, #a82465 60%, #5236ab 100%);
+}
+.Gradients__GradientAVerticalCounterdirection{
+  background: linear-gradient(90deg, #5236ab 0%, #a82465 40%, #e31937 100%);
+}
+.Gradients__GradientAHorizontal{
+  background: linear-gradient(180deg, #e31937 0%, #a82465 60%, #5236ab 100%);
+}
+.Gradients__GradientBVertical{
+  background: linear-gradient(90deg, #991f3d 0%, #e31937 33%, #ff6a00 66%, #ffcdd2 100%);
+}
+.Components__Modalbackground{
+  background: rgba(0, 0, 25, 0.25);
+}
+.Components__Labels__Info{
+  background: #dedaec;
+}
+.Components__Labels__Success{
+  background: #d6eee4;
+}
+.Components__Labels__Warning{
+  background: #f8ecd8;
+}
+.Components__Labels__Error{
+  background: #ecd2d7;
+}
+.Datavisualization__200A58{
+  background: #200a58;
+}
+.Datavisualization__2D156D{
+  background: #2d156d;
+}
+.Datavisualization__392082{
+  background: #392082;
+}
+.Datavisualization__462B96{
+  background: #462b96;
+}
+.Datavisualization__5236AB{
+  background: #5236ab;
+}
+.Datavisualization__6F3094{
+  background: #6f3094;
+}
+.Datavisualization__822C848colorsonly{
+  background: #822c84;
+}
+.Datavisualization__8C2A7D18colorsonly{
+  background: #8c2a7d;
+}
+.Datavisualization__A9256518colorsonly{
+  background: #a92565;
+}
+.Datavisualization__B3235E8colorsonly{
+  background: #b3235e;
+}
+.Datavisualization__C61F4E{
+  background: #c61f4e;
+}
+.Datavisualization__E31937{
+  background: #e31937;
+}
+.Datavisualization__E93248{
+  background: #e93248;
+}
+.Datavisualization__EE4B58{
+  background: #ee4b58;
+}
+.Datavisualization__F46569{
+  background: #f46569;
+}
+.Datavisualization__F158618colorsonly{
+  background: #f15861;
+}
+.Datavisualization__F97E79{
+  background: #f97e79;
+}
+.Datavisualization__FF978A{
+  background: #ff978a;
+}
+.Datavisualization__FEB194{
+  background: #feb194;
+}
+.Datavisualization__FECB9D{
+  background: #fecb9d;
+}
+.Datavisualization__FDE5A7{
+  background: #fde5a7;
+}
+.Headings__H1{
+  font-size: 38px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: undefined;
+}
+.Headings__H2{
+  font-size: 28px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+}
+.Headings__H3{
+  font-size: 24px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: undefined;
+}
+.Headings__H4{
+  font-size: 20px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+}
+.Headings__H5{
+  font-size: 18px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: undefined;
+}
+.Headings__H6{
+  font-size: 16px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: undefined;
+}
+.Body__Body1Default{
+  font-size: 14px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+  line-height: 20px;
+}
+.Body__Body1Bold{
+  font-size: 14px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 700;
+  line-height: 17px;
+}
+.Body__Body2Default{
+  font-size: 16px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+  line-height: 20px;
+}
+.Body__Body2Bold{
+  font-size: 16px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 700;
+  line-height: 20px;
+}
+.Link__Body1{
+  font-size: 14px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+  line-height: 17px;
+}
+.Link__Body1Underline{
+  font-size: 14px;
+  text-decoration: underline;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+  line-height: 17px;
+}
+.Link__Body1Active{
+  font-size: 14px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 700;
+  line-height: 17px;
+}
+.Link__Body2{
+  font-size: 16px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+  line-height: 20px;
+}
+.Link__Body2Underline{
+  font-size: 16px;
+  text-decoration: underline;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+  line-height: 20px;
+}
+.Link__Body2Active{
+  font-size: 16px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 700;
+  line-height: 20px;
+}
+.Caption__CaptionDefault{
+  font-size: 14px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+  line-height: 17px;
+}
+.Caption__CaptionBold{
+  font-size: 14px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 700;
+  line-height: 17px;
+}
+.Intro__Intro{
+  font-size: 18px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+  line-height: 22px;
+}
+.Label__Label{
+  font-size: 14px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: undefined;
+  line-height: 16px;
+}
+.Assistivetext__Assistivetext{
+  font-size: 12px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+  line-height: 16px;
+}
+.Legal__Legal{
+  font-size: 14px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+  line-height: 16px;
+}
+.Components__Badges__BadgeRegular{
+  font-size: 16px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: undefined;
+  line-height: 24px;
+}
+.Components__Badges__BadgeSmall{
+  font-size: 12px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: undefined;
+  line-height: 18px;
+}
+.Components__Button__ButtonRegular{
+  font-size: 16px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: undefined;
+  line-height: 24px;
+}
+.Components__Button__ButtonSmall{
+  font-size: 12px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: undefined;
+  line-height: 14px;
+}
+.Components__Datatables__Body1Value{
+  font-size: 14px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+  line-height: 17px;
+}
+.Components__Forms__Labelfilled{
+  font-size: 12px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+}
+.Components__Forms__Labeldefault{
+  font-size: 16px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+}
+.Components__Forms__Input{
+  font-size: 16px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+}
+.Components__Forms__Assitivetext{
+  font-size: 12px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+}
+.Components__List__Assistivetext{
+  font-size: 12px;
+  font-family: Source Sans Pro, sans-serif;
+  font-weight: 400;
+}
+.Uploadloadingbar{
+  box-shadow: -1px 1px 2px  rgba(0, 0, 0, 0.13);
+}
+.Components__Upload{
+  box-shadow: 0px 1px 2px  rgba(21, 21, 21, 0.25);
+}
+.Components__Dropdownlist{
+  box-shadow: 0px 2px 6px 2px rgba(0, 0, 0, 0.15), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+}
+.Components__Primarybutton{
+  box-shadow: 0px 1px 5px  rgba(0, 0, 0, 0.12), 0px 2px 2px  rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.2);
+}
+.Components__Secondarybutton{
+  box-shadow: 0px 1px 2px  rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+.Components__Modal{
+  box-shadow: 0px 4px 4px  rgba(0, 0, 0, 0.25);
+}
+.Components__Floatingactionbar{
+  box-shadow: 0px -2px 7px  rgba(0, 0, 0, 0.25);
+}
+.Components__Filter{
+  box-shadow: 0px 1px 2px  rgba(21, 21, 21, 0.25);
+}
+.Components__Alerts{
+  box-shadow: 0px 0px 4px  rgba(0, 0, 0, 0.25);
+}
+.Components__Buttonhover{
+  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15), 0px 1px 2px  rgba(0, 0, 0, 0.3);
+}
+.Components__ChartCard{
+  box-shadow: 0px 1px 4px  rgba(0, 0, 0, 0.2);
+}
