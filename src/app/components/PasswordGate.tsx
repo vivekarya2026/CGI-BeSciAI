@@ -155,7 +155,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
                     </div>
                     <h1
                         className="text-white mb-2"
-                        style={{ fontSize: 24, fontWeight: 700, lineHeight: '1.3' }}
+                        style={{ fontSize: 24, fontWeight: 700, lineHeight: '1.3', color: '#ffffff' }}
                     >
                         Protected Access
                     </h1>
