@@ -37,6 +37,7 @@ export default function LearnPage() {
   // -- Local Page State --
   const [activeTab, setActiveTab] = useState<SubTab>('path'); // Starts on the "Path" tab
   const [searchQuery, setSearchQuery] = useState('');
+  const [resourceFilter, setResourceFilter] = useState<'all' | 'guide' | 'video' | 'template'>('all');
 
   // Tab definitions for the sub-navigation menu
   const tabs: { id: SubTab; label: string; icon: React.ReactNode }[] = [
@@ -81,8 +82,8 @@ export default function LearnPage() {
       {/* SECTION 1: HEADER                          */}
       {/* ============================================ */}
       <div className="mb-6">
-        <h1 style={{ fontSize: 28, fontWeight: 600, color: '#151515' }}>Learn</h1>
-        <p style={{ fontSize: 16, color: '#5c5c5c', lineHeight: '24px' }}>
+        <h1 style={{ fontSize: 28, fontWeight: 600, color: 'var(--app-text-primary)' }}>Learn</h1>
+        <p style={{ fontSize: 16, color: 'var(--app-text-secondary)', lineHeight: '24px' }}>
           Build your AI skills with personalized learning paths and resources.
         </p>
       </div>
@@ -90,7 +91,7 @@ export default function LearnPage() {
       {/* ============================================ */}
       {/* SECTION 2: SUB-TAB NAVIGATION               */}
       {/* ============================================ */}
-      <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-8 overflow-x-auto">
+      <div className="flex gap-1 rounded-xl p-1 mb-8 overflow-x-auto" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
         {tabs.map(tab => (
           <button
             key={tab.id}
@@ -99,8 +100,8 @@ export default function LearnPage() {
             style={{
               fontSize: 14,
               fontWeight: activeTab === tab.id ? 600 : 400,
-              backgroundColor: activeTab === tab.id ? 'white' : 'transparent',
-              color: activeTab === tab.id ? '#5236ab' : '#5c5c5c',
+              backgroundColor: activeTab === tab.id ? 'var(--app-surface)' : 'transparent',
+              color: activeTab === tab.id ? '#5236ab' : 'var(--app-text-secondary)',
               boxShadow: activeTab === tab.id ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
             }}
           >
@@ -127,15 +128,15 @@ export default function LearnPage() {
             {/* 1. The Active/Current Module */}
             {current && (
               <div className="mb-8">
-                <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">
+                <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">
                   Continue Learning
                 </h2>
                 <motion.div
                   whileHover={{ y: -2 }}
-                  className="bg-white rounded-xl border-2 p-6 flex flex-col lg:flex-row items-start lg:items-center gap-6"
-                  style={{ borderColor: '#5236ab', boxShadow: '0 4px 16px rgba(82,54,171,0.1)' }}
+                  className="rounded-xl border-2 p-6 flex flex-col lg:flex-row items-start lg:items-center gap-6"
+                  style={{ backgroundColor: 'var(--app-surface)', borderColor: '#5236ab', boxShadow: '0 4px 16px rgba(82,54,171,0.1)' }}
                 >
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#f2f1f9' }}>
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--app-brand-light)' }}>
                     <Play size={28} style={{ color: '#5236ab' }} />
                   </div>
                   <div className="flex-1 w-full">
@@ -143,18 +144,18 @@ export default function LearnPage() {
                       <span className="px-2 py-0.5 rounded text-xs font-semibold" style={{ backgroundColor: '#fef6e9', color: '#855a14', fontSize: 12 }}>
                         {current.difficulty}
                       </span>
-                      <span style={{ fontSize: 12, color: '#767676' }}>
+                      <span style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>
                         {current.category}
                       </span>
                     </div>
-                    <h3 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-2">{current.title}</h3>
+                    <h3 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-2">{current.title}</h3>
                     <div className="flex items-center gap-4 mb-3">
-                      <span className="flex items-center gap-1" style={{ fontSize: 14, color: '#767676' }}>
+                      <span className="flex items-center gap-1" style={{ fontSize: 14, color: 'var(--app-text-muted)' }}>
                         <Clock size={14} /> {current.duration}
                       </span>
                     </div>
                     {/* Visual Progress Bar for this specific module */}
-                    <div className="h-2 rounded-full bg-gray-100 overflow-hidden w-full max-w-xs">
+                    <div className="h-2 rounded-full overflow-hidden w-full max-w-xs" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
                       <motion.div
                         className="h-full rounded-full"
                         style={{ backgroundColor: '#5236ab' }}
@@ -163,7 +164,7 @@ export default function LearnPage() {
                         transition={{ duration: 0.8 }}
                       />
                     </div>
-                    <span style={{ fontSize: 12, color: '#767676' }} className="mt-1 block">
+                    <span style={{ fontSize: 12, color: 'var(--app-text-muted)' }} className="mt-1 block">
                       {(current as any).progress || 0}% complete
                     </span>
                   </div>
@@ -180,7 +181,7 @@ export default function LearnPage() {
             {/* 2. Grid of Completed Modules */}
             {completed.length > 0 && (
               <div className="mb-8">
-                <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">
+                <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">
                   Completed ({completed.length})
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -191,19 +192,19 @@ export default function LearnPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.05 }}
                       whileHover={{ y: -3 }}
-                      className="bg-white rounded-xl p-5 border border-gray-100 cursor-pointer"
-                      style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}
+                      className="rounded-xl p-5 cursor-pointer"
+                      style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
                     >
                       <div className="flex items-center gap-2 mb-3">
-                        <CheckCircle size={18} className="text-green-500" />
+                        <CheckCircle size={18} style={{ color: '#1ab977' }} />
                         <span style={{ fontSize: 12, color: '#1ab977', fontWeight: 600 }}>Completed</span>
                       </div>
-                      <h4 style={{ fontSize: 16, fontWeight: 600, color: '#151515' }} className="mb-2">{mod.title}</h4>
+                      <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-2">{mod.title}</h4>
                       <div className="flex items-center justify-between">
-                        <span style={{ fontSize: 12, color: '#767676' }}>{mod.duration}</span>
+                        <span style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>{mod.duration}</span>
                         <div className="flex items-center gap-0.5">
                           {[1, 2, 3, 4, 5].map(s => (
-                            <Star key={s} size={12} fill={s <= (mod.rating || 0) ? '#f59e0b' : 'none'} className={s <= (mod.rating || 0) ? 'text-yellow-500' : 'text-gray-300'} />
+                            <Star key={s} size={12} fill={s <= (mod.rating || 0) ? '#f59e0b' : 'none'} style={{ color: s <= (mod.rating || 0) ? '#f59e0b' : 'var(--app-text-hint)' }} />
                           ))}
                         </div>
                       </div>
@@ -215,7 +216,7 @@ export default function LearnPage() {
 
             {/* 3. List of Upcoming Modules */}
             <div>
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">
+              <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">
                 Upcoming Modules
               </h2>
               <div className="space-y-3">
@@ -225,21 +226,21 @@ export default function LearnPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.04 }}
-                    className={`bg-white rounded-xl p-5 border border-gray-100 flex items-center gap-4 ${mod.locked ? 'opacity-60' : 'cursor-pointer'}`}
-                    style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.04)' }}
+                    className={`rounded-xl p-5 flex items-center gap-4 ${mod.locked ? 'opacity-60' : 'cursor-pointer'}`}
+                    style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: '0px 1px 4px rgba(0,0,0,0.04)' }}
                   >
                     <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: mod.locked ? '#efefef' : '#f2f1f9', color: mod.locked ? '#a8a8a8' : '#5236ab' }}
+                      style={{ backgroundColor: mod.locked ? 'var(--app-tab-bg)' : 'var(--app-brand-light)', color: mod.locked ? 'var(--app-text-hint)' : '#5236ab' }}
                     >
                       {mod.locked ? <Lock size={18} /> : <BookOpen size={18} />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 style={{ fontSize: 16, fontWeight: 500, color: mod.locked ? '#a8a8a8' : '#151515' }}>{mod.title}</h4>
+                      <h4 style={{ fontSize: 16, fontWeight: 500, color: mod.locked ? 'var(--app-text-hint)' : 'var(--app-text-primary)' }}>{mod.title}</h4>
                       <div className="flex items-center gap-3 mt-1">
-                        <span style={{ fontSize: 12, color: '#a8a8a8' }}>{mod.duration}</span>
+                        <span style={{ fontSize: 12, color: 'var(--app-text-hint)' }}>{mod.duration}</span>
                         <span className="px-2 py-0.5 rounded text-xs" style={{
-                          backgroundColor: mod.difficulty === 'Advanced' ? '#fce8eb' : mod.difficulty === 'Intermediate' ? '#fef6e9' : '#e8f8f1',
-                          color: mod.difficulty === 'Advanced' ? '#7d0d1e' : mod.difficulty === 'Intermediate' ? '#855a14' : '#0e6641',
+                          backgroundColor: mod.difficulty === 'Expert' ? '#1e1b4b' : mod.difficulty === 'Advanced' ? '#fce8eb' : mod.difficulty === 'Intermediate' ? '#fef6e9' : '#e8f8f1',
+                          color: mod.difficulty === 'Expert' ? '#ffffff' : mod.difficulty === 'Advanced' ? '#7d0d1e' : mod.difficulty === 'Intermediate' ? '#855a14' : '#0e6641',
                           fontSize: 11,
                           fontWeight: 600,
                         }}>
@@ -248,8 +249,8 @@ export default function LearnPage() {
                       </div>
                     </div>
                     {!mod.locked && (
-                      <button className="px-4 py-2 rounded-lg border border-[#5236ab] text-[#5236ab] cursor-pointer hover:bg-[#f2f1f9] transition-colors"
-                        style={{ fontSize: 14, fontWeight: 600 }}
+                      <button className="px-4 py-2 rounded-lg border cursor-pointer transition-colors"
+                        style={{ borderColor: '#5236ab', color: '#5236ab', fontSize: 14, fontWeight: 600 }}
                       >
                         Preview
                       </button>
@@ -276,19 +277,19 @@ export default function LearnPage() {
                 <Timer size={18} />
                 <span style={{ fontSize: 14, fontWeight: 600 }}>Today's Challenge</span>
               </div>
-              <h3 style={{ fontSize: 20, fontWeight: 700 }} className="mb-2 text-[#ffffff]">
+              <h3 style={{ fontSize: 20, fontWeight: 700, color: '#ffffff' }} className="mb-2">
                 5-Minute Prompt Remix
               </h3>
               <p style={{ fontSize: 16, lineHeight: '24px' }} className="text-white/80 mb-5">
                 Take yesterday's prompt and improve it for a different audience. Can you make it work for both technical and non-technical readers?
               </p>
-              <button className="px-6 py-3 bg-white rounded-lg font-semibold cursor-pointer" style={{ color: '#5236ab', fontSize: 14 }}>
+              <button className="px-6 py-3 rounded-lg font-semibold cursor-pointer" style={{ backgroundColor: 'white', color: '#5236ab', fontSize: 14 }}>
                 Start Challenge
               </button>
             </div>
 
             {/* List of other Quick Wins */}
-            <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">
               Task-Based Solutions
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -299,8 +300,8 @@ export default function LearnPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   whileHover={{ y: -3, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
-                  className="bg-white rounded-xl p-5 border border-gray-100 cursor-pointer"
-                  style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}
+                  className="rounded-xl p-5 cursor-pointer"
+                  style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
                 >
                   <div className="flex items-center justify-between mb-3">
                     <span className="px-2 py-0.5 rounded text-xs font-semibold" style={{
@@ -310,14 +311,14 @@ export default function LearnPage() {
                     }}>
                       {qw.difficulty}
                     </span>
-                    <span className="flex items-center gap-1" style={{ fontSize: 12, color: '#767676' }}>
+                    <span className="flex items-center gap-1" style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>
                       <Clock size={12} /> {qw.time}
                     </span>
                   </div>
-                  <h4 style={{ fontSize: 16, fontWeight: 600, color: '#151515' }} className="mb-2">{qw.title}</h4>
-                  <p style={{ fontSize: 14, lineHeight: '20px', color: '#5c5c5c' }} className="mb-4">{qw.description}</p>
+                  <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-2">{qw.title}</h4>
+                  <p style={{ fontSize: 14, lineHeight: '20px', color: 'var(--app-text-secondary)' }} className="mb-4">{qw.description}</p>
                   <button className="w-full py-2 rounded-lg text-center font-semibold cursor-pointer"
-                    style={{ backgroundColor: '#f2f1f9', color: '#5236ab', fontSize: 14 }}
+                    style={{ backgroundColor: 'var(--app-brand-light)', color: 'var(--app-brand)', fontSize: 14 }}
                   >
                     Try It Now
                   </button>
@@ -326,12 +327,12 @@ export default function LearnPage() {
             </div>
 
             {/* Daily Prompt Copy-Paste Section */}
-            <div className="bg-white rounded-xl p-6 border border-gray-100" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">
+            <div className="rounded-xl p-6" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+              <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">
                 Daily Prompt
               </h2>
-              <div className="bg-gray-50 rounded-lg p-5 mb-4">
-                <p style={{ fontSize: 16, lineHeight: '24px', color: '#333333', fontStyle: 'italic' }}>
+              <div className="rounded-lg p-5 mb-4" style={{ backgroundColor: 'var(--app-bg)' }}>
+                <p style={{ fontSize: 16, lineHeight: '24px', color: 'var(--app-text-secondary)', fontStyle: 'italic' }}>
                   "You are a project manager preparing a status update. Summarize the following project data into a concise
                   2-paragraph update highlighting risks, wins, and next steps. Tone: professional but friendly."
                 </p>
@@ -344,7 +345,7 @@ export default function LearnPage() {
                 >
                   <Copy size={14} /> Copy Prompt
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50" style={{ fontSize: 14, color: '#5c5c5c' }}>
+                <button className="flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer" style={{ border: '1px solid var(--app-border-strong)', fontSize: 14, color: 'var(--app-text-secondary)', backgroundColor: 'transparent' }}>
                   Share
                 </button>
               </div>
@@ -362,34 +363,53 @@ export default function LearnPage() {
             transition={{ duration: 0.2 }}
           >
             {/* Search Bar and Filter Button */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-6">
+            <div className="flex flex-col sm:flex-row gap-3 mb-4">
               <div className="relative flex-1">
-                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--app-text-hint)' }} />
                 <input
                   type="text"
                   placeholder="Search resources..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 outline-none"
-                  style={{ fontSize: 16, minHeight: 44, backgroundColor: 'white' }}
+                  className="w-full pl-10 pr-4 py-3 rounded-lg outline-none"
+                  style={{ fontSize: 16, minHeight: 44, backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border-strong)', color: 'var(--app-text-primary)' }}
                 />
               </div>
-              <button className="flex items-center gap-2 px-4 py-3 rounded-lg border border-gray-200 bg-white">
+              <button className="flex items-center gap-2 px-4 py-3 rounded-lg" style={{ border: '1px solid var(--app-border-strong)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text-secondary)' }}>
                 <Filter size={16} /> Filters
               </button>
             </div>
 
+            {/* Resource Category Filter Tabs */}
+            <div className="flex gap-2 mb-6">
+              {(['all', 'guide', 'video', 'template'] as const).map(filter => (
+                <button
+                  key={filter}
+                  onClick={() => setResourceFilter(filter)}
+                  className="px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer capitalize"
+                  style={{
+                    backgroundColor: resourceFilter === filter ? '#5236ab' : 'var(--app-surface)',
+                    color: resourceFilter === filter ? 'white' : 'var(--app-text-secondary)',
+                    border: resourceFilter === filter ? 'none' : '1px solid var(--app-border-strong)',
+                    fontSize: 14,
+                  }}
+                >
+                  {filter === 'all' ? 'All' : filter.charAt(0).toUpperCase() + filter.slice(1) + 's'}
+                </button>
+              ))}
+            </div>
+
             {/* Grid of Resource Cards */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {resources.map((resource, i) => (
+              {resources.filter(r => resourceFilter === 'all' || r.type === resourceFilter).map((resource, i) => (
                 <motion.div
                   key={resource.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   whileHover={{ y: -3 }}
-                  className="bg-white rounded-xl p-5 border border-gray-100 cursor-pointer"
-                  style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}
+                  className="rounded-xl p-5 cursor-pointer"
+                  style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
@@ -401,19 +421,19 @@ export default function LearnPage() {
                       >
                         {typeIcons[resource.type]}
                       </div>
-                      <span className="capitalize" style={{ fontSize: 12, color: '#767676', fontWeight: 600 }}>
+                      <span className="capitalize" style={{ fontSize: 12, color: 'var(--app-text-muted)', fontWeight: 600 }}>
                         {resource.type}
                       </span>
                     </div>
-                    <Bookmark size={16} className={resource.saved ? 'text-[#5236ab] fill-[#5236ab]' : 'text-gray-300'} />
+                    <Bookmark size={16} style={{ color: resource.saved ? '#5236ab' : 'var(--app-text-hint)' }} fill={resource.saved ? '#5236ab' : 'none'} />
                   </div>
-                  <h4 style={{ fontSize: 16, fontWeight: 600, color: '#151515' }} className="mb-2">{resource.title}</h4>
-                  <p style={{ fontSize: 14, lineHeight: '20px', color: '#5c5c5c' }} className="mb-3">{resource.desc}</p>
+                  <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-2">{resource.title}</h4>
+                  <p style={{ fontSize: 14, lineHeight: '20px', color: 'var(--app-text-secondary)' }} className="mb-3">{resource.desc}</p>
                   <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1" style={{ fontSize: 12, color: '#a8a8a8' }}>
+                    <span className="flex items-center gap-1" style={{ fontSize: 12, color: 'var(--app-text-hint)' }}>
                       <Clock size={12} /> {resource.duration}
                     </span>
-                    <button style={{ fontSize: 14, color: '#5236ab', fontWeight: 600 }}>
+                    <button style={{ fontSize: 14, color: 'var(--app-brand)', fontWeight: 600 }}>
                       View →
                     </button>
                   </div>
@@ -433,18 +453,18 @@ export default function LearnPage() {
             transition={{ duration: 0.2 }}
           >
             {/* Visual Skill Levels Section (Progress Meters) */}
-            <div className="bg-white rounded-xl p-6 border border-gray-100 mb-8" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-6">
+            <div className="rounded-xl p-6 mb-8" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+              <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-6">
                 Your Skill Levels
               </h2>
               <div className="space-y-5">
                 {skills.map((skill, i) => (
                   <div key={skill.name}>
                     <div className="flex items-center justify-between mb-2">
-                      <span style={{ fontSize: 14, fontWeight: 600, color: '#333333' }}>{skill.name}</span>
+                      <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-secondary)' }}>{skill.name}</span>
                       <span style={{ fontSize: 14, fontWeight: 700, color: skill.color }}>{skill.level}%</span>
                     </div>
-                    <div className="h-2.5 rounded-full bg-gray-100 overflow-hidden">
+                    <div className="h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
                       <motion.div
                         className="h-full rounded-full"
                         style={{ backgroundColor: skill.color }}
@@ -459,25 +479,27 @@ export default function LearnPage() {
             </div>
 
             {/* Certifications & Badges to unlock */}
-            <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">
               Earn Certifications
             </h2>
             <div className="grid sm:grid-cols-2 gap-4">
               {[
                 { title: 'AI Fundamentals', requirements: 4, completed: 3, icon: '🎓' },
                 { title: 'Prompt Engineering Pro', requirements: 6, completed: 2, icon: '⚡' },
+                { title: 'AI Ethics Champion', requirements: 3, completed: 0, icon: '🛡️' },
+                { title: 'Workflow Automation Expert', requirements: 5, completed: 1, icon: '🔄' },
               ].map((cert, i) => {
                 const pct = Math.round((cert.completed / cert.requirements) * 100);
                 return (
-                  <div key={i} className="bg-white rounded-xl p-5 border border-gray-100" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
+                  <div key={i} className="rounded-xl p-5" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
                     <div className="flex items-center gap-3 mb-3">
                       <span className="text-2xl">{cert.icon}</span>
                       <div>
-                        <h4 style={{ fontSize: 16, fontWeight: 600, color: '#151515' }}>{cert.title}</h4>
-                        <span style={{ fontSize: 12, color: '#767676' }}>{cert.completed}/{cert.requirements} requirements</span>
+                        <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }}>{cert.title}</h4>
+                        <span style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>{cert.completed}/{cert.requirements} requirements</span>
                       </div>
                     </div>
-                    <div className="h-2 rounded-full bg-gray-100 overflow-hidden mb-3">
+                    <div className="h-2 rounded-full overflow-hidden mb-3" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
                       <motion.div
                         className="h-full rounded-full"
                         style={{ backgroundColor: '#5236ab' }}
@@ -485,7 +507,7 @@ export default function LearnPage() {
                         animate={{ width: `${pct}%` }}
                       />
                     </div>
-                    <button className="w-full py-2.5 rounded-lg text-center font-semibold bg-[#f2f1f9] text-[#5236ab] text-sm">
+                    <button className="w-full py-2.5 rounded-lg text-center font-semibold text-sm" style={{ backgroundColor: 'var(--app-brand-light)', color: 'var(--app-brand)' }}>
                       View Requirements
                     </button>
                   </div>

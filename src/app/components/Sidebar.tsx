@@ -90,12 +90,12 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
 
   const sidebarContent = (isMobile: boolean) => (
     <div className={clsx(
-      "bg-white h-screen flex flex-col",
+      "h-screen flex flex-col transition-colors duration-300",
       isMobile ? "w-[260px]" : ""
-    )}>
+    )} style={{ backgroundColor: 'var(--app-surface)' }}>
 
       {/* ---- Header / Logo ---- */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-gray-100">
+      <div className="h-16 flex items-center justify-between px-4" style={{ borderBottom: '1px solid var(--app-border)' }}>
         <div className="flex items-center gap-3 overflow-hidden">
           {/* Purple "A" logo */}
           <div className="w-8 h-8 bg-[#5236ab] rounded-lg flex items-center justify-center shrink-0">
@@ -103,7 +103,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
           </div>
           {/* App name (hidden when desktop sidebar is collapsed) */}
           {(isMobile || !collapsed) && (
-            <span className="font-bold text-gray-800 text-lg whitespace-nowrap">
+            <span className="font-bold text-lg whitespace-nowrap" style={{ color: 'var(--app-text-primary)' }}>
               BeSciAI
             </span>
           )}
@@ -112,10 +112,11 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
         {isMobile && (
           <button
             onClick={() => setMobileOpen(false)}
-            className="p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
+            className="p-2 rounded-lg cursor-pointer"
             aria-label="Close menu"
+            style={{ color: 'var(--app-text-muted)' }}
           >
-            <X size={20} className="text-gray-500" />
+            <X size={20} />
           </button>
         )}
       </div>
@@ -129,17 +130,17 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
             <button
               key={item.path}
               onClick={() => handleNavClick(item.path)}
-              className={clsx(
-                "flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left",
-                isActive
-                  ? "bg-[#f2f1f9] text-[#5236ab]"          // Active: purple tint
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"  // Inactive
-              )}
+              className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left cursor-pointer"
+              style={{
+                backgroundColor: isActive ? 'var(--app-brand-light)' : 'transparent',
+                color: isActive ? 'var(--app-brand)' : 'var(--app-text-secondary)',
+              }}
             >
               {/* Nav icon */}
               <item.icon
                 size={20}
-                className={clsx("shrink-0", isActive ? "text-[#5236ab]" : "text-gray-500 group-hover:text-gray-700")}
+                className="shrink-0"
+                style={{ color: isActive ? 'var(--app-brand)' : 'var(--app-text-muted)' }}
               />
 
               {/* Nav label (hidden when collapsed on desktop) */}
@@ -169,12 +170,13 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
       </nav>
 
       {/* ---- Footer Actions ---- */}
-      <div className="p-2 border-t border-gray-100 flex flex-col gap-2">
+      <div className="p-2 flex flex-col gap-2" style={{ borderTop: '1px solid var(--app-border)' }}>
         {/* Collapse toggle (desktop only) */}
         {!isMobile && (
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors w-full"
+            className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors w-full cursor-pointer"
+            style={{ color: 'var(--app-text-muted)' }}
           >
             {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
             {!collapsed && (
@@ -187,7 +189,8 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
 
         {/* Sign Out button */}
         <button
-          className="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-red-600 transition-colors w-full"
+          className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors w-full cursor-pointer"
+          style={{ color: 'var(--app-text-muted)' }}
           onClick={() => {
             logout();
             navigate('/');
@@ -216,7 +219,8 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
         initial={false}
         animate={{ width: collapsed ? 64 : 240 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="hidden lg:flex bg-white border-r border-gray-200 h-screen flex-col fixed left-0 top-0 z-50 shadow-sm"
+        className="hidden lg:flex h-screen flex-col fixed left-0 top-0 z-50 transition-colors duration-300"
+        style={{ backgroundColor: 'var(--app-surface)', borderRight: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
       >
         {sidebarContent(false)}
       </motion.div>

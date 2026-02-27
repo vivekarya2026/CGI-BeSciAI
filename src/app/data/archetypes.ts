@@ -187,18 +187,34 @@ export const surveyQuestions: SurveyQuestion[] = [
  * This data powers the 'Learn' section modules and 'Quick Wins'.
  */
 export const learningModules = [
-  { id: 'm1', title: 'Introduction to AI Assistants', category: 'Basics', duration: '15 min', difficulty: 'Beginner', completed: true, rating: 4 },
-  { id: 'm2', title: 'Crafting Effective Prompts', category: 'Prompt Engineering', duration: '20 min', difficulty: 'Beginner', completed: true, rating: 5 },
-  { id: 'm3', title: 'Advanced Prompt Techniques', category: 'Prompt Engineering', duration: '30 min', difficulty: 'Intermediate', completed: false, rating: 0 },
-  { id: 'm4', title: 'AI-Powered Data Analysis', category: 'Data & Analytics', duration: '35 min', difficulty: 'Intermediate', completed: false, rating: 0 },
-  { id: 'm5', title: 'Workflow Automation with AI', category: 'Productivity', duration: '40 min', difficulty: 'Intermediate', completed: false, rating: 0 },
-  { id: 'm6', title: 'AI Ethics & Best Practices', category: 'Fundamentals', duration: '25 min', difficulty: 'Beginner', completed: false, rating: 0 },
-  { id: 'm7', title: 'Building AI-Enhanced Presentations', category: 'Productivity', duration: '30 min', difficulty: 'Intermediate', completed: false, rating: 0 },
-  { id: 'm8', title: 'AI for Team Collaboration', category: 'Communication', duration: '35 min', difficulty: 'Advanced', completed: false, rating: 0 },
+  // ---- Completed Modules ----
+  { id: 'm1', title: 'Introduction to AI Assistants', category: 'Basics', duration: '15 min', difficulty: 'Beginner', completed: true, locked: false, progress: 100, rating: 4 },
+  { id: 'm2', title: 'Crafting Effective Prompts', category: 'Prompt Engineering', duration: '20 min', difficulty: 'Beginner', completed: true, locked: false, progress: 100, rating: 5 },
+  { id: 'm3', title: 'AI for Email & Communication', category: 'Communication', duration: '25 min', difficulty: 'Beginner', completed: true, locked: false, progress: 100, rating: 4 },
+
+  // ---- Current Module (in progress) ----
+  { id: 'm4', title: 'Advanced Prompt Techniques', category: 'Prompt Engineering', duration: '30 min', difficulty: 'Intermediate', completed: false, locked: false, progress: 60, rating: 0 },
+
+  // ---- Upcoming Unlocked Modules ----
+  { id: 'm5', title: 'AI-Powered Data Analysis', category: 'Data & Analytics', duration: '35 min', difficulty: 'Intermediate', completed: false, locked: false, progress: 0, rating: 0 },
+  { id: 'm6', title: 'Workflow Automation with AI', category: 'Productivity', duration: '40 min', difficulty: 'Intermediate', completed: false, locked: false, progress: 0, rating: 0 },
+
+  // ---- Locked Modules (need prerequisites) ----
+  { id: 'm7', title: 'AI Ethics & Responsible Use', category: 'Fundamentals', duration: '20 min', difficulty: 'Beginner', completed: false, locked: true, progress: 0, rating: 0 },
+  { id: 'm8', title: 'Custom AI Solutions', category: 'Advanced', duration: '45 min', difficulty: 'Advanced', completed: false, locked: true, progress: 0, rating: 0 },
+  { id: 'm9', title: 'AI for Team Collaboration', category: 'Communication', duration: '30 min', difficulty: 'Intermediate', completed: false, locked: true, progress: 0, rating: 0 },
+  { id: 'm10', title: 'Building AI Workflows', category: 'Productivity', duration: '50 min', difficulty: 'Advanced', completed: false, locked: true, progress: 0, rating: 0 },
+  { id: 'm11', title: 'AI Strategy & Leadership', category: 'Leadership', duration: '35 min', difficulty: 'Advanced', completed: false, locked: true, progress: 0, rating: 0 },
+  { id: 'm12', title: 'AI Mastery Capstone', category: 'Capstone', duration: '60 min', difficulty: 'Expert', completed: false, locked: true, progress: 0, rating: 0 },
 ];
 
 export const quickWins = [
+  // ---- Easy Tasks ----
   { id: 'qw1', title: 'Write a better email', time: '5 min', difficulty: 'Easy', description: 'Use AI to draft, refine, and send a professional email in minutes.' },
   { id: 'qw2', title: 'Summarize a document', time: '3 min', difficulty: 'Easy', description: 'Upload any document and get a concise summary with key points.' },
-  // ... more quick wins continue
+  { id: 'qw3', title: 'Generate meeting notes', time: '5 min', difficulty: 'Easy', description: 'Turn raw meeting transcripts into organized action items.' },
+  // ---- Medium Tasks ----
+  { id: 'qw4', title: 'Create a presentation outline', time: '7 min', difficulty: 'Medium', description: 'Generate a structured presentation outline from a topic brief.' },
+  { id: 'qw5', title: 'Automate a data report', time: '10 min', difficulty: 'Medium', description: 'Set up an AI-powered report that generates insights automatically.' },
+  { id: 'qw6', title: 'Build a custom prompt template', time: '8 min', difficulty: 'Medium', description: 'Create reusable prompt templates for your most common tasks.' },
 ];

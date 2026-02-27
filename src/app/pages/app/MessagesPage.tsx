@@ -20,9 +20,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Send, Search, Phone, Video, MoreHorizontal, Smile, Paperclip,
-  ArrowLeft, UserPlus, Check, CheckCheck, ChevronRight, MessageSquare,
-  Star, Pin, Circle, Users, Sparkles,
+  Send, Search, Smile, Paperclip,
+  ArrowLeft, UserPlus, CheckCheck, MessageSquare,
+  Sparkles, Circle,
 } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 
@@ -65,17 +65,21 @@ const peers: Peer[] = [
   { id: 'p3', name: 'Dr. Emily Chen', avatar: '👩‍🏫', archetype: 'Guide', status: 'away', lastSeen: '15 min ago', connected: true, expertise: ['AI Ethics', 'Prompt Engineering'] },
   { id: 'p4', name: 'Priya S.', avatar: '👩‍🎨', archetype: 'Guide', status: 'online', connected: true, expertise: ['Content', 'Communication'] },
   { id: 'p5', name: 'James L.', avatar: '👨‍💼', archetype: 'Connector', status: 'offline', lastSeen: '2 hours ago', connected: true, expertise: ['Leadership', 'Strategy'] },
-  { id: 'p7', name: 'Jordan T.', avatar: '🏆', archetype: 'Champion', status: 'online', connected: false, expertise: ['Competition', 'Performance'] },
+  { id: 'p6', name: 'Jordan T.', avatar: '🏆', archetype: 'Champion', status: 'online', connected: false, expertise: ['Competition', 'Performance'] },
+  { id: 'p7', name: 'Sophie Laurent', avatar: '👩‍🔬', archetype: 'Trailblazer', status: 'online', connected: false, expertise: ['Data Analysis', 'Leadership'] },
+  { id: 'p8', name: 'Ana P.', avatar: '👩‍💻', archetype: 'Connector', status: 'online', connected: false, expertise: ['Community', 'Networking'] },
 ];
 
 const initialConversations: Conversation[] = [
   {
-    peerId: 'p1', lastActivity: '2 min ago', unread: 2, pinned: true,
+    peerId: 'p1', lastActivity: '2 min ago', unread: 0, pinned: true,
     messages: [
       { id: 'm1', senderId: 'p1', text: 'Hey! I saw your workflow post — that was really helpful!', time: '10:30 AM', status: 'read' },
       { id: 'm2', senderId: 'me', text: 'Thanks, Sarah! Glad it was useful. Have you tried the chain-of-thought approach?', time: '10:35 AM', status: 'read' },
       { id: 'm3', senderId: 'p1', text: 'Yes! I wrote about it in the forum. The step-by-step breakdown really improved my outputs by about 40%.', time: '10:42 AM', status: 'read' },
+      { id: 'm4', senderId: 'me', text: "That's amazing! Would love to compare notes sometime.", time: '10:45 AM', status: 'read' },
       { id: 'm5', senderId: 'p1', text: 'Absolutely! Are you free for a quick chat later today? I also wanted to discuss the automation challenge.', time: '11:20 AM', status: 'delivered' },
+      { id: 'm6', senderId: 'p1', text: 'Also, have you seen the new prompt template that Mike shared? It\'s really good for data analysis tasks.', time: '11:22 AM', status: 'delivered' },
     ],
   },
   {
@@ -83,6 +87,32 @@ const initialConversations: Conversation[] = [
     messages: [
       { id: 'm7', senderId: 'p2', text: 'Just automated my entire weekly report generation. Saved 3 hours!', time: 'Yesterday', status: 'read' },
       { id: 'm8', senderId: 'me', text: 'Wow, that\'s incredible! Can you walk me through the setup?', time: 'Yesterday', status: 'read' },
+      { id: 'm9', senderId: 'p2', text: 'Sure thing! I used a combination of API calls and a prompt template. Let me send you the details.', time: 'Yesterday', status: 'read' },
+      { id: 'm10', senderId: 'me', text: 'Looking forward to it! I\'ll keep an eye out for it.', time: '1 hour ago', status: 'read' },
+    ],
+  },
+  {
+    peerId: 'p3', lastActivity: '3 hours ago', unread: 1,
+    messages: [
+      { id: 'm11', senderId: 'me', text: 'Hi Dr. Chen! I had a question about the ethics module from the workshop.', time: 'Yesterday', status: 'read' },
+      { id: 'm12', senderId: 'p3', text: 'Of course! Happy to help. What would you like to know?', time: 'Yesterday', status: 'read' },
+      { id: 'm13', senderId: 'me', text: 'How should we approach data anonymization when using AI tools with client data?', time: 'Yesterday', status: 'read' },
+      { id: 'm14', senderId: 'p3', text: 'I\'d recommend starting with the "Prompt Engineering" module — it covers data handling best practices.', time: '3 hours ago', status: 'delivered' },
+    ],
+  },
+  {
+    peerId: 'p4', lastActivity: 'Yesterday', unread: 0,
+    messages: [
+      { id: 'm15', senderId: 'p4', text: 'I just finished the content strategy workflow — it works great!', time: 'Yesterday', status: 'read' },
+      { id: 'm16', senderId: 'me', text: 'Awesome! DM me if you want to collaborate on the next one.', time: 'Yesterday', status: 'read' },
+      { id: 'm17', senderId: 'p4', text: 'Thank you so much! It\'s been a game-changer for my content creation process.', time: 'Yesterday', status: 'read' },
+    ],
+  },
+  {
+    peerId: 'p5', lastActivity: '2 days ago', unread: 0,
+    messages: [
+      { id: 'm18', senderId: 'p5', text: 'Hey! Would love to connect on the leadership AI integration project.', time: '2 days ago', status: 'read' },
+      { id: 'm19', senderId: 'me', text: 'Will do, James! Thanks for the offer.', time: '2 days ago', status: 'read' },
     ],
   },
 ];
@@ -119,6 +149,7 @@ export default function MessagesPage() {
   const selectedPeer = peers.find(p => p.id === selectedPeerId);
   const selectedConvo = conversations.find(c => c.peerId === selectedPeerId);
   const suggestedPeers = peers.filter(p => !p.connected);
+  const onlinePeersCount = peers.filter(p => p.connected && p.status === 'online').length;
 
   // -- Helpers --
   const scrollToBottom = () => {
@@ -180,6 +211,14 @@ export default function MessagesPage() {
     }, 2000);
   };
 
+  // Get preview text for conversation list
+  const getPreviewText = (convo: Conversation) => {
+    const lastMsg = convo.messages[convo.messages.length - 1];
+    if (!lastMsg) return '';
+    const prefix = lastMsg.senderId === 'me' ? 'You: ' : '';
+    return prefix + lastMsg.text;
+  };
+
   // ============================================
   // SECTION 4: RENDER UI
   // ============================================
@@ -187,41 +226,100 @@ export default function MessagesPage() {
   return (
     <div style={{ fontFamily: 'var(--font-primary)' }}>
       {/* --- Page Header --- */}
-      <div className="flex items-center justify-between mb-6">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="flex items-center justify-between mb-6"
+      >
         <div>
-          <h1 style={{ fontSize: 28, fontWeight: 600, color: '#151515' }}>Messages</h1>
-          <p style={{ fontSize: 16, color: '#5c5c5c', lineHeight: '24px' }}>
+          <h1 style={{ fontSize: 28, fontWeight: 600, color: 'var(--app-text-primary)' }}>Messages</h1>
+          <p style={{ fontSize: 16, color: 'var(--app-text-secondary)', lineHeight: '24px' }}>
             Chat with your connected peers and grow together.
           </p>
         </div>
-        <button
+        <motion.button
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.96 }}
           onClick={() => setShowSuggestions(!showSuggestions)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg border-none cursor-pointer transition-colors"
-          style={{ backgroundColor: showSuggestions ? '#5236ab' : '#f2f1f9', color: showSuggestions ? 'white' : '#5236ab', fontSize: 14, fontWeight: 600 }}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg border-none cursor-pointer transition-all"
+          style={{
+            backgroundColor: '#5236ab',
+            color: 'white',
+            fontSize: 14,
+            fontWeight: 600,
+            boxShadow: '0 2px 8px rgba(82,54,171,0.25)',
+          }}
         >
           <UserPlus size={16} /> <span className="hidden sm:inline">Find Peers</span>
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
       {/* --- Suggested Connections Panel (Animated) --- */}
       <AnimatePresence>
         {showSuggestions && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden mb-6">
-            <div className="bg-white rounded-xl border border-gray-100 p-5" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="overflow-hidden mb-6"
+          >
+            <div
+              className="rounded-xl p-5"
+              style={{
+                backgroundColor: 'var(--app-surface)',
+                border: '1px solid var(--app-border)',
+                boxShadow: 'var(--app-shadow)',
+              }}
+            >
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles size={18} style={{ color: '#5236ab' }} />
-                <h3 style={{ fontSize: 16, fontWeight: 600, color: '#151515', margin: 0 }}>Suggested Connections</h3>
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)', margin: 0 }}>
+                  Suggested Connections
+                </h3>
+                <span style={{ fontSize: 13, color: 'var(--app-text-hint)', marginLeft: 4 }}>
+                  Based on your archetype and interests
+                </span>
               </div>
-              <div className="grid sm:grid-cols-3 gap-3">
-                {suggestedPeers.map(peer => (
-                  <div key={peer.id} className="flex items-center gap-3 p-3 rounded-xl border border-gray-100">
-                    <span className="text-2xl">{peer.avatar}</span>
-                    <div className="flex-1 min-w-0">
-                      <span className="block truncate font-semibold" style={{ fontSize: 14 }}>{peer.name}</span>
-                      <span style={{ fontSize: 11, color: '#767676' }}>{peer.archetype}</span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {suggestedPeers.map((peer, i) => (
+                  <motion.div
+                    key={peer.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1, duration: 0.3 }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                    style={{ border: '1px solid var(--app-border)' }}
+                  >
+                    <div className="relative shrink-0">
+                      <span className="text-2xl">{peer.avatar}</span>
+                      <span
+                        className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full"
+                        style={{ backgroundColor: statusColors[peer.status], border: '2px solid var(--app-surface)' }}
+                      />
                     </div>
-                    <button className="px-3 py-1.5 rounded-lg bg-[#5236ab] text-white text-xs font-bold cursor-pointer">Connect</button>
-                  </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="block font-semibold truncate" style={{ fontSize: 14, color: 'var(--app-text-primary)' }}>
+                        {peer.name}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span
+                          className="w-2 h-2 rounded-full inline-block shrink-0"
+                          style={{ backgroundColor: archetypeColors[peer.archetype] || '#8b5cf6' }}
+                        />
+                        <span style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>{peer.archetype}</span>
+                      </div>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-4 py-1.5 rounded-lg text-white text-xs font-bold cursor-pointer border-none shrink-0"
+                      style={{ backgroundColor: '#5236ab', fontSize: 13 }}
+                    >
+                      Connect
+                    </motion.button>
+                  </motion.div>
                 ))}
               </div>
             </div>
@@ -230,52 +328,136 @@ export default function MessagesPage() {
       </AnimatePresence>
 
       {/* --- Main Layout Grid --- */}
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden flex" style={{ height: 'calc(100vh - 280px)', minHeight: 450 }}>
-
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="rounded-xl overflow-hidden flex"
+        style={{
+          backgroundColor: 'var(--app-surface)',
+          border: '1px solid var(--app-border)',
+          height: 'calc(100vh - 280px)',
+          minHeight: 480,
+          boxShadow: 'var(--app-shadow)',
+        }}
+      >
         {/* SIDEBAR: Conversation list */}
-        <div className={`shrink-0 border-r border-gray-100 flex flex-col w-full lg:w-80 ${mobileView === 'chat' ? 'hidden lg:flex' : 'flex'}`}>
-          <div className="p-3 border-b border-gray-100">
+        <div
+          className={`shrink-0 flex flex-col w-full lg:w-80 ${mobileView === 'chat' ? 'hidden lg:flex' : 'flex'}`}
+          style={{ borderRight: '1px solid var(--app-border)' }}
+        >
+          {/* Search */}
+          <div className="p-3" style={{ borderBottom: '1px solid var(--app-border)' }}>
             <div className="relative">
-              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--app-text-hint)' }} />
               <input
-                type="text" placeholder="Search conversations..."
-                className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-gray-100 outline-none focus:border-[#5236ab]"
-                style={{ fontSize: 14, backgroundColor: '#f8f9fb' }}
+                type="text"
+                placeholder="Search conversations..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-2.5 rounded-lg outline-none"
+                style={{
+                  fontSize: 14,
+                  backgroundColor: 'var(--app-bg)',
+                  border: '1px solid var(--app-border)',
+                  color: 'var(--app-text-primary)',
+                }}
               />
             </div>
           </div>
 
+          {/* Conversation list */}
           <div className="flex-1 overflow-y-auto">
-            {conversations.map(convo => {
+            {conversations.map((convo, index) => {
               const peer = peers.find(p => p.id === convo.peerId);
               if (!peer) return null;
               const isSelected = selectedPeerId === convo.peerId;
-              const lastMsg = convo.messages[convo.messages.length - 1];
+              const previewText = getPreviewText(convo);
               return (
-                <div
-                  key={convo.peerId} onClick={() => { setSelectedPeerId(convo.peerId); setMobileView('chat'); }}
-                  className="flex items-center gap-3 px-4 py-3.5 cursor-pointer border-b border-gray-50 transition-colors"
-                  style={{ backgroundColor: isSelected ? '#f2f1f9' : 'transparent' }}
+                <motion.div
+                  key={convo.peerId}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  onClick={() => { setSelectedPeerId(convo.peerId); setMobileView('chat'); }}
+                  className="flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-colors"
+                  style={{
+                    backgroundColor: isSelected ? 'var(--app-brand-light)' : 'transparent',
+                    borderLeft: isSelected ? '3px solid #5236ab' : '3px solid transparent',
+                    borderBottom: '1px solid var(--app-border)',
+                  }}
+                  whileHover={{ backgroundColor: isSelected ? undefined : 'var(--app-surface-hover)' }}
                 >
+                  {/* Avatar with status dot */}
                   <div className="relative shrink-0">
                     <span className="text-2xl">{peer.avatar}</span>
-                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white" style={{ backgroundColor: statusColors[peer.status] }} />
+                    <span
+                      className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full"
+                      style={{ backgroundColor: statusColors[peer.status], border: '2px solid var(--app-surface)' }}
+                    />
                   </div>
+
+                  {/* Name + preview */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
-                      <span className="truncate font-semibold text-sm" style={{ color: '#151515' }}>{peer.name}</span>
-                      <span style={{ fontSize: 11, color: '#a8a8a8' }}>{convo.lastActivity}</span>
+                      <span
+                        className="truncate font-semibold text-sm"
+                        style={{ color: 'var(--app-text-primary)' }}
+                      >
+                        {peer.name}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 11,
+                          color: convo.unread > 0 ? '#14b8a6' : 'var(--app-text-hint)',
+                          fontWeight: convo.unread > 0 ? 600 : 400,
+                          whiteSpace: 'nowrap',
+                          marginLeft: 8,
+                        }}
+                      >
+                        {convo.lastActivity}
+                      </span>
                     </div>
-                    <p className="truncate text-xs text-gray-400">{lastMsg?.text}</p>
+                    <p
+                      className="truncate text-xs m-0"
+                      style={{
+                        color: convo.unread > 0 ? 'var(--app-text-secondary)' : 'var(--app-text-hint)',
+                        fontWeight: convo.unread > 0 ? 500 : 400,
+                      }}
+                    >
+                      {previewText}
+                    </p>
                   </div>
+
+                  {/* Unread badge */}
                   {convo.unread > 0 && (
-                    <span className="w-5 h-5 rounded-full flex items-center justify-center bg-[#5236ab] text-white text-[10px] font-bold">
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: 'spring', stiffness: 300 }}
+                      className="w-5 h-5 rounded-full flex items-center justify-center text-white shrink-0"
+                      style={{ backgroundColor: '#14b8a6', fontSize: 10, fontWeight: 700 }}
+                    >
                       {convo.unread}
-                    </span>
+                    </motion.span>
                   )}
-                </div>
+                </motion.div>
               );
             })}
+          </div>
+
+          {/* Online peers indicator */}
+          <div
+            className="px-4 py-3 flex items-center gap-2"
+            style={{ borderTop: '1px solid var(--app-border)' }}
+          >
+            <span
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: '#1ab977' }}
+            />
+            <span style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>
+              {onlinePeersCount} peers online
+            </span>
           </div>
         </div>
 
@@ -284,67 +466,203 @@ export default function MessagesPage() {
           {selectedPeer ? (
             <>
               {/* Chat Window Header */}
-              <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100 shrink-0">
-                <button onClick={() => setMobileView('list')} className="lg:hidden p-1 cursor-pointer"><ArrowLeft size={18} /></button>
-                <span className="text-xl">{selectedPeer.avatar}</span>
+              <div
+                className="flex items-center gap-3 px-5 py-3.5 shrink-0"
+                style={{ borderBottom: '1px solid var(--app-border)' }}
+              >
+                <button
+                  onClick={() => setMobileView('list')}
+                  className="lg:hidden p-1 cursor-pointer bg-transparent border-none"
+                  style={{ color: 'var(--app-text-primary)' }}
+                >
+                  <ArrowLeft size={18} />
+                </button>
+
+                {/* Avatar + name block */}
+                <div className="relative shrink-0">
+                  <span className="text-xl">{selectedPeer.avatar}</span>
+                  <span
+                    className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full"
+                    style={{ backgroundColor: statusColors[selectedPeer.status], border: '2px solid var(--app-surface)' }}
+                  />
+                </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold" style={{ fontSize: 15 }}>{selectedPeer.name}</span>
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: archetypeColors[selectedPeer.archetype] }} />
+                    <span className="font-semibold" style={{ fontSize: 15, color: 'var(--app-text-primary)' }}>
+                      {selectedPeer.name}
+                    </span>
+                    <span
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: archetypeColors[selectedPeer.archetype] }}
+                    />
+                    <span style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>
+                      {selectedPeer.archetype}
+                    </span>
                   </div>
-                  <span style={{ fontSize: 12, color: '#a8a8a8' }}>{selectedPeer.status}</span>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: selectedPeer.status === 'online' ? '#1ab977' : 'var(--app-text-hint)',
+                      fontWeight: 500,
+                    }}
+                  >
+                    {selectedPeer.status === 'online'
+                      ? 'Online'
+                      : selectedPeer.status === 'away'
+                        ? `Away · ${selectedPeer.lastSeen || 'recently'}`
+                        : `Offline · ${selectedPeer.lastSeen || 'a while ago'}`}
+                  </span>
                 </div>
+
+                {/* Expertise tags */}
+                {selectedPeer.expertise && (
+                  <div className="hidden md:flex items-center gap-2">
+                    {selectedPeer.expertise.map(tag => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1 rounded-md"
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: '#5236ab',
+                          backgroundColor: 'var(--app-brand-light)',
+                          border: '1px solid rgba(82,54,171,0.15)',
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Message History Container */}
-              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4" style={{ backgroundColor: '#f8f9fb' }}>
-                {selectedConvo?.messages.map((msg) => {
+              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3" style={{ backgroundColor: 'var(--app-bg)' }}>
+                {selectedConvo?.messages.map((msg, i) => {
                   const isMe = msg.senderId === 'me';
+                  const msgPeer = !isMe ? peers.find(p => p.id === msg.senderId) : null;
                   return (
-                    <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                    <motion.div
+                      key={msg.id}
+                      initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ delay: i * 0.04, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      className={`flex ${isMe ? 'justify-end' : 'justify-start'} items-end gap-2`}
+                    >
+                      {/* Avatar for received messages */}
+                      {!isMe && msgPeer && (
+                        <span className="text-lg shrink-0 mb-1">{msgPeer.avatar}</span>
+                      )}
                       <div
-                        className="max-w-[75%] px-4 py-3 rounded-2xl"
+                        className="max-w-[70%] px-4 py-3"
                         style={{
-                          backgroundColor: isMe ? '#5236ab' : 'white',
-                          color: isMe ? 'white' : '#333333',
+                          backgroundColor: isMe ? '#5236ab' : 'var(--app-surface)',
+                          color: isMe ? 'white' : 'var(--app-text-secondary)',
                           fontSize: 14,
-                          boxShadow: isMe ? 'none' : '0 1px 2px rgba(0,0,0,0.05)',
+                          lineHeight: '20px',
+                          borderRadius: isMe
+                            ? '18px 18px 4px 18px'
+                            : '18px 18px 18px 4px',
+                          boxShadow: isMe
+                            ? '0 2px 8px rgba(82,54,171,0.2)'
+                            : '0 1px 3px rgba(0,0,0,0.06)',
                         }}
                       >
                         {msg.text}
-                        <div className="mt-1 text-[10px] opacity-60 text-right">{msg.time}</div>
+                        <div
+                          className="flex items-center gap-1 mt-1"
+                          style={{ justifyContent: isMe ? 'flex-end' : 'flex-start' }}
+                        >
+                          <span style={{ fontSize: 10, opacity: 0.6 }}>{msg.time}</span>
+                          {isMe && (
+                            <CheckCheck
+                              size={13}
+                              style={{
+                                opacity: 0.7,
+                                color: msg.status === 'read' ? '#a5d6ff' : 'rgba(255,255,255,0.5)',
+                              }}
+                            />
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
-                <div ref={messagesEndRef} /> {/* This empty div acts as a scroll target */}
+                <div ref={messagesEndRef} />
               </div>
 
               {/* Chat Input Bar */}
-              <div className="p-4 border-t border-gray-100 flex items-center gap-3">
-                <input
-                  ref={inputRef} type="text" value={messageInput}
-                  onChange={e => setMessageInput(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && sendMessage()}
-                  placeholder={`Message ${selectedPeer.name}...`}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-[#5236ab]"
-                />
+              <div
+                className="px-4 py-3 flex items-center gap-3"
+                style={{ borderTop: '1px solid var(--app-border)', backgroundColor: 'var(--app-surface)' }}
+              >
+                {/* Paperclip */}
                 <button
-                  onClick={sendMessage} disabled={!messageInput.trim()}
-                  className="w-10 h-10 rounded-xl bg-[#5236ab] text-white flex items-center justify-center cursor-pointer disabled:opacity-30"
+                  className="p-2 rounded-full cursor-pointer border-none bg-transparent transition-colors"
+                  style={{ color: 'var(--app-text-hint)' }}
+                  title="Attach file"
+                >
+                  <Paperclip size={18} />
+                </button>
+
+                {/* Text input */}
+                <div className="flex-1 relative">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={messageInput}
+                    onChange={e => setMessageInput(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && sendMessage()}
+                    placeholder={`Message ${selectedPeer.name}...`}
+                    className="w-full px-4 py-2.5 pr-10 rounded-full outline-none transition-colors"
+                    style={{
+                      border: '1px solid var(--app-border-strong)',
+                      backgroundColor: 'var(--app-bg)',
+                      color: 'var(--app-text-primary)',
+                      fontSize: 14,
+                    }}
+                  />
+                  {/* Emoji button inside input */}
+                  <button
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-0 cursor-pointer border-none bg-transparent"
+                    style={{ color: 'var(--app-text-hint)' }}
+                  >
+                    <Smile size={18} />
+                  </button>
+                </div>
+
+                {/* Send button */}
+                <motion.button
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.92 }}
+                  onClick={sendMessage}
+                  disabled={!messageInput.trim()}
+                  className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed border-none"
+                  style={{
+                    backgroundColor: '#5236ab',
+                    color: 'white',
+                    boxShadow: messageInput.trim() ? '0 2px 8px rgba(82,54,171,0.25)' : 'none',
+                  }}
                 >
                   <Send size={18} />
-                </button>
+                </motion.button>
               </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
-              <MessageSquare size={48} className="mb-4" />
-              <p>Select a peer to start chatting</p>
+            <div className="flex-1 flex flex-col items-center justify-center" style={{ color: 'var(--app-text-hint)' }}>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4 }}
+                className="text-center"
+              >
+                <MessageSquare size={48} className="mb-4 mx-auto" style={{ opacity: 0.4 }} />
+                <p style={{ fontSize: 16 }}>Select a peer to start chatting</p>
+              </motion.div>
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
