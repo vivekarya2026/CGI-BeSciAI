@@ -1,19 +1,104 @@
-import React from 'react';
+/**
+ * ============================================
+ * 🚀 LANDING PAGE — LandingPage.tsx
+ * ============================================
+ *
+ * This is the first page users see when they visit the site (the "Home" page).
+ * It's designed to be visually engaging and explain the value of the app.
+ *
+ * Key Sections:
+ * 1. Hero Section: Big gradient background, animated particles, main Call to Action (CTA).
+ * 2. Features/Benefits: "Why Take This Assessment?" (3 column grid).
+ * 3. Archetypes Preview: Teases the 6 possible results users can get.
+ * 4. Survey Options: Let users choose between a quick or full assessment.
+ *
+ * ANIMATIONS:
+ * We use `framer-motion` (imported as `motion/react`) to make things fade in,
+ * slide up, or pulse. The `<motion.div>` tags are just like regular `<div>`s,
+ * but they accept special animation props like `initial`, `animate`, and `transition`.
+ */
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import { Sparkles, Clock, Target, Users, ArrowRight, Zap, Brain, TrendingUp } from 'lucide-react';
 
 export default function LandingPage() {
+  // `useNavigate` lets us change pages programmatically when buttons are clicked
   const navigate = useNavigate();
+
+  // State to track if the user has scrolled down (to change Navbar appearance)
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen" style={{ fontFamily: "var(--font-primary)" }}>
-      {/* Hero Section */}
+
+      {/* ============================================ */}
+      {/* NAVIGATION BAR (Sticky/Fixed)              */}
+      {/* ============================================ */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 px-6 ${isScrolled
+          ? 'bg-white/90 backdrop-blur-md py-3 shadow-md border-b border-gray-100'
+          : 'bg-transparent py-6'
+          }`}
+      >
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Logo Section */}
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #a82465 0%, #e31937 100%)' }}
+            >
+              <Sparkles size={22} className="text-white" />
+            </div>
+            <span className={`font-bold text-xl tracking-tight hidden sm:block transition-colors ${isScrolled ? 'text-[#151515]' : 'text-white'
+              }`}>
+              BeSciAI
+            </span>
+          </div>
+
+          {/* Right Actions Section */}
+          <div className="flex items-center gap-3">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/survey')}
+              className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all cursor-pointer ${isScrolled
+                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'border border-white/20 text-white hover:bg-white/10 backdrop-blur-md'
+                }`}
+            >
+              Take Assessment
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/app/dashboard')}
+              className="px-5 py-2.5 rounded-xl bg-[#e31937] text-white font-bold text-sm shadow-xl hover:bg-[#c1152e] transition-all cursor-pointer"
+            >
+              Sign In
+            </motion.button>
+          </div>
+        </div>
+      </nav>
+
+      {/* ============================================ */}
+      {/* SECTION 1: HERO (The big top section)      */}
+      {/* ============================================ */}
       <section
-        className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
+        className="relative min-h-[75vh] flex items-center justify-center overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #200a58 0%, #5236ab 40%, #a82465 70%, #e31937 100%)' }}
       >
-        {/* Animated background elements */}
+        {/* ---- Animated Background Particles ---- */}
+        {/* We create an array of 20 elements and map over them to create random circles */}
         <div className="absolute inset-0 overflow-hidden">
           {[...Array(20)].map((_, i) => (
             <motion.div
@@ -26,6 +111,7 @@ export default function LandingPage() {
                 top: `${Math.random() * 100}%`,
                 background: 'rgba(255,255,255,0.1)',
               }}
+              // Make them slowly float up and down
               animate={{
                 y: [0, -30, 0],
                 scale: [1, 1.1, 1],
@@ -39,36 +125,42 @@ export default function LandingPage() {
           ))}
         </div>
 
+        {/* ---- Main Hero Content ---- */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
+            {/* Small badge at the top */}
             <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md rounded-full px-5 py-2 mb-8">
               <Sparkles size={16} className="text-yellow-300" />
               <span className="text-white/90 text-sm font-medium" style={{ fontSize: 14, lineHeight: '17px' }}>
-                Personalized AI Adoption Journey
+                Personalized BeSciAI Journey
               </span>
             </div>
 
-            <h1 className="text-white mb-6 leading-tight text-3xl sm:text-4xl md:text-[38px]" style={{ fontWeight: 700, lineHeight: '1.2' }}>
+            {/* Main Headline */}
+            <h1 className="text-white mb-6 leading-tight text-3xl sm:text-4xl md:text-[38px]" style={{ fontWeight: 700, lineHeight: '1.2', color: 'white' }}>
               Discover Your AI Superpower
             </h1>
+
+            {/* Subheadline (Description) */}
             <p className="text-white/85 max-w-2xl mx-auto mb-10 text-base sm:text-lg" style={{ lineHeight: '28px', fontWeight: 400 }}>
               Take our behavioral assessment to uncover your unique AI adoption archetype.
               Get a personalized learning path, connect with like-minded peers, and accelerate
               your AI journey.
             </p>
 
+            {/* Call to Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.button
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.02, y: -2 }}  // Slight lift effect on hover
+                whileTap={{ scale: 0.98 }}           // Slight shrink effect on click
                 onClick={() => navigate('/survey')}
                 className="inline-flex items-center justify-center gap-2 text-white px-8 py-4 rounded-lg font-semibold transition-shadow cursor-pointer"
                 style={{
-                  backgroundColor: '#e31937',
+                  backgroundColor: '#e31937',        // Primary Red Color
                   fontSize: 16,
                   lineHeight: '24px',
                   minHeight: 44,
@@ -78,6 +170,7 @@ export default function LandingPage() {
                 Start Assessment
                 <ArrowRight size={18} />
               </motion.button>
+
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -97,13 +190,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Why Take This Survey */}
+      {/* ============================================ */}
+      {/* SECTION 2: BENEFITS (Why take it?)         */}
+      {/* ============================================ */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
+          {/* Section Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            whileInView={{ opacity: 1, y: 0 }}   // Animates only when scrolled into view
+            viewport={{ once: true }}            // Only animates the first time it's seen
             transition={{ duration: 0.5 }}
             className="text-center mb-16"
           >
@@ -115,6 +211,7 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
+          {/* 3-Column Grid of Benefits */}
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
@@ -167,7 +264,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* What You'll Get */}
+      {/* ============================================ */}
+      {/* SECTION 3: ARCHETYPES PREVIEW              */}
+      {/* ============================================ */}
       <section className="py-20 px-6" style={{ backgroundColor: '#f2f1f9' }}>
         <div className="max-w-5xl mx-auto">
           <motion.div
@@ -215,7 +314,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Survey Type Selection */}
+      {/* ============================================ */}
+      {/* SECTION 4: SURVEY SELECTION                */}
+      {/* ============================================ */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-3xl mx-auto text-center">
           <motion.div
@@ -232,6 +333,7 @@ export default function LandingPage() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-6">
+            {/* Quick Survey Option */}
             <motion.div
               whileHover={{ y: -4 }}
               onClick={() => navigate('/survey')}
@@ -257,6 +359,7 @@ export default function LandingPage() {
               </div>
             </motion.div>
 
+            {/* Full Survey Option */}
             <motion.div
               whileHover={{ y: -4 }}
               onClick={() => navigate('/survey')}
@@ -283,6 +386,7 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
+          {/* Bottom CTA Button */}
           <motion.button
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
@@ -301,14 +405,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ============================================ */}
+      {/* SECTION 5: FOOTER                          */}
+      {/* ============================================ */}
       <footer className="py-8 px-6 border-t border-gray-100 bg-white">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#5236ab' }}>
               <span className="text-white font-bold text-sm">A</span>
             </div>
-            <span style={{ fontSize: 14, color: '#767676' }}>AI Adoption Platform</span>
+            <span style={{ fontSize: 14, color: '#767676' }}>BeSciAI Platform</span>
           </div>
           <p style={{ fontSize: 12, color: '#a8a8a8' }}>
             Powered by CGI — Personalized AI adoption journeys

@@ -1,3 +1,22 @@
+/**
+ * ============================================
+ * 👥 COMMUNITY PAGE — CommunityPage.tsx
+ * ============================================
+ * 
+ * This page is where users connect with each other. 
+ * High engagement and social proof are key here!
+ * 
+ * 🗺️ SUB-TABS:
+ * 1. Peer Progress: See trending workflows and the weekly leaderboard.
+ * 2. Success Stories: Real-world examples of how AI helped other people.
+ * 3. Discussion Forums: A place for Q&A and sharing tips (uses DiscussionForum component).
+ * 4. Champions Network: Connect with senior experts and join office hours.
+ * 
+ * HINT FOR BEGINNERS:
+ * We use a helper function `getArchetypeColor` to make sure the UI 
+ * matches the color of the user's specific Archetype (e.g. Purple for Trailblazers).
+ */
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router';
@@ -10,14 +29,18 @@ import { useUser } from '../../context/UserContext';
 import { archetypes } from '../../data/archetypes';
 import { DiscussionForum } from '../../components/DiscussionForum';
 
+// Defining the sub-tabs for the page
 type SubTab = 'peers' | 'stories' | 'forums' | 'champions';
 
 export default function CommunityPage() {
   const { archetype } = useUser();
   const navigate = useNavigate();
+
+  // -- Local Page State --
   const [activeTab, setActiveTab] = useState<SubTab>('peers');
   const [leaderboardPeriod, setLeaderboardPeriod] = useState<'week' | 'month' | 'all'>('week');
 
+  // Definitions for the navigation menu buttons
   const tabs: { id: SubTab; label: string; icon: React.ReactNode }[] = [
     { id: 'peers', label: 'Peer Progress', icon: <Users size={16} /> },
     { id: 'stories', label: 'Success Stories', icon: <BookOpen size={16} /> },
@@ -25,6 +48,15 @@ export default function CommunityPage() {
     { id: 'champions', label: 'Champions Network', icon: <Crown size={16} /> },
   ];
 
+  // Helper: Gets the brand color for a specific archetype
+  const getArchetypeColor = (name: string) => {
+    const key = name.toLowerCase();
+    return archetypes[key]?.color || '#5236ab';
+  };
+
+  // ============================================
+  // MOCK DATA (For visualization)
+  // ============================================
   const trendingWorkflows = [
     { id: 1, title: 'Email Triage Automation', creator: 'Sarah K.', avatar: '👩‍💻', likes: 124, saves: 89, archetype: 'Trailblazer' },
     { id: 2, title: 'Meeting Notes Generator', creator: 'Mike R.', avatar: '👨‍🔬', likes: 98, saves: 67, archetype: 'Innovator' },
@@ -38,14 +70,6 @@ export default function CommunityPage() {
     { rank: 4, name: 'You', points: 1250, avatar: '🙋', archetype: archetype || 'Trailblazer', change: 2, isCurrentUser: true },
     { rank: 5, name: 'Priya S.', points: 1180, avatar: '👩‍🎨', archetype: 'Guide', change: -1 },
     { rank: 6, name: 'James L.', points: 1050, avatar: '👨‍💼', archetype: 'Connector', change: 0 },
-  ];
-
-  const forumCategories = [
-    { name: 'Getting Started', description: 'New to AI? Start here.', topics: 145, lastActivity: '10 min ago', icon: '🌱' },
-    { name: 'Prompt Engineering', description: 'Share and improve your prompts.', topics: 312, lastActivity: '2 min ago', icon: '⚡' },
-    { name: 'Workflow Automation', description: 'Build and share AI workflows.', topics: 198, lastActivity: '25 min ago', icon: '🔄' },
-    { name: 'Best Practices', description: 'Tips and guidelines for effective AI use.', topics: 89, lastActivity: '1 hour ago', icon: '✅' },
-    { name: 'Feedback & Ideas', description: 'Share feedback and feature requests.', topics: 67, lastActivity: '3 hours ago', icon: '💡' },
   ];
 
   const successStories = [
@@ -65,13 +89,12 @@ export default function CommunityPage() {
     { title: 'Automation Deep Dive', host: 'Marcus Williams', date: 'Mar 4, 10:00 AM', spots: '12/20', avatar: '👨‍💻' },
   ];
 
-  const getArchetypeColor = (name: string) => {
-    const key = name.toLowerCase();
-    return archetypes[key]?.color || '#5236ab';
-  };
-
+  // ============================================
+  // UI RENDER
+  // ============================================
   return (
     <div style={{ fontFamily: 'var(--font-primary)' }}>
+      {/* --- Page Header --- */}
       <div className="mb-6">
         <h1 style={{ fontSize: 28, fontWeight: 600, color: '#151515' }}>Community</h1>
         <p style={{ fontSize: 16, color: '#5c5c5c', lineHeight: '24px' }}>
@@ -79,7 +102,7 @@ export default function CommunityPage() {
         </p>
       </div>
 
-      {/* Sub-tabs */}
+      {/* --- Sub-tabs Navigation --- */}
       <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-8 overflow-x-auto">
         {tabs.map(tab => (
           <button
@@ -100,11 +123,12 @@ export default function CommunityPage() {
         ))}
       </div>
 
+      {/* --- Dynamic Content Area --- */}
       <AnimatePresence mode="wait">
-        {/* PEER PROGRESS */}
+
+        {/* TAB 1: PEER PROGRESS (Workflows & Leaderboard) */}
         {activeTab === 'peers' && (
           <motion.div key="peers" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-            {/* Trending Workflows */}
             <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">Trending Workflows</h2>
             <div className="grid sm:grid-cols-3 gap-4 mb-10">
               {trendingWorkflows.map((wf, i) => (
@@ -143,19 +167,17 @@ export default function CommunityPage() {
               ))}
             </div>
 
-            {/* Leaderboard */}
+            {/* Leaderboard Section */}
             <div className="bg-white rounded-xl border border-gray-100 p-6" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
               <div className="flex items-center justify-between mb-6">
                 <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }}>Leaderboard</h2>
                 <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
                   {(['week', 'month', 'all'] as const).map(p => (
                     <button
-                      key={p}
-                      onClick={() => setLeaderboardPeriod(p)}
-                      className="px-3 py-1 rounded-md cursor-pointer"
+                      key={p} onClick={() => setLeaderboardPeriod(p)}
+                      className="px-3 py-1 rounded-md cursor-pointer transition-all"
                       style={{
-                        fontSize: 12,
-                        fontWeight: leaderboardPeriod === p ? 600 : 400,
+                        fontSize: 12, fontWeight: leaderboardPeriod === p ? 600 : 400,
                         backgroundColor: leaderboardPeriod === p ? 'white' : 'transparent',
                         color: leaderboardPeriod === p ? '#151515' : '#767676',
                       }}
@@ -169,19 +191,14 @@ export default function CommunityPage() {
               <div className="space-y-2">
                 {leaderboard.map((entry, i) => (
                   <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
+                    key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
                     className="flex items-center gap-4 p-3 rounded-lg"
                     style={{
                       backgroundColor: (entry as any).isCurrentUser ? '#f2f1f9' : i === 0 ? '#fef3c7' : 'transparent',
                       border: (entry as any).isCurrentUser ? '2px solid #5236ab' : 'none',
                     }}
                   >
-                    <span style={{ fontSize: 16, fontWeight: 700, color: i === 0 ? '#f59e0b' : i === 1 ? '#a8a8a8' : i === 2 ? '#cd7f32' : '#767676', width: 28, textAlign: 'center' }}>
-                      {entry.rank}
-                    </span>
+                    <span style={{ fontSize: 16, fontWeight: 700, width: 28, textAlign: 'center', color: '#767676' }}>{entry.rank}</span>
                     <span className="text-xl">{entry.avatar}</span>
                     <div className="flex-1">
                       <span style={{ fontSize: 14, fontWeight: 600, color: '#151515' }}>{entry.name}</span>
@@ -194,11 +211,6 @@ export default function CommunityPage() {
                       <span style={{ fontSize: 14, fontWeight: 700, color: '#151515' }}>{entry.points.toLocaleString()}</span>
                       <span style={{ fontSize: 11, color: '#767676' }}>XP</span>
                     </div>
-                    <div className="w-6 flex justify-center">
-                      {entry.change > 0 && <ChevronUp size={14} className="text-green-500" />}
-                      {entry.change < 0 && <ChevronDown size={14} className="text-red-500" />}
-                      {entry.change === 0 && <span style={{ fontSize: 10, color: '#a8a8a8' }}>—</span>}
-                    </div>
                   </motion.div>
                 ))}
               </div>
@@ -206,16 +218,13 @@ export default function CommunityPage() {
           </motion.div>
         )}
 
-        {/* SUCCESS STORIES */}
+        {/* TAB 2: SUCCESS STORIES */}
         {activeTab === 'stories' && (
           <motion.div key="stories" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
               {successStories.map((story, i) => (
                 <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08 }}
+                  key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
                   whileHover={{ y: -3 }}
                   className="bg-white rounded-xl overflow-hidden border border-gray-100 cursor-pointer"
                   style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}
@@ -231,15 +240,12 @@ export default function CommunityPage() {
                     <div className="text-2xl font-bold mb-2" style={{ color: getArchetypeColor(story.archetype) }}>{story.metric}</div>
                     <p style={{ fontSize: 16, fontWeight: 600, color: '#151515' }} className="mb-2">{story.desc}</p>
                     <p style={{ fontSize: 14, color: '#767676' }}>— {story.name}</p>
-                    <button className="mt-4 text-[#5236ab] font-semibold cursor-pointer hover:underline" style={{ fontSize: 14 }}>
-                      Read Full Story →
-                    </button>
                   </div>
                 </motion.div>
               ))}
             </div>
 
-            {/* Impact Metrics */}
+            {/* Impact Metrics Dashboard */}
             <div className="bg-white rounded-xl p-6 border border-gray-100" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
               <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-6">Community Impact</h2>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
@@ -262,7 +268,7 @@ export default function CommunityPage() {
           </motion.div>
         )}
 
-        {/* DISCUSSION FORUMS */}
+        {/* TAB 3: DISCUSSION FORUMS (External Component) */}
         {activeTab === 'forums' && (
           <motion.div key="forums" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
             <DiscussionForum
@@ -273,27 +279,19 @@ export default function CommunityPage() {
           </motion.div>
         )}
 
-        {/* CHAMPIONS NETWORK */}
+        {/* TAB 4: CHAMPIONS NETWORK (Experts & Office Hours) */}
         {activeTab === 'champions' && (
           <motion.div key="champions" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-            {/* Experts */}
             <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">Connect with Experts</h2>
             <div className="grid sm:grid-cols-3 gap-4 mb-10">
               {experts.map((expert, i) => (
                 <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08 }}
+                  key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
                   className="bg-white rounded-xl p-6 border border-gray-100 text-center"
                   style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}
                 >
                   <span className="text-4xl block mb-3">{expert.avatar}</span>
                   <h4 style={{ fontSize: 16, fontWeight: 600, color: '#151515' }} className="mb-1">{expert.name}</h4>
-                  <div className="flex items-center justify-center gap-1 mb-3">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: getArchetypeColor(expert.archetype) }} />
-                    <span style={{ fontSize: 12, color: '#767676' }}>{expert.archetype}</span>
-                  </div>
                   <div className="flex flex-wrap gap-1 justify-center mb-4">
                     {expert.expertise.map(e => (
                       <span key={e} className="px-2 py-0.5 rounded text-xs" style={{ backgroundColor: '#f2f1f9', color: '#5236ab', fontSize: 11, fontWeight: 600 }}>
@@ -301,19 +299,9 @@ export default function CommunityPage() {
                       </span>
                     ))}
                   </div>
-                  <div className="flex items-center justify-center gap-2 mb-4">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: expert.available ? '#1ab977' : '#a8a8a8' }} />
-                    <span style={{ fontSize: 12, color: expert.available ? '#1ab977' : '#a8a8a8' }}>
-                      {expert.available ? 'Available' : 'Unavailable'}
-                    </span>
-                  </div>
                   <button
                     className="w-full py-2.5 rounded-lg font-semibold cursor-pointer flex items-center justify-center gap-2"
-                    style={{
-                      backgroundColor: expert.available ? '#5236ab' : '#efefef',
-                      color: expert.available ? 'white' : '#a8a8a8',
-                      fontSize: 14,
-                    }}
+                    style={{ backgroundColor: expert.available ? '#5236ab' : '#efefef', color: expert.available ? 'white' : '#a8a8a8', fontSize: 14 }}
                     disabled={!expert.available}
                   >
                     <UserPlus size={14} /> Connect
@@ -322,15 +310,12 @@ export default function CommunityPage() {
               ))}
             </div>
 
-            {/* Office Hours */}
+            {/* Office Hours Sessions */}
             <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">Upcoming Office Hours</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               {officeSessions.map((session, i) => (
                 <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08 }}
+                  key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
                   className="bg-white rounded-xl p-5 border border-gray-100"
                   style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}
                 >
@@ -349,9 +334,7 @@ export default function CommunityPage() {
                       <Users size={14} /> {session.spots} spots
                     </span>
                   </div>
-                  <button className="w-full py-2.5 rounded-lg text-white font-semibold cursor-pointer"
-                    style={{ backgroundColor: '#5236ab', fontSize: 14 }}
-                  >
+                  <button className="w-full py-2.5 rounded-lg text-white font-semibold cursor-pointer" style={{ backgroundColor: '#5236ab', fontSize: 14 }}>
                     Register
                   </button>
                 </motion.div>

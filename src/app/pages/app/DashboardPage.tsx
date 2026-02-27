@@ -1,3 +1,23 @@
+/**
+ * ============================================
+ * 📊 DASHBOARD PAGE — DashboardPage.tsx
+ * ============================================
+ * 
+ * This is the main "Command Center" for the user.
+ * It gives a bird's-eye view of their progress, stats, and what to do next.
+ * 
+ * KEY SECTIONS:
+ * 1. Header: Personal greeting and archetype badge.
+ * 2. Quick Stats: High-level numbers (XP, Level, Badges).
+ * 3. Progress Overview: A visual chart showing how much of the journey is done.
+ * 4. Recommended Steps: The next modules the user should work on.
+ * 5. Community & Chat: Real-time peek at what other learners are doing.
+ * 
+ * HINT FOR BEGINNERS:
+ * This page pulls a lot of data from `UserContext`. 
+ * If you see `progress.xp` or `user.name`, it's coming from that global state!
+ */
+
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
@@ -11,23 +31,30 @@ import { useUser } from '../../context/UserContext';
 import { archetypes, learningModules } from '../../data/archetypes';
 import { NotificationsPanel } from '../../components/NotificationsPanel';
 
+// Helps us map archetype names to icons automatically
 const iconMap: Record<string, any> = {
   Mountain, Lamp, Network, Compass, Trophy, Lightbulb,
 };
 
 export default function DashboardPage() {
   const navigate = useNavigate();
+
+  // -- Get global user data --
   const { user, archetype, progress } = useUser();
+
+  // -- Local Page State --
   const [progressTab, setProgressTab] = useState<'complete' | 'quick'>('complete');
 
+  // -- Derived Data (Helper variables) --
+  // We calculate these based on the data we have
   const arch = archetype ? archetypes[archetype.toLowerCase()] : archetypes.trailblazer;
   const ArchIcon = arch ? iconMap[arch.icon] : Mountain;
-
   const completionPct = Math.round((progress.modulesCompleted / progress.totalModules) * 100);
 
+  // Filter modules to find what's next for the user
   const nextModules = learningModules.filter(m => !m.completed).slice(0, 3);
-  const currentModule = learningModules.find(m => !m.completed && !m.locked);
 
+  // Mock data for the demonstration
   const milestones = [
     { title: 'Complete 5 Modules', progress: 60, reward: '🏅', dueIn: '3 days' },
     { title: 'Earn Prompt Pro Badge', progress: 40, reward: '⭐', dueIn: '1 week' },
@@ -43,18 +70,22 @@ export default function DashboardPage() {
 
   return (
     <div style={{ fontFamily: 'var(--font-primary)' }}>
-      {/* Header */}
+
+      {/* ============================================ */}
+      {/* SECTION 1: HEADER (Greeting & Badges)      */}
+      {/* ============================================ */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl" style={{ fontWeight: 600, color: '#151515', lineHeight: '1.3' }}>
             Welcome back, {user?.name || 'Alex'} 👋
           </h1>
           <p className="text-sm sm:text-base" style={{ color: '#5c5c5c', lineHeight: '24px' }}>
-            Your AI adoption journey is {completionPct}% complete. Keep it up!
+            Your BeSciAI journey is {completionPct}% complete. Keep it up!
           </p>
         </div>
+
         <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-          {/* Archetype badge */}
+          {/* Archetype badge (Clickable to go to Profile) */}
           <motion.button
             whileHover={{ scale: 1.03 }}
             onClick={() => navigate('/app/profile')}
@@ -65,19 +96,21 @@ export default function DashboardPage() {
             <span style={{ fontSize: 14, fontWeight: 600, color: arch?.color }}>{arch?.name}</span>
           </motion.button>
 
-          {/* Streak */}
+          {/* Daily Streak Counter */}
           <div className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-orange-50 border border-orange-100">
             <Flame size={16} className="text-orange-500" />
             <span style={{ fontSize: 14, fontWeight: 700, color: '#ea580c' }}>{progress.streak}</span>
             <span style={{ fontSize: 12, color: '#9a3412' }}>day streak</span>
           </div>
 
-          {/* Notifications */}
+          {/* Notifications Panel Component */}
           <NotificationsPanel onNavigate={(path) => navigate(path)} />
         </div>
       </div>
 
-      {/* Quick Stats */}
+      {/* ============================================ */}
+      {/* SECTION 2: QUICK STATS (Cards)             */}
+      {/* ============================================ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
           { label: 'Modules Completed', value: `${progress.modulesCompleted}/${progress.totalModules}`, icon: <BookOpen size={20} />, color: '#5236ab', bg: '#f2f1f9' },
@@ -107,7 +140,9 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Progress Overview */}
+      {/* ============================================ */}
+      {/* SECTION 3: PROGRESS OVERVIEW (Chart)       */}
+      {/* ============================================ */}
       <div className="bg-white rounded-xl border border-gray-100 p-6 mb-8" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
         <div className="flex items-center justify-between mb-6">
           <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }}>Your Progress</h2>
@@ -133,7 +168,7 @@ export default function DashboardPage() {
 
         {progressTab === 'complete' ? (
           <div className="flex flex-col lg:flex-row gap-8 items-center">
-            {/* Circular progress */}
+            {/* SVG Donut Chart for completion percentage */}
             <div className="relative w-40 h-40 shrink-0">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="42" fill="none" stroke="#f2f1f9" strokeWidth="8" />
@@ -154,7 +189,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Module progress bars */}
+            {/* Individual module progress mini-bars */}
             <div className="flex-1 w-full space-y-3">
               {learningModules.slice(0, 6).map((mod, i) => (
                 <div key={mod.id} className="flex items-center gap-3">
@@ -190,6 +225,7 @@ export default function DashboardPage() {
             </div>
           </div>
         ) : (
+          /* Simplified "Quick Path" view */
           <div className="text-center py-8">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-50 mb-4">
               <TrendingUp size={32} style={{ color: '#5236ab' }} />
@@ -211,8 +247,12 @@ export default function DashboardPage() {
         )}
       </div>
 
+      {/* ============================================ */}
+      {/* SECTION 4: RECOMMENDED & MILESTONES        */}
+      {/* ============================================ */}
       <div className="grid lg:grid-cols-3 gap-6 mb-8">
-        {/* Recommended Next Steps */}
+
+        {/* Recommended Modules (Cards) */}
         <div className="lg:col-span-2">
           <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">
             Recommended Next Steps
@@ -268,7 +308,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Upcoming Milestones */}
+        {/* Milestone Goal Trackers */}
         <div>
           <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">
             Upcoming Milestones
@@ -308,7 +348,11 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Chat Suggestions — Connect with Peers */}
+      {/* ============================================ */}
+      {/* SECTION 5: CHAT & ACTIVITY                 */}
+      {/* ============================================ */}
+
+      {/* Peer Chat Suggestions Grid */}
       <div className="bg-white rounded-xl border border-gray-100 p-6 mb-8" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
@@ -328,6 +372,7 @@ export default function DashboardPage() {
             Open Messages <ChevronRight size={16} />
           </button>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {[
             { name: 'Sarah K.', avatar: '👩‍💻', status: 'online', topic: 'Prompt Engineering tips', archetype: 'Trailblazer', color: '#f59e0b' },
@@ -369,7 +414,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Peer Activity Feed */}
+      {/* Social Activity Feed */}
       <div className="bg-white rounded-xl border border-gray-100 p-6" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
         <div className="flex items-center justify-between mb-5">
           <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }}>Peer Activity</h2>

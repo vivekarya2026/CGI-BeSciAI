@@ -1,70 +1,116 @@
+/**
+ * ============================================
+ * 🗺️ ROUTES — routes.tsx
+ * ============================================
+ * 
+ * This file is the "map" of the entire app.
+ * It tells React which component to show for each URL.
+ * 
+ * Route Structure:
+ * 
+ *   /                → Landing Page (home/marketing page)
+ *   /survey          → Archetype Assessment Survey
+ *   /reveal          → Shows your archetype result
+ *   /onboarding      → Set your goals & preferences
+ *   /app/dashboard   → Main dashboard (requires sidebar layout)
+ *   /app/learn       → Learning modules
+ *   /app/community   → Community & peers
+ *   /app/messages    → Chat with peers
+ *   /app/profile     → Your profile & settings
+ *   /*               → 404 Not Found page
+ * 
+ * HINT: To add a new page:
+ * 1. Create a new component in pages/
+ * 2. Import it at the top of this file
+ * 3. Add a new { path: "...", element: <YourPage /> } entry below
+ */
+
 import { createBrowserRouter, redirect } from "react-router";
-import RootLayout from "./layouts/RootLayout";
-import AppLayout from "./layouts/AppLayout";
+
+/* ---- Layout Components ---- */
+import RootLayout from "./layouts/RootLayout";       // Bare wrapper for public pages
+import AppLayout from "./layouts/AppLayout";         // Layout with sidebar for app pages
+
+/* ---- Public Pages (no login needed) ---- */
 import LandingPage from "./pages/public/LandingPage";
 import SurveyPage from "./pages/public/SurveyPage";
 import RevealPage from "./pages/public/RevealPage";
 import OnboardingPage from "./pages/public/OnboardingPage";
+
+/* ---- App Pages (inside the dashboard with sidebar) ---- */
 import DashboardPage from "./pages/app/DashboardPage";
 import LearnPage from "./pages/app/LearnPage";
 import CommunityPage from "./pages/app/CommunityPage";
 import ProfilePage from "./pages/app/ProfilePage";
 import MessagesPage from "./pages/app/MessagesPage";
+
+/* ---- Error/Fallback Pages ---- */
 import NotFoundPage from "./pages/NotFoundPage";
 
+// ============================================
+// ROUTER CONFIGURATION
+// ============================================
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />,
+    element: <RootLayout />,  // All pages are wrapped in RootLayout
     children: [
+
+      /* ---- PUBLIC ROUTES ---- */
+      /* These pages don't have a sidebar — they're the "onboarding flow" */
       {
-        index: true,
+        index: true,                    // "/" → Landing Page
         element: <LandingPage />,
       },
       {
-        path: "survey",
+        path: "survey",                 // "/survey" → Assessment Quiz
         element: <SurveyPage />,
       },
       {
-        path: "reveal",
+        path: "reveal",                 // "/reveal" → Archetype Result
         element: <RevealPage />,
       },
       {
-        path: "onboarding",
+        path: "onboarding",            // "/onboarding" → Goal Setting
         element: <OnboardingPage />,
       },
+
+      /* ---- APP ROUTES (with sidebar) ---- */
+      /* These pages share the AppLayout which includes sidebar + ByteBot */
       {
         path: "app",
-        element: <AppLayout />,
+        element: <AppLayout />,         // Wraps children with Sidebar + header
         children: [
           {
             index: true,
-            loader: () => redirect("/app/dashboard"),
+            loader: () => redirect("/app/dashboard"),  // "/app" → redirects to dashboard
           },
           {
-            path: "dashboard",
+            path: "dashboard",          // "/app/dashboard"
             element: <DashboardPage />,
           },
           {
-            path: "learn",
+            path: "learn",              // "/app/learn"
             element: <LearnPage />,
           },
           {
-            path: "community",
+            path: "community",          // "/app/community"
             element: <CommunityPage />,
           },
           {
-            path: "profile",
+            path: "profile",            // "/app/profile"
             element: <ProfilePage />,
           },
           {
-            path: "messages",
+            path: "messages",           // "/app/messages"
             element: <MessagesPage />,
           },
         ],
       },
+
+      /* ---- 404 FALLBACK ---- */
       {
-        path: "*",
+        path: "*",                      // Any unmatched URL → Not Found
         element: <NotFoundPage />,
       },
     ],

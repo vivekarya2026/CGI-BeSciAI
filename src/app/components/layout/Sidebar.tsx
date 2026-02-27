@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Home, 
-  BookOpen, 
-  Users, 
-  User, 
-  Settings, 
-  ChevronLeft, 
+import {
+  Home,
+  BookOpen,
+  Users,
+  User,
+  Settings,
+  ChevronLeft,
   ChevronRight,
   Menu,
   Target,
@@ -53,7 +53,7 @@ export const Sidebar: React.FC = () => {
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-100">
         <div className="flex items-center gap-3 overflow-hidden">
           <div className={`p-1.5 rounded-lg bg-purple-50 ${isCollapsed ? 'mx-auto' : ''}`}>
-             <Sparkles className="w-5 h-5 text-[#5236ab]" />
+            <Sparkles className="w-5 h-5 text-[#5236ab]" />
           </div>
           {!isCollapsed && (
             <motion.span
@@ -62,7 +62,7 @@ export const Sidebar: React.FC = () => {
               exit={{ opacity: 0 }}
               className="font-bold text-[#5236ab] text-lg whitespace-nowrap"
             >
-              AI Adoption
+              BeSciAI
             </motion.span>
           )}
         </div>
@@ -71,7 +71,7 @@ export const Sidebar: React.FC = () => {
       <nav className="flex-1 py-6 px-3 space-y-2">
         {NAV_ITEMS.map((item) => {
           const isActive = location.pathname === item.path;
-          
+
           return (
             <TooltipProvider key={item.path} delayDuration={0}>
               <Tooltip>
@@ -80,8 +80,8 @@ export const Sidebar: React.FC = () => {
                     to={item.path}
                     className={({ isActive }) => cn(
                       "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
-                      isActive 
-                        ? "bg-purple-50 text-[#5236ab]" 
+                      isActive
+                        ? "bg-purple-50 text-[#5236ab]"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     )}
                   >
@@ -95,7 +95,7 @@ export const Sidebar: React.FC = () => {
                       />
                     )}
                     <item.icon className={cn("w-5 h-5 shrink-0", isActive ? "text-[#5236ab]" : "text-gray-500 group-hover:text-gray-700")} />
-                    
+
                     {!isCollapsed && (
                       <motion.span
                         initial={{ opacity: 0 }}
@@ -129,25 +129,25 @@ export const Sidebar: React.FC = () => {
 
         {!isCollapsed && (
           <div className="flex items-center gap-3 px-2 py-3 mt-2">
-             <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
-                {user.name.charAt(0)}
-             </div>
-             <div className="flex-1 overflow-hidden">
-                <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                <p className={cn("text-xs truncate", getArchetypeColor())}>
-                  {user.archetype || 'New User'}
-                </p>
-             </div>
-             <Settings className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" />
+            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
+              {user.name.charAt(0)}
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
+              <p className={cn("text-xs truncate", getArchetypeColor())}>
+                {user.archetype || 'New User'}
+              </p>
+            </div>
+            <Settings className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" />
           </div>
         )}
-        
+
         {isCollapsed && (
-           <div className="mt-2 flex justify-center">
-              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600 cursor-pointer hover:bg-gray-300 transition-colors">
-                {user.name.charAt(0)}
-             </div>
-           </div>
+          <div className="mt-2 flex justify-center">
+            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600 cursor-pointer hover:bg-gray-300 transition-colors">
+              {user.name.charAt(0)}
+            </div>
+          </div>
         )}
       </div>
     </motion.aside>
