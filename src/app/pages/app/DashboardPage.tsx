@@ -76,29 +76,18 @@ export default function DashboardPage() {
       {/* ============================================ */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl" style={{ fontWeight: 600, color: '#151515', lineHeight: '1.3' }}>
+          <h1 className="text-xl sm:text-2xl" style={{ fontWeight: 600, color: 'var(--app-text-primary)', lineHeight: '1.3' }}>
             Welcome back, {user?.name || 'Alex'} 👋
           </h1>
-          <p className="text-sm sm:text-base" style={{ color: '#5c5c5c', lineHeight: '24px' }}>
+          <p className="text-sm sm:text-base" style={{ color: 'var(--app-text-secondary)', lineHeight: '24px' }}>
             Your BeSciAI journey is {completionPct}% complete. Keep it up!
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-          {/* Archetype badge (Clickable to go to Profile) */}
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            onClick={() => navigate('/app/profile')}
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full cursor-pointer"
-            style={{ backgroundColor: `${arch?.color}15`, border: `1px solid ${arch?.color}30` }}
-          >
-            {ArchIcon && <ArchIcon size={16} style={{ color: arch?.color }} />}
-            <span style={{ fontSize: 14, fontWeight: 600, color: arch?.color }}>{arch?.name}</span>
-          </motion.button>
-
           {/* Daily Streak Counter */}
-          <div className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-orange-50 border border-orange-100">
-            <Flame size={16} className="text-orange-500" />
+          <div className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full" style={{ backgroundColor: '#f59e0b15', border: '1px solid #f59e0b30' }}>
+            <Flame size={16} style={{ color: '#ea580c' }} />
             <span style={{ fontSize: 14, fontWeight: 700, color: '#ea580c' }}>{progress.streak}</span>
             <span style={{ fontSize: 12, color: '#9a3412' }}>day streak</span>
           </div>
@@ -123,8 +112,8 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="bg-white rounded-xl p-5 border border-gray-100"
-            style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}
+            className="rounded-xl p-5"
+            style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
           >
             <div className="flex items-center gap-3 mb-3">
               <div
@@ -134,8 +123,8 @@ export default function DashboardPage() {
                 {stat.icon}
               </div>
             </div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#151515' }}>{stat.value}</div>
-            <div style={{ fontSize: 12, color: '#767676' }}>{stat.label}</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--app-text-primary)' }}>{stat.value}</div>
+            <div style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>{stat.label}</div>
           </motion.div>
         ))}
       </div>
@@ -143,10 +132,10 @@ export default function DashboardPage() {
       {/* ============================================ */}
       {/* SECTION 3: PROGRESS OVERVIEW (Chart)       */}
       {/* ============================================ */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6 mb-8" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
+      <div className="rounded-xl p-6 mb-8" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
         <div className="flex items-center justify-between mb-6">
-          <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }}>Your Progress</h2>
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
+          <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }}>Your Progress</h2>
+          <div className="flex gap-1 rounded-lg p-0.5" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
             {(['complete', 'quick'] as const).map(tab => (
               <button
                 key={tab}
@@ -155,8 +144,8 @@ export default function DashboardPage() {
                 style={{
                   fontSize: 14,
                   fontWeight: progressTab === tab ? 600 : 400,
-                  backgroundColor: progressTab === tab ? 'white' : 'transparent',
-                  color: progressTab === tab ? '#151515' : '#767676',
+                  backgroundColor: progressTab === tab ? 'var(--app-surface)' : 'transparent',
+                  color: progressTab === tab ? 'var(--app-text-primary)' : 'var(--app-text-muted)',
                   boxShadow: progressTab === tab ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
                 }}
               >
@@ -171,7 +160,7 @@ export default function DashboardPage() {
             {/* SVG Donut Chart for completion percentage */}
             <div className="relative w-40 h-40 shrink-0">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="42" fill="none" stroke="#f2f1f9" strokeWidth="8" />
+                <circle cx="50" cy="50" r="42" fill="none" stroke="var(--app-border)" strokeWidth="8" />
                 <motion.circle
                   cx="50" cy="50" r="42" fill="none"
                   stroke={arch?.color || '#5236ab'}
@@ -184,8 +173,8 @@ export default function DashboardPage() {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span style={{ fontSize: 28, fontWeight: 700, color: '#151515' }}>{completionPct}%</span>
-                <span style={{ fontSize: 12, color: '#767676' }}>Complete</span>
+                <span style={{ fontSize: 28, fontWeight: 700, color: 'var(--app-text-primary)' }}>{completionPct}%</span>
+                <span style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>Complete</span>
               </div>
             </div>
 
@@ -205,12 +194,12 @@ export default function DashboardPage() {
                   </span>
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
-                      <span style={{ fontSize: 13, color: mod.locked ? '#a8a8a8' : '#333333', fontWeight: mod.completed ? 400 : 500 }}>
+                      <span style={{ fontSize: 13, color: mod.locked ? 'var(--app-text-hint)' : 'var(--app-text-secondary)', fontWeight: mod.completed ? 400 : 500 }}>
                         {mod.title}
                       </span>
-                      <span style={{ fontSize: 11, color: '#a8a8a8' }}>{mod.duration}</span>
+                      <span style={{ fontSize: 11, color: 'var(--app-text-hint)' }}>{mod.duration}</span>
                     </div>
-                    <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                    <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
                       <motion.div
                         className="h-full rounded-full"
                         style={{ backgroundColor: mod.completed ? '#1ab977' : '#5236ab' }}
@@ -227,13 +216,13 @@ export default function DashboardPage() {
         ) : (
           /* Simplified "Quick Path" view */
           <div className="text-center py-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-50 mb-4">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4" style={{ backgroundColor: 'var(--app-brand-light)' }}>
               <TrendingUp size={32} style={{ color: '#5236ab' }} />
             </div>
-            <h3 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-2">
+            <h3 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-2">
               {completionPct}% Complete
             </h3>
-            <p style={{ fontSize: 16, color: '#5c5c5c' }} className="mb-4">
+            <p style={{ fontSize: 16, color: 'var(--app-text-secondary)' }} className="mb-4">
               {progress.totalModules - progress.modulesCompleted} modules remaining
             </p>
             <button
@@ -254,7 +243,7 @@ export default function DashboardPage() {
 
         {/* Recommended Modules (Cards) */}
         <div className="lg:col-span-2">
-          <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">
+          <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">
             Recommended Next Steps
           </h2>
           <div className="space-y-3">
@@ -265,8 +254,8 @@ export default function DashboardPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
                 whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
-                className="bg-white rounded-xl p-5 border border-gray-100 flex items-center gap-4 cursor-pointer"
-                style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}
+                className="rounded-xl p-5 flex items-center gap-4 cursor-pointer"
+                style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
                 onClick={() => navigate('/app/learn')}
               >
                 <div
@@ -279,9 +268,9 @@ export default function DashboardPage() {
                   {i === 0 ? <Play size={20} /> : <BookOpen size={20} />}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 style={{ fontSize: 16, fontWeight: 600, color: '#151515' }}>{mod.title}</h4>
+                  <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }}>{mod.title}</h4>
                   <div className="flex items-center gap-3 mt-1">
-                    <span className="flex items-center gap-1" style={{ fontSize: 12, color: '#767676' }}>
+                    <span className="flex items-center gap-1" style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>
                       <Clock size={12} /> {mod.duration}
                     </span>
                     <span
@@ -310,7 +299,7 @@ export default function DashboardPage() {
 
         {/* Milestone Goal Trackers */}
         <div>
-          <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-4">
+          <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">
             Upcoming Milestones
           </h2>
           <div className="space-y-3">
@@ -320,16 +309,16 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
-                className="bg-white rounded-xl p-4 border border-gray-100"
-                style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}
+                className="rounded-xl p-4"
+                style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{m.reward}</span>
-                    <span style={{ fontSize: 14, fontWeight: 600, color: '#151515' }}>{m.title}</span>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)' }}>{m.title}</span>
                   </div>
                 </div>
-                <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden mb-1">
+                <div className="h-1.5 rounded-full overflow-hidden mb-1" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
                   <motion.div
                     className="h-full rounded-full"
                     style={{ backgroundColor: '#5236ab' }}
@@ -339,8 +328,8 @@ export default function DashboardPage() {
                   />
                 </div>
                 <div className="flex justify-between">
-                  <span style={{ fontSize: 11, color: '#a8a8a8' }}>{m.progress}%</span>
-                  <span style={{ fontSize: 11, color: '#767676' }}>Due in {m.dueIn}</span>
+                  <span style={{ fontSize: 11, color: 'var(--app-text-hint)' }}>{m.progress}%</span>
+                  <span style={{ fontSize: 11, color: 'var(--app-text-muted)' }}>Due in {m.dueIn}</span>
                 </div>
               </motion.div>
             ))}
@@ -353,21 +342,21 @@ export default function DashboardPage() {
       {/* ============================================ */}
 
       {/* Peer Chat Suggestions Grid */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6 mb-8" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
+      <div className="rounded-xl p-6 mb-8" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#f2f1f9' }}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--app-brand-light)' }}>
               <Send size={16} style={{ color: '#5236ab' }} />
             </div>
             <div>
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515', margin: 0 }}>Chat with Peers</h2>
-              <p style={{ fontSize: 13, color: '#767676', margin: 0 }}>Connect and message learners on similar paths</p>
+              <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)', margin: 0 }}>Chat with Peers</h2>
+              <p style={{ fontSize: 13, color: 'var(--app-text-muted)', margin: 0 }}>Connect and message learners on similar paths</p>
             </div>
           </div>
           <button
             onClick={() => navigate('/app/messages')}
-            className="flex items-center gap-1 text-[#5236ab] cursor-pointer hover:underline"
-            style={{ fontSize: 14, fontWeight: 600 }}
+            className="flex items-center gap-1 cursor-pointer hover:underline"
+            style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-brand)' }}
           >
             Open Messages <ChevronRight size={16} />
           </button>
@@ -387,25 +376,25 @@ export default function DashboardPage() {
               transition={{ delay: 0.1 + i * 0.06 }}
               whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
               onClick={() => navigate('/app/messages')}
-              className="flex flex-col items-center p-4 rounded-xl border border-gray-100 cursor-pointer transition-all"
-              style={{ boxShadow: '0px 1px 3px rgba(0,0,0,0.04)' }}
+              className="flex flex-col items-center p-4 rounded-xl cursor-pointer transition-all"
+              style={{ border: '1px solid var(--app-border)', boxShadow: '0px 1px 3px rgba(0,0,0,0.04)' }}
             >
               <div className="relative mb-2">
                 <span className="text-3xl">{peer.avatar}</span>
                 <span
-                  className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white"
-                  style={{ backgroundColor: peer.status === 'online' ? '#1ab977' : '#f1a425' }}
+                  className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full"
+                  style={{ backgroundColor: peer.status === 'online' ? '#1ab977' : '#f1a425', border: '2px solid var(--app-surface)' }}
                 />
               </div>
-              <span style={{ fontSize: 14, fontWeight: 600, color: '#151515' }}>{peer.name}</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)' }}>{peer.name}</span>
               <div className="flex items-center gap-1 mt-0.5 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: peer.color }} />
-                <span style={{ fontSize: 11, color: '#767676' }}>{peer.archetype}</span>
+                <span style={{ fontSize: 11, color: 'var(--app-text-muted)' }}>{peer.archetype}</span>
               </div>
-              <span style={{ fontSize: 12, color: '#5c5c5c', textAlign: 'center', lineHeight: '16px' }}>{peer.topic}</span>
+              <span style={{ fontSize: 12, color: 'var(--app-text-secondary)', textAlign: 'center', lineHeight: '16px' }}>{peer.topic}</span>
               <button
                 className="mt-3 w-full py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-pointer transition-colors hover:opacity-90"
-                style={{ backgroundColor: '#f2f1f9', color: '#5236ab', fontSize: 13, fontWeight: 600 }}
+                style={{ backgroundColor: 'var(--app-brand-light)', color: 'var(--app-brand)', fontSize: 13, fontWeight: 600 }}
               >
                 <MessageCircle size={13} /> Chat
               </button>
@@ -415,13 +404,13 @@ export default function DashboardPage() {
       </div>
 
       {/* Social Activity Feed */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6" style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.06)' }}>
+      <div className="rounded-xl p-6" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
         <div className="flex items-center justify-between mb-5">
-          <h2 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }}>Peer Activity</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }}>Peer Activity</h2>
           <button
             onClick={() => navigate('/app/community')}
-            className="flex items-center gap-1 text-[#5236ab] cursor-pointer hover:underline"
-            style={{ fontSize: 14, fontWeight: 600 }}
+            className="flex items-center gap-1 cursor-pointer hover:underline"
+            style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-brand)' }}
           >
             View All <ChevronRight size={16} />
           </button>
@@ -433,25 +422,26 @@ export default function DashboardPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: i * 0.05 }}
-              className="flex items-center gap-4 pb-4 border-b border-gray-50 last:border-0 last:pb-0"
+              className="flex items-center gap-4 pb-4 last:border-0 last:pb-0"
+              style={{ borderBottom: '1px solid var(--app-border)' }}
             >
-              <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-lg shrink-0">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg shrink-0" style={{ backgroundColor: 'var(--app-brand-light)' }}>
                 {activity.avatar}
               </div>
               <div className="flex-1 min-w-0">
-                <p style={{ fontSize: 14, color: '#333333', lineHeight: '20px' }}>
+                <p style={{ fontSize: 14, color: 'var(--app-text-secondary)', lineHeight: '20px' }}>
                   <span className="font-semibold">{activity.name}</span>{' '}
                   {activity.action}{' '}
-                  <span className="font-semibold" style={{ color: '#5236ab' }}>{activity.target}</span>
+                  <span className="font-semibold" style={{ color: 'var(--app-brand)' }}>{activity.target}</span>
                 </p>
-                <p style={{ fontSize: 12, color: '#a8a8a8' }}>{activity.time}</p>
+                <p style={{ fontSize: 12, color: 'var(--app-text-hint)' }}>{activity.time}</p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <button className="p-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer" aria-label="Like">
-                  <Heart size={16} className="text-gray-400" />
+                <button className="p-2 rounded-lg transition-colors cursor-pointer" style={{ color: 'var(--app-text-hint)' }} aria-label="Like">
+                  <Heart size={16} />
                 </button>
-                <button className="p-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer" aria-label="Comment">
-                  <MessageCircle size={16} className="text-gray-400" />
+                <button className="p-2 rounded-lg transition-colors cursor-pointer" style={{ color: 'var(--app-text-hint)' }} aria-label="Comment">
+                  <MessageCircle size={16} />
                 </button>
               </div>
             </motion.div>

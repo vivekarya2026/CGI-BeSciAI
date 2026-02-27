@@ -37,7 +37,7 @@ export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);   // Mobile: is drawer open?
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f8f9fb', fontFamily: "var(--font-primary)" }}>
+    <div className="min-h-screen transition-colors duration-300" style={{ backgroundColor: 'var(--app-bg)', fontFamily: "var(--font-primary)" }}>
 
       {/* ============================================ */}
       {/* SECTION 1: SIDEBAR                          */}
@@ -57,16 +57,17 @@ export default function AppLayout() {
       {/* Contains hamburger menu + app logo          */}
       {/* ============================================ */}
       <div
-        className="sticky top-0 z-40 flex lg:hidden items-center gap-3 bg-white border-b border-gray-100 px-4 py-3"
-        style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}
+        className="sticky top-0 z-40 flex lg:hidden items-center gap-3 px-4 py-3 transition-colors duration-300"
+        style={{ backgroundColor: 'var(--app-surface)', borderBottom: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
       >
         {/* Hamburger menu button */}
         <button
           onClick={() => setMobileOpen(true)}
-          className="p-2 -ml-1 rounded-lg hover:bg-gray-50 cursor-pointer"
+          className="p-2 -ml-1 rounded-lg cursor-pointer"
+          style={{ color: 'var(--app-text-primary)' }}
           aria-label="Open menu"
         >
-          <Menu size={22} className="text-gray-700" />
+          <Menu size={22} />
         </button>
 
         {/* App logo + name */}
@@ -74,7 +75,7 @@ export default function AppLayout() {
           <div className="w-7 h-7 bg-[#5236ab] rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">A</span>
           </div>
-          <span className="font-bold text-gray-800 text-base">BeSciAI</span>
+          <span className="font-bold text-base" style={{ color: 'var(--app-text-primary)' }}>BeSciAI</span>
         </div>
       </div>
 
