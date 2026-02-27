@@ -189,7 +189,12 @@ export const surveyQuestions: SurveyQuestion[] = [
 export const learningModules = [
   { id: 'm1', title: 'Introduction to AI Assistants', category: 'Basics', duration: '15 min', difficulty: 'Beginner', completed: true, rating: 4 },
   { id: 'm2', title: 'Crafting Effective Prompts', category: 'Prompt Engineering', duration: '20 min', difficulty: 'Beginner', completed: true, rating: 5 },
-  // ... more modules continue
+  { id: 'm3', title: 'Advanced Prompt Techniques', category: 'Prompt Engineering', duration: '30 min', difficulty: 'Intermediate', completed: false, rating: 0 },
+  { id: 'm4', title: 'AI-Powered Data Analysis', category: 'Data & Analytics', duration: '35 min', difficulty: 'Intermediate', completed: false, rating: 0 },
+  { id: 'm5', title: 'Workflow Automation with AI', category: 'Productivity', duration: '40 min', difficulty: 'Intermediate', completed: false, rating: 0 },
+  { id: 'm6', title: 'AI Ethics & Best Practices', category: 'Fundamentals', duration: '25 min', difficulty: 'Beginner', completed: false, rating: 0 },
+  { id: 'm7', title: 'Building AI-Enhanced Presentations', category: 'Productivity', duration: '30 min', difficulty: 'Intermediate', completed: false, rating: 0 },
+  { id: 'm8', title: 'AI for Team Collaboration', category: 'Communication', duration: '35 min', difficulty: 'Advanced', completed: false, rating: 0 },
 ];
 
 export const quickWins = [
