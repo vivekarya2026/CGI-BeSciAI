@@ -90,9 +90,9 @@ export default function OnboardingPage() {
   };
 
   // -- Action: Finish Onboarding --
-  // Sends them to the protected /app/dashboard area!
+  // Sends them into the Learn hub to start their journey
   const handleLaunch = () => {
-    navigate('/app/dashboard');
+    navigate('/app/learn');
   };
 
   // ============================================
@@ -270,7 +270,7 @@ export default function OnboardingPage() {
                 boxShadow: canProceed() ? '0 4px 16px rgba(82,54,171,0.3)' : 'none',
               }}
             >
-              <Rocket size={18} /> Launch My Dashboard
+              <Rocket size={18} /> Start Learning
             </motion.button>
           )}
         </div>

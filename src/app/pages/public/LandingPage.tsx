@@ -70,13 +70,13 @@ export default function LandingPage() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/survey')}
+              onClick={() => navigate('/onboarding')}
               className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all cursor-pointer ${isScrolled
                 ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 : 'border border-white/20 text-white hover:bg-white/10 backdrop-blur-md'
                 }`}
             >
-              Take Assessment
+              Set Your Goals
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -147,9 +147,8 @@ export default function LandingPage() {
 
             {/* Subheadline (Description) */}
             <p className="text-white/85 max-w-2xl mx-auto mb-10 text-base sm:text-lg" style={{ lineHeight: '28px', fontWeight: 400 }}>
-              Take our behavioral assessment to uncover your unique AI adoption archetype.
-              Get a personalized learning path, connect with like-minded peers, and accelerate
-              your AI journey.
+              Set your AI goals and unlock a personalized learning path.
+              Connect with like-minded peers, and accelerate your AI journey.
             </p>
 
             {/* Call to Action Buttons */}
@@ -157,7 +156,7 @@ export default function LandingPage() {
               <motion.button
                 whileHover={{ scale: 1.02, y: -2 }}  // Slight lift effect on hover
                 whileTap={{ scale: 0.98 }}           // Slight shrink effect on click
-                onClick={() => navigate('/survey')}
+                onClick={() => navigate('/onboarding')}
                 className="inline-flex items-center justify-center gap-2 text-white px-8 py-4 rounded-lg font-semibold transition-shadow cursor-pointer"
                 style={{
                   backgroundColor: '#e31937',        // Primary Red Color
@@ -167,7 +166,7 @@ export default function LandingPage() {
                   boxShadow: '0px 1px 5px rgba(0,0,0,0.12), 0px 2px 2px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.2)',
                 }}
               >
-                Start Assessment
+                Start Your Plan
                 <ArrowRight size={18} />
               </motion.button>
 
@@ -204,10 +203,10 @@ export default function LandingPage() {
             className="text-center mb-16"
           >
             <h2 style={{ fontSize: 28, fontWeight: 600, color: '#151515', lineHeight: '1.3' }} className="mb-3">
-              Why Take This Assessment?
+              Why Start With Goals?
             </h2>
             <p style={{ fontSize: 18, lineHeight: '28px', color: '#5c5c5c' }} className="max-w-2xl mx-auto">
-              Understanding your AI adoption style is the first step to a personalized, effective learning journey.
+              Clarifying your AI goals is the first step to a personalized, effective learning journey.
             </p>
           </motion.div>
 
@@ -325,10 +324,10 @@ export default function LandingPage() {
             viewport={{ once: true }}
           >
             <h2 style={{ fontSize: 28, fontWeight: 600, color: '#151515' }} className="mb-3">
-              Choose Your Assessment
+              Choose Your Starting Flow
             </h2>
-            <p style={{ fontSize: 18, lineHeight: '28px', color: '#5c5c5c' }} className="mb-12">
-              Select the assessment type that works best for you.
+              <p style={{ fontSize: 18, lineHeight: '28px', color: '#5c5c5c' }} className="mb-12">
+                Select how you’d like to kick off your AI adoption journey.
             </p>
           </motion.div>
 
@@ -336,7 +335,7 @@ export default function LandingPage() {
             {/* Quick Survey Option */}
             <motion.div
               whileHover={{ y: -4 }}
-              onClick={() => navigate('/survey')}
+              onClick={() => navigate('/onboarding')}
               className="bg-white rounded-xl p-8 cursor-pointer border-2 border-[#5236ab] relative"
               style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.12)' }}
             >
@@ -349,20 +348,20 @@ export default function LandingPage() {
                 </span>
               </div>
               <Brain size={36} className="mx-auto mb-4" style={{ color: '#5236ab' }} />
-              <h3 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-2">Adaptive Survey</h3>
+              <h3 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-2">Quick Goal Setup</h3>
               <p style={{ fontSize: 14, color: '#767676', lineHeight: '20px' }} className="mb-4">
-                18 carefully selected questions that adapt to reveal your archetype.
+                A focused set of questions to quickly define your AI goals and priority outcomes.
               </p>
               <div className="flex items-center justify-center gap-2" style={{ color: '#5c5c5c', fontSize: 14 }}>
                 <Clock size={14} />
-                <span>8-10 minutes</span>
+                <span>5-8 minutes</span>
               </div>
             </motion.div>
 
             {/* Full Survey Option */}
             <motion.div
               whileHover={{ y: -4 }}
-              onClick={() => navigate('/survey')}
+              onClick={() => navigate('/onboarding')}
               className="bg-white rounded-xl p-8 cursor-pointer border border-gray-200"
               style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.08)' }}
             >
@@ -375,13 +374,13 @@ export default function LandingPage() {
                 </span>
               </div>
               <TrendingUp size={36} className="mx-auto mb-4 mt-2" style={{ color: '#f59e0b' }} />
-              <h3 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-2">Full Survey</h3>
+              <h3 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-2">Deep Dive Planning</h3>
               <p style={{ fontSize: 14, color: '#767676', lineHeight: '20px' }} className="mb-4">
-                Comprehensive assessment for the most accurate archetype identification.
+                A more detailed planning flow to deeply align your AI goals with how you work today.
               </p>
               <div className="flex items-center justify-center gap-2" style={{ color: '#5c5c5c', fontSize: 14 }}>
                 <Clock size={14} />
-                <span>15-20 minutes</span>
+                <span>10-15 minutes</span>
               </div>
             </motion.div>
           </div>
@@ -390,7 +389,7 @@ export default function LandingPage() {
           <motion.button
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => navigate('/survey')}
+            onClick={() => navigate('/onboarding')}
             className="mt-12 inline-flex items-center gap-2 text-white px-10 py-4 rounded-lg font-semibold cursor-pointer"
             style={{
               backgroundColor: '#5236ab',
@@ -399,7 +398,7 @@ export default function LandingPage() {
               boxShadow: '0px 1px 5px rgba(0,0,0,0.12), 0px 2px 2px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.2)',
             }}
           >
-            Start Assessment
+            Start Your Plan
             <ArrowRight size={18} />
           </motion.button>
         </div>

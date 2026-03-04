@@ -188,24 +188,192 @@ export const surveyQuestions: SurveyQuestion[] = [
  */
 export const learningModules = [
   // ---- Completed Modules ----
-  { id: 'm1', title: 'Introduction to AI Assistants', category: 'Basics', duration: '15 min', difficulty: 'Beginner', completed: true, locked: false, progress: 100, rating: 4 },
-  { id: 'm2', title: 'Crafting Effective Prompts', category: 'Prompt Engineering', duration: '20 min', difficulty: 'Beginner', completed: true, locked: false, progress: 100, rating: 5 },
-  { id: 'm3', title: 'AI for Email & Communication', category: 'Communication', duration: '25 min', difficulty: 'Beginner', completed: true, locked: false, progress: 100, rating: 4 },
+  {
+    id: 'm1',
+    title: 'Introduction to AI Assistants',
+    category: 'Basics',
+    duration: '15 min',
+    difficulty: 'Beginner',
+    completed: true,
+    locked: false,
+    progress: 100,
+    rating: 4,
+    challenges: [
+      'Identify three tasks in your workday that could be supported by an AI assistant.',
+      'Run at least one of those tasks with an assistant and note the time saved.'
+    ]
+  },
+  {
+    id: 'm2',
+    title: 'Crafting Effective Prompts',
+    category: 'Prompt Engineering',
+    duration: '20 min',
+    difficulty: 'Beginner',
+    completed: true,
+    locked: false,
+    progress: 100,
+    rating: 5,
+    challenges: [
+      'Rewrite one prompt you used this week using the “role, task, context” pattern.',
+      'Test the improved prompt on a real work problem and compare outputs.'
+    ]
+  },
+  {
+    id: 'm3',
+    title: 'AI for Email & Communication',
+    category: 'Communication',
+    duration: '25 min',
+    difficulty: 'Beginner',
+    completed: true,
+    locked: false,
+    progress: 100,
+    rating: 4,
+    challenges: [
+      'Draft an important email with AI, then refine it with your own voice.',
+      'Create a reusable prompt you can use for future email drafts.'
+    ]
+  },
 
   // ---- Current Module (in progress) ----
-  { id: 'm4', title: 'Advanced Prompt Techniques', category: 'Prompt Engineering', duration: '30 min', difficulty: 'Intermediate', completed: false, locked: false, progress: 60, rating: 0 },
+  {
+    id: 'm4',
+    title: 'Advanced Prompt Techniques',
+    category: 'Prompt Engineering',
+    duration: '30 min',
+    difficulty: 'Intermediate',
+    completed: false,
+    locked: false,
+    progress: 60,
+    rating: 0,
+    challenges: [
+      'Design a prompt that chains at least two reasoning steps for a complex decision.',
+      'Create a prompt template you can share with a teammate.'
+    ]
+  },
 
   // ---- Upcoming Unlocked Modules ----
-  { id: 'm5', title: 'AI-Powered Data Analysis', category: 'Data & Analytics', duration: '35 min', difficulty: 'Intermediate', completed: false, locked: false, progress: 0, rating: 0 },
-  { id: 'm6', title: 'Workflow Automation with AI', category: 'Productivity', duration: '40 min', difficulty: 'Intermediate', completed: false, locked: false, progress: 0, rating: 0 },
+  {
+    id: 'm5',
+    title: 'AI-Powered Data Analysis',
+    category: 'Data & Analytics',
+    duration: '35 min',
+    difficulty: 'Intermediate',
+    completed: false,
+    locked: false,
+    progress: 0,
+    rating: 0,
+    challenges: [
+      'Use AI to summarize a real dataset you work with.',
+      'Generate three insights you can share with your team.'
+    ]
+  },
+  {
+    id: 'm6',
+    title: 'Workflow Automation with AI',
+    category: 'Productivity',
+    duration: '40 min',
+    difficulty: 'Intermediate',
+    completed: false,
+    locked: false,
+    progress: 0,
+    rating: 0,
+    challenges: [
+      'Map one recurring workflow and identify at least two steps to automate.',
+      'Prototype an automated version of that workflow using AI.'
+    ]
+  },
 
   // ---- Locked Modules (need prerequisites) ----
-  { id: 'm7', title: 'AI Ethics & Responsible Use', category: 'Fundamentals', duration: '20 min', difficulty: 'Beginner', completed: false, locked: true, progress: 0, rating: 0 },
-  { id: 'm8', title: 'Custom AI Solutions', category: 'Advanced', duration: '45 min', difficulty: 'Advanced', completed: false, locked: true, progress: 0, rating: 0 },
-  { id: 'm9', title: 'AI for Team Collaboration', category: 'Communication', duration: '30 min', difficulty: 'Intermediate', completed: false, locked: true, progress: 0, rating: 0 },
-  { id: 'm10', title: 'Building AI Workflows', category: 'Productivity', duration: '50 min', difficulty: 'Advanced', completed: false, locked: true, progress: 0, rating: 0 },
-  { id: 'm11', title: 'AI Strategy & Leadership', category: 'Leadership', duration: '35 min', difficulty: 'Advanced', completed: false, locked: true, progress: 0, rating: 0 },
-  { id: 'm12', title: 'AI Mastery Capstone', category: 'Capstone', duration: '60 min', difficulty: 'Expert', completed: false, locked: true, progress: 0, rating: 0 },
+  {
+    id: 'm7',
+    title: 'AI Ethics & Responsible Use',
+    category: 'Fundamentals',
+    duration: '20 min',
+    difficulty: 'Beginner',
+    completed: false,
+    locked: true,
+    progress: 0,
+    rating: 0,
+    challenges: [
+      'Review your current AI use cases against an ethics checklist.',
+      'Identify one risk area and propose a mitigation.'
+    ]
+  },
+  {
+    id: 'm8',
+    title: 'Custom AI Solutions',
+    category: 'Advanced',
+    duration: '45 min',
+    difficulty: 'Advanced',
+    completed: false,
+    locked: true,
+    progress: 0,
+    rating: 0,
+    challenges: [
+      'Draft a proposal for a custom AI solution in your domain.',
+      'Outline the data, tools, and stakeholders required.'
+    ]
+  },
+  {
+    id: 'm9',
+    title: 'AI for Team Collaboration',
+    category: 'Communication',
+    duration: '30 min',
+    difficulty: 'Intermediate',
+    completed: false,
+    locked: true,
+    progress: 0,
+    rating: 0,
+    challenges: [
+      'Design a prompt that helps your team run more effective meetings.',
+      'Share the prompt and collect feedback from at least one teammate.'
+    ]
+  },
+  {
+    id: 'm10',
+    title: 'Building AI Workflows',
+    category: 'Productivity',
+    duration: '50 min',
+    difficulty: 'Advanced',
+    completed: false,
+    locked: true,
+    progress: 0,
+    rating: 0,
+    challenges: [
+      'Sketch an end-to-end AI-enabled workflow for a business process.',
+      'Identify where human review should remain in the loop.'
+    ]
+  },
+  {
+    id: 'm11',
+    title: 'AI Strategy & Leadership',
+    category: 'Leadership',
+    duration: '35 min',
+    difficulty: 'Advanced',
+    completed: false,
+    locked: true,
+    progress: 0,
+    rating: 0,
+    challenges: [
+      'Define a simple AI vision statement for your team or organization.',
+      'List three measurable outcomes that would signal success.'
+    ]
+  },
+  {
+    id: 'm12',
+    title: 'AI Mastery Capstone',
+    category: 'Capstone',
+    duration: '60 min',
+    difficulty: 'Expert',
+    completed: false,
+    locked: true,
+    progress: 0,
+    rating: 0,
+    challenges: [
+      'Select a real business challenge and design an AI-backed solution.',
+      'Prepare a short presentation or demo to showcase your solution.'
+    ]
+  },
 ];
 
 export const quickWins = [

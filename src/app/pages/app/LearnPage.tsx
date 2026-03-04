@@ -18,7 +18,7 @@
  * which triggers React to re-render and show the new section.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   BookOpen, Zap, Library, Award, Play, Clock, Lock, Star,
@@ -27,17 +27,21 @@ import {
 } from 'lucide-react';
 import { learningModules, quickWins } from '../../data/archetypes';
 import { useUser } from '../../context/UserContext';
+import { useNavigate } from 'react-router';
+import LearnTour from '../../components/LearnTour';
 
 // Defining the types for our tabs (TypeScript helper)
 type SubTab = 'path' | 'quickwins' | 'resources' | 'assessments';
 
 export default function LearnPage() {
   const { progress, archetype } = useUser();
+  const navigate = useNavigate();
 
   // -- Local Page State --
   const [activeTab, setActiveTab] = useState<SubTab>('path'); // Starts on the "Path" tab
   const [searchQuery, setSearchQuery] = useState('');
   const [resourceFilter, setResourceFilter] = useState<'all' | 'guide' | 'video' | 'template'>('all');
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   // Tab definitions for the sub-navigation menu
   const tabs: { id: SubTab; label: string; icon: React.ReactNode }[] = [
@@ -76,16 +80,34 @@ export default function LearnPage() {
     template: <Copy size={18} />,
   };
 
+  // Auto-run the Learn tour once for newly onboarded users
+  useEffect(() => {
+    const seen = typeof window !== 'undefined' ? localStorage.getItem('learn_tour_seen_v1') : 'true';
+    if (!seen) {
+      setIsTourOpen(true);
+      localStorage.setItem('learn_tour_seen_v1', 'true');
+    }
+  }, []);
+
   return (
     <div style={{ fontFamily: 'var(--font-primary)' }}>
       {/* ============================================ */}
       {/* SECTION 1: HEADER                          */}
       {/* ============================================ */}
-      <div className="mb-6">
-        <h1 style={{ fontSize: 28, fontWeight: 600, color: 'var(--app-text-primary)' }}>Learn</h1>
-        <p style={{ fontSize: 16, color: 'var(--app-text-secondary)', lineHeight: '24px' }}>
-          Build your AI skills with personalized learning paths and resources.
-        </p>
+      <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <h1 style={{ fontSize: 28, fontWeight: 600, color: 'var(--app-text-primary)' }}>Learn</h1>
+          <p style={{ fontSize: 16, color: 'var(--app-text-secondary)', lineHeight: '24px' }}>
+            Build your AI skills with personalized modules, quick wins, resources, and skill assessments.
+          </p>
+        </div>
+        <button
+          onClick={() => setIsTourOpen(true)}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm font-medium"
+          style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)', backgroundColor: 'var(--app-surface)' }}
+        >
+          <BookOpen size={14} /> Show me around
+        </button>
       </div>
 
       {/* ============================================ */}
@@ -125,6 +147,30 @@ export default function LearnPage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
+            {/* Optional Archetype CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl p-5 mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+              style={{ backgroundColor: 'var(--app-surface)', border: '1px dashed var(--app-border-strong)' }}
+            >
+              <div>
+                <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-1">
+                  Discover Your Adoption Archetype
+                </h2>
+                <p style={{ fontSize: 14, color: 'var(--app-text-secondary)', lineHeight: '20px' }}>
+                  Take a short behavioral assessment to understand your AI adoption style. Use it as an optional lens on your learning journey.
+                </p>
+              </div>
+              <button
+                onClick={() => navigate('/survey')}
+                className="px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer whitespace-nowrap"
+                style={{ backgroundColor: '#5236ab', color: 'white' }}
+              >
+                Take Archetype Assessment
+              </button>
+            </motion.div>
+
             {/* 1. The Active/Current Module */}
             {current && (
               <div className="mb-8">
@@ -401,7 +447,14 @@ export default function LearnPage() {
 
             {/* Grid of Resource Cards */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {resources.filter(r => resourceFilter === 'all' || r.type === resourceFilter).map((resource, i) => (
+              {resources
+                .filter(r => resourceFilter === 'all' || r.type === resourceFilter)
+                .filter(r =>
+                  !searchQuery.trim()
+                    ? true
+                    : (r.title + r.desc).toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map((resource, i) => (
                 <motion.div
                   key={resource.id}
                   initial={{ opacity: 0, y: 10 }}
@@ -517,6 +570,12 @@ export default function LearnPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <LearnTour
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+        onStepTabChange={(tab) => setActiveTab(tab as SubTab)}
+      />
     </div>
   );
 }
