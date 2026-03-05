@@ -125,11 +125,23 @@ export default function ChallengeWorkspacePage() {
 
       {/* Step 1: Read instructions */}
       {step === 1 && (
-        <motion.div key="step1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-xl p-6 mb-8" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}>
+        <motion.div
+          key="step1"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="rounded-xl p-6 mb-8"
+          style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}
+          data-tour-id="workspace-step-1"
+        >
           <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--app-text-primary)', marginBottom: 12 }}>Step 1: Read instructions</h2>
           <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)', marginBottom: 8 }}>{challenge.title}</h3>
           <p style={{ fontSize: 15, lineHeight: '24px', color: 'var(--app-text-secondary)', whiteSpace: 'pre-wrap' }}>{instructions}</p>
-          <button onClick={() => setStep(2)} className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>
+          <button
+            onClick={() => setStep(2)}
+            className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold cursor-pointer"
+            style={{ backgroundColor: '#5236ab', color: 'white' }}
+            data-tour-id="workspace-step-1-next"
+          >
             Next: Access AI tools <ChevronRight size={18} />
           </button>
         </motion.div>
@@ -137,7 +149,14 @@ export default function ChallengeWorkspacePage() {
 
       {/* Step 2: Access AI tools */}
       {step === 2 && (
-        <motion.div key="step2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-xl p-6 mb-8" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}>
+        <motion.div
+          key="step2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="rounded-xl p-6 mb-8"
+          style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}
+          data-tour-id="workspace-step-2"
+        >
           <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--app-text-primary)', marginBottom: 12 }}>Step 2: Access AI tools</h2>
           <p style={{ fontSize: 15, color: 'var(--app-text-secondary)', marginBottom: 16 }}>Use AI tools to complete this challenge. Open one or more of these:</p>
           <div className="flex flex-wrap gap-3 mb-6">
@@ -145,7 +164,12 @@ export default function ChallengeWorkspacePage() {
             <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer" style={{ borderColor: '#5236ab', color: '#5236ab' }}>Claude <ExternalLink size={14} /></a>
             <a href="https://copilot.microsoft.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer" style={{ borderColor: '#5236ab', color: '#5236ab' }}>Copilot <ExternalLink size={14} /></a>
           </div>
-          <button onClick={() => setStep(3)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>
+          <button
+            onClick={() => setStep(3)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold cursor-pointer"
+            style={{ backgroundColor: '#5236ab', color: 'white' }}
+            data-tour-id="workspace-step-2-next"
+          >
             Next: Work on challenge <ChevronRight size={18} />
           </button>
         </motion.div>
@@ -153,7 +177,14 @@ export default function ChallengeWorkspacePage() {
 
       {/* Step 3: Work on challenge */}
       {step === 3 && (
-        <motion.div key="step3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-xl p-6 mb-8" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}>
+        <motion.div
+          key="step3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="rounded-xl p-6 mb-8"
+          style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}
+          data-tour-id="workspace-step-3"
+        >
           <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--app-text-primary)', marginBottom: 12 }}>Step 3: Work on challenge</h2>
           <p style={{ fontSize: 15, color: 'var(--app-text-secondary)', marginBottom: 16 }}>Use this space for notes, pasted outputs, or links to your work.</p>
           <textarea
@@ -172,7 +203,12 @@ export default function ChallengeWorkspacePage() {
       <div className="rounded-xl p-5 border" style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}>
         <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-muted)', marginBottom: 12 }}>Challenge status?</h3>
         <div className="flex flex-wrap gap-3">
-          <button onClick={() => navigate(`/app/learn/challenges/${challengeId}/submit`)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold cursor-pointer" style={{ backgroundColor: '#1ab977', color: 'white' }}>
+          <button
+            onClick={() => navigate(`/app/learn/challenges/${challengeId}/submit`)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold cursor-pointer"
+            style={{ backgroundColor: '#1ab977', color: 'white' }}
+            data-tour-id="workspace-complete-submit"
+          >
             <CheckCircle size={18} /> Completed — Submit
           </button>
           <button onClick={() => { saveDraft(); navigate(`/app/learn/challenges/${challengeId}`); }} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border cursor-pointer font-semibold" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)' }}>

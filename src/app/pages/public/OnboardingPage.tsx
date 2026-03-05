@@ -92,6 +92,15 @@ export default function OnboardingPage() {
   // -- Action: Finish Onboarding --
   // Sends them into the Learn hub to start their journey
   const handleLaunch = () => {
+    try {
+      // Mark that the user just completed onboarding so we can
+      // trigger the post-onboarding challenge walkthrough once.
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('post_onboarding_challenge_tour', 'true');
+      }
+    } catch {
+      // Ignore storage errors in demo mode
+    }
     navigate('/app/learn');
   };
 

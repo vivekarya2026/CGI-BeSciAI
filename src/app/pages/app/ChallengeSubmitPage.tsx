@@ -8,6 +8,7 @@ import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft, Upload, Code, Link2, Image, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { getChallengeById } from '../../data/learnData';
 import { useUser } from '../../context/UserContext';
+import { useChallengeTour } from '../../context/ChallengeTourContext';
 
 const REFLECTION_QUESTIONS = [
   'What was the hardest part?',
@@ -20,6 +21,8 @@ export default function ChallengeSubmitPage() {
   const { challengeId } = useParams<{ challengeId: string }>();
   const navigate = useNavigate();
   const { addXp } = useUser();
+  const { showChallengeTour, currentStepId } = useChallengeTour();
+  const demoSubmitEnabled = showChallengeTour && currentStepId === 'submit-button';
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [pastedCode, setPastedCode] = useState('');
   const [workLink, setWorkLink] = useState('');
@@ -78,23 +81,39 @@ export default function ChallengeSubmitPage() {
 
       {/* 5 submission methods */}
       <div className="space-y-6 mb-8">
-        <div className="rounded-xl p-5 border" style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}>
+        <div
+          className="rounded-xl p-5 border"
+          style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}
+          data-tour-id="submit-upload"
+        >
           <h3 className="flex items-center gap-2 mb-3" style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }}><Upload size={18} /> Upload files</h3>
           <input type="file" multiple onChange={handleFileChange} className="block w-full text-sm" style={{ color: 'var(--app-text-secondary)' }} />
           {uploadedFiles.length > 0 && <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 8 }}>{uploadedFiles.length} file(s) selected</p>}
         </div>
 
-        <div className="rounded-xl p-5 border" style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}>
+        <div
+          className="rounded-xl p-5 border"
+          style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}
+          data-tour-id="submit-paste-code"
+        >
           <h3 className="flex items-center gap-2 mb-3" style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }}><Code size={18} /> Paste code</h3>
           <textarea value={pastedCode} onChange={e => setPastedCode(e.target.value)} placeholder="Paste code or snippets here..." rows={5} className="w-full rounded-lg p-3 outline-none font-mono text-sm" style={{ border: '1px solid var(--app-border-strong)', backgroundColor: 'var(--app-bg)', color: 'var(--app-text-primary)' }} />
         </div>
 
-        <div className="rounded-xl p-5 border" style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}>
+        <div
+          className="rounded-xl p-5 border"
+          style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}
+          data-tour-id="submit-link-work"
+        >
           <h3 className="flex items-center gap-2 mb-3" style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }}><Link2 size={18} /> Link work</h3>
           <input type="url" value={workLink} onChange={e => setWorkLink(e.target.value)} placeholder="https://..." className="w-full rounded-lg p-3 outline-none" style={{ border: '1px solid var(--app-border-strong)', backgroundColor: 'var(--app-bg)', color: 'var(--app-text-primary)' }} />
         </div>
 
-        <div className="rounded-xl p-5 border" style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}>
+        <div
+          className="rounded-xl p-5 border"
+          style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}
+          data-tour-id="submit-screenshot"
+        >
           <h3 className="flex items-center gap-2 mb-3" style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }}><Image size={18} /> Screenshot</h3>
           <div onPaste={handleScreenshotPaste} className="rounded-lg border-2 border-dashed p-6 text-center" style={{ borderColor: 'var(--app-border-strong)', backgroundColor: 'var(--app-bg)' }}>
             {screenshot ? <img src={screenshot} alt="Screenshot" className="max-h-48 mx-auto rounded" /> : <p style={{ fontSize: 14, color: 'var(--app-text-hint)' }}>Paste an image (Ctrl+V) or drag and drop</p>}
@@ -102,14 +121,22 @@ export default function ChallengeSubmitPage() {
           </div>
         </div>
 
-        <div className="rounded-xl p-5 border" style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}>
+        <div
+          className="rounded-xl p-5 border"
+          style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}
+          data-tour-id="submit-reflection-notes"
+        >
           <h3 className="flex items-center gap-2 mb-3" style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }}><FileText size={18} /> Reflection notes</h3>
           <textarea value={reflectionNotes} onChange={e => setReflectionNotes(e.target.value)} placeholder="Add any context or notes about your submission..." rows={3} className="w-full rounded-lg p-3 outline-none" style={{ border: '1px solid var(--app-border-strong)', backgroundColor: 'var(--app-bg)', color: 'var(--app-text-primary)' }} />
         </div>
       </div>
 
       {/* Add reflection — 4 questions (optional) */}
-      <div className="rounded-xl p-5 mb-8 border" style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}>
+      <div
+        className="rounded-xl p-5 mb-8 border"
+        style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}
+        data-tour-id="submit-reflection-questions"
+      >
         <button onClick={() => setShowReflection(!showReflection)} className="flex items-center justify-between w-full text-left cursor-pointer">
           <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }}>Add reflection (optional)</span>
           {showReflection ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -127,7 +154,11 @@ export default function ChallengeSubmitPage() {
       </div>
 
       {/* Quality check */}
-      <div className="rounded-xl p-5 mb-8 border" style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}>
+      <div
+        className="rounded-xl p-5 mb-8 border"
+        style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}
+        data-tour-id="submit-review"
+      >
         <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)', marginBottom: 12 }}>Review your submission</h3>
         <ul className="list-disc list-inside text-sm space-y-1 mb-4" style={{ color: 'var(--app-text-secondary)' }}>
           {uploadedFiles.length > 0 && <li>{uploadedFiles.length} file(s) attached</li>}
@@ -143,7 +174,13 @@ export default function ChallengeSubmitPage() {
         </div>
       </div>
 
-      <button onClick={handleSubmit} disabled={!hasAnySubmission || reviewPassed !== true || submitting} className="w-full py-4 rounded-xl font-bold text-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" style={{ backgroundColor: '#5236ab', color: 'white' }}>
+      <button
+        onClick={handleSubmit}
+        disabled={(!hasAnySubmission || reviewPassed !== true || submitting) && !demoSubmitEnabled}
+        className="w-full py-4 rounded-xl font-bold text-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{ backgroundColor: '#5236ab', color: 'white' }}
+        data-tour-id="submit-button"
+      >
         {submitting ? 'Submitting...' : 'Submit Challenge'}
       </button>
     </div>

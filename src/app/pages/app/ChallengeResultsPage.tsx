@@ -53,7 +53,12 @@ export default function ChallengeResultsPage() {
 
   return (
     <div style={{ fontFamily: 'var(--font-primary)', maxWidth: 600, margin: '0 auto' }}>
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        data-tour-id="results-hero"
+      >
         <h1 style={{ fontSize: 26, fontWeight: 700, color: 'var(--app-text-primary)', marginBottom: 8 }}>Great work!</h1>
         <p style={{ fontSize: 16, color: 'var(--app-text-secondary)', marginBottom: 24 }}>You completed {challenge.title}</p>
 
@@ -106,7 +111,13 @@ export default function ChallengeResultsPage() {
               <div style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>Copy link or share</div>
             </div>
           </motion.button>
-          <motion.button whileHover={{ y: -2 }} onClick={() => navigate('/app/learn', { state: { tab: 'challenges' } })} className="rounded-xl p-5 text-left cursor-pointer flex items-center gap-4 border" style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}>
+          <motion.button
+            whileHover={{ y: -2 }}
+            onClick={() => navigate('/app/learn', { state: { tab: 'challenges' } })}
+            className="rounded-xl p-5 text-left cursor-pointer flex items-center gap-4 border"
+            style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border)' }}
+            data-tour-id="results-start-next"
+          >
             <Target size={24} style={{ color: '#5236ab' }} />
             <div>
               <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>Start Next Challenge</div>

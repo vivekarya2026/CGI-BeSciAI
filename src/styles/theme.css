@@ -217,3 +217,15 @@
     line-height: 1.5;
   }
 }
+
+/* Challenge walkthrough: highlight target with ring only so button colors stay unchanged */
+.challenge-tour-spotlight-target {
+  border: 2px solid var(--app-brand) !important;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(82, 54, 171, 0.15), 0 2px 8px rgba(82, 54, 171, 0.12);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+/* Light purple tint only for non-button targets (cards, sections, tabs) */
+.challenge-tour-spotlight-target:not(button):not([role="button"]) {
+  background-color: rgba(82, 54, 171, 0.08) !important;
+}

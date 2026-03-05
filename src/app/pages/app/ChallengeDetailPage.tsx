@@ -137,6 +137,7 @@ export default function ChallengeDetailPage() {
           onClick={() => navigate(`/app/learn/challenges/${challenge.id}/workspace`)}
           className="rounded-xl p-5 text-left cursor-pointer flex items-center gap-4"
           style={{ backgroundColor: '#5236ab', color: 'white', border: 'none', boxShadow: '0 4px 14px rgba(82,54,171,0.35)' }}
+          data-tour-id="challenge-detail-start"
         >
           <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center"><Play size={24} /></div>
           <div>
