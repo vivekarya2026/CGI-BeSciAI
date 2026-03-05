@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ArrowRight, BookOpen, MousePointer2 } from 'lucide-react';
+import { X, ArrowRight, BookOpen, MousePointer2, Sparkles } from 'lucide-react';
 import { useChallengeTour } from '../context/ChallengeTourContext';
 
 type TourStepId =
@@ -286,6 +286,7 @@ export default function ChallengeGuidedTour() {
   const { showChallengeTour, startChallengeTour, closeChallengeTour, setCurrentStepId } = useChallengeTour();
   const [stepIndex, setStepIndex] = useState(0);
   const [spotlight, setSpotlight] = useState<SpotlightState>({ rect: null, element: null });
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const active = showChallengeTour;
   const prevShowRef = useRef(showChallengeTour);
   const highlightedElementRef = useRef<HTMLElement | null>(null);
@@ -331,16 +332,16 @@ export default function ChallengeGuidedTour() {
     prevShowRef.current = showChallengeTour;
   }, [showChallengeTour]);
 
-  // Post-onboarding: auto-start once when user lands on Learn
+  // Post-onboarding: show welcome modal first; do not start tour until user clicks Next
   useEffect(() => {
     if (typeof window === 'undefined' || !location.pathname.startsWith('/app/learn')) return;
     const done = window.localStorage.getItem(POST_ONBOARDING_DONE) === 'true';
     const trigger = window.localStorage.getItem(POST_ONBOARDING_FLAG) === 'true';
     if (!done && trigger) {
-      startChallengeTour();
+      setShowWelcomeModal(true);
       window.localStorage.removeItem(POST_ONBOARDING_FLAG);
     }
-  }, [location.pathname, startChallengeTour]);
+  }, [location.pathname]);
 
   const currentStep: TourStep | null = useMemo(() => {
     if (!active) return null;
@@ -424,6 +425,18 @@ export default function ChallengeGuidedTour() {
     closeChallengeTour();
   };
 
+  const handleWelcomeNext = () => {
+    setShowWelcomeModal(false);
+    startChallengeTour();
+  };
+
+  const handleWelcomeSkip = () => {
+    setShowWelcomeModal(false);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(POST_ONBOARDING_DONE, 'true');
+    }
+  };
+
   const handleBackgroundClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
     if (!currentStep || !spotlight.rect || !spotlight.element) return;
@@ -448,6 +461,85 @@ export default function ChallengeGuidedTour() {
       goToNextStep();
     }
   };
+
+  // Welcome modal (post-onboarding): show before starting the tour
+  if (showWelcomeModal) {
+    return (
+      <AnimatePresence>
+        <motion.div
+          className="fixed inset-0 z-[140] flex items-center justify-center p-4"
+          style={{ fontFamily: 'var(--font-primary)' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
+        >
+          <div
+            className="absolute inset-0 bg-black/50"
+            aria-hidden
+            onClick={handleWelcomeSkip}
+          />
+          <motion.div
+            className="relative rounded-2xl overflow-hidden w-full max-w-[420px] pointer-events-auto"
+            style={{
+              backgroundColor: 'rgb(255, 255, 255)',
+              boxShadow: '0 24px 64px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.15)',
+            }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className="h-1.5 w-full"
+              style={{ background: 'linear-gradient(90deg, rgb(82, 54, 171), rgb(168, 36, 101), rgb(227, 25, 55))' }}
+            />
+            <div className="p-5 sm:p-7">
+              <div className="flex items-start gap-3 mb-4">
+                <div
+                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shrink-0"
+                  style={{
+                    background: 'linear-gradient(135deg, rgb(242, 241, 249), rgb(230, 227, 243))',
+                    color: 'rgb(82, 54, 171)',
+                  }}
+                >
+                  <Sparkles size={28} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-xl sm:text-[22px] font-bold leading-tight" style={{ color: 'rgb(21, 21, 21)' }}>
+                    Welcome to BeSciAI!
+                  </h2>
+                </div>
+              </div>
+              <p className="text-sm sm:text-[15px] leading-relaxed mb-5 sm:mb-6" style={{ color: 'rgb(92, 92, 92)' }}>
+                Ready to master AI? Let&apos;s take a quick interactive tour to show you how to earn points and level up your skills.
+              </p>
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={handleWelcomeSkip}
+                  className="px-4 py-2.5 rounded-lg cursor-pointer transition-colors hover:bg-gray-50 text-sm font-semibold"
+                  style={{ color: 'rgb(118, 118, 118)' }}
+                >
+                  Skip Tour
+                </button>
+                <button
+                  type="button"
+                  onClick={handleWelcomeNext}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer hover:opacity-90 transition-opacity"
+                  style={{ backgroundColor: '#5236ab' }}
+                >
+                  Start the Tour
+                  <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
 
   if (!active || !currentStep) return null;
 
