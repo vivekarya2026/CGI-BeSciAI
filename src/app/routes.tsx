@@ -43,6 +43,15 @@ import LearnPage from "./pages/app/LearnPage";
 import CommunityPage from "./pages/app/CommunityPage";
 import ProfilePage from "./pages/app/ProfilePage";
 import MessagesPage from "./pages/app/MessagesPage";
+import ChallengeDetailPage from "./pages/app/ChallengeDetailPage";
+import ChallengeWorkspacePage from "./pages/app/ChallengeWorkspacePage";
+import ChallengeSubmitPage from "./pages/app/ChallengeSubmitPage";
+import ChallengeResultsPage from "./pages/app/ChallengeResultsPage";
+import TrainingDetailPage from "./pages/app/TrainingDetailPage";
+import TrainingStartPage from "./pages/app/TrainingStartPage";
+import MicroLearningViewerPage from "./pages/app/MicroLearningViewerPage";
+import PromptDetailPage from "./pages/app/PromptDetailPage";
+import ResourceDetailPage from "./pages/app/ResourceDetailPage";
 
 /* ---- Error/Fallback Pages ---- */
 import NotFoundPage from "./pages/NotFoundPage";
@@ -92,6 +101,42 @@ export const router = createBrowserRouter([
           {
             path: "learn",              // "/app/learn"
             element: <LearnPage />,
+          },
+          {
+            path: "learn/challenges/:challengeId",                    // "/app/learn/challenges/:id"
+            element: <ChallengeDetailPage />,
+          },
+          {
+            path: "learn/challenges/:challengeId/workspace",           // "/app/learn/challenges/:id/workspace"
+            element: <ChallengeWorkspacePage />,
+          },
+          {
+            path: "learn/challenges/:challengeId/submit",             // "/app/learn/challenges/:id/submit"
+            element: <ChallengeSubmitPage />,
+          },
+          {
+            path: "learn/challenges/:challengeId/results",             // "/app/learn/challenges/:id/results"
+            element: <ChallengeResultsPage />,
+          },
+          {
+            path: "learn/trainings/:trainingId",
+            element: <TrainingDetailPage />,
+          },
+          {
+            path: "learn/trainings/:trainingId/start",
+            element: <TrainingStartPage />,
+          },
+          {
+            path: "learn/micro/:microId",
+            element: <MicroLearningViewerPage />,
+          },
+          {
+            path: "learn/prompts/:promptId",
+            element: <PromptDetailPage />,
+          },
+          {
+            path: "learn/resources/:resourceId",
+            element: <ResourceDetailPage />,
           },
           {
             path: "community",          // "/app/community"
