@@ -11,14 +11,10 @@ interface LearnTourProps {
 }
 
 const steps: { id: number; title: string; body: string; tab?: LearnTabId; targetId?: string }[] = [
-  { id: 1, title: 'Welcome to your Learn hub', body: 'Build your AI skills with personalized paths, challenges, and resources. Use the tabs to switch between My Learning Path, Challenges, Trainings, Micro-Learnings, Office Hours, Prompt Library, and Resources.' },
-  { id: 2, title: 'My Learning Path', body: 'Your personalized journey from AI basics to mastery. See progress, continue your current module, review completed work, and get AI recommendations.', tab: 'path', targetId: 'tour-target-path' },
-  { id: 3, title: 'Challenges', body: 'Weekly, track, and assigned challenges. Filter by type and difficulty, then view details, start, or save for later.', tab: 'challenges', targetId: 'tour-target-challenges' },
-  { id: 4, title: 'Trainings', body: 'Structured courses with certificates. Start a training, preview content, or save for later. Complete to earn points and badges.', tab: 'trainings', targetId: 'tour-target-trainings' },
-  { id: 5, title: 'Micro-Learnings', body: 'Bite-sized content (~10 min) with quick points. Filter by topic and tool, mark complete, or apply in a challenge.', tab: 'micro', targetId: 'tour-target-micro' },
-  { id: 6, title: 'Office Hours', body: 'Join live sessions, watch recordings, browse Q&A, or book 1:1 coaching. See upcoming sessions and register.', tab: 'officehours', targetId: 'tour-target-officehours' },
-  { id: 7, title: 'Prompt Library', body: 'Search and browse prompts by category. Copy, customize, bookmark, or apply in a challenge. Contribute your own prompts.', tab: 'prompts', targetId: 'tour-target-prompts' },
-  { id: 8, title: 'Resources', body: 'Guides, videos, templates, tools, podcasts, and articles. Search and filter by type, then read, watch, or copy.', tab: 'resources', targetId: 'tour-target-resources' },
+  { id: 1, title: 'Challenges Overview', body: 'Welcome to the Challenges page! Here you can find various challenges to put your AI skills to the test.', tab: 'challenges', targetId: 'tour-target-challenges' },
+  { id: 2, title: 'Find a Challenge', body: 'Looking for something specific? Use this search bar to quickly find challenges by name or keyword.', tab: 'challenges', targetId: 'tour-target-challenges-search' },
+  { id: 3, title: 'Filter by Type', body: 'Narrow down the list by selecting a specific challenge type: Weekly, Track, or Assigned.', tab: 'challenges', targetId: 'tour-target-challenges-filter' },
+  { id: 4, title: 'Challenge Cards', body: 'Each card provides key details like difficulty, required time, points you can earn, and how many peers are participating. Click one to start learning!', tab: 'challenges', targetId: 'tour-target-challenges-card-0' },
 ];
 
 export default function LearnTour({ isOpen, onClose, onStepTabChange }: LearnTourProps) {

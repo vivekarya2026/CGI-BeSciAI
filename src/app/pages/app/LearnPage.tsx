@@ -346,7 +346,7 @@ export default function LearnPage() {
                       <div className="flex items-center justify-between">
                         <span style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>{mod.duration}</span>
                         <div className="flex items-center gap-0.5">
-                          {[1,2,3,4,5].map(s => <span key={s} style={{ color: '#f59e0b', fontSize: 12 }}>★</span>)}
+                          {[1, 2, 3, 4, 5].map(s => <span key={s} style={{ color: '#f59e0b', fontSize: 12 }}>★</span>)}
                         </div>
                       </div>
                     </motion.div>
@@ -390,11 +390,11 @@ export default function LearnPage() {
         {activeTab === 'challenges' && (
           <motion.div key="challenges" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
             <div className="flex flex-col sm:flex-row gap-3 mb-6">
-              <div className="relative flex-1">
+              <div className="relative flex-1" id="tour-target-challenges-search">
                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--app-text-hint)' }} />
                 <input type="text" placeholder="Search challenges..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-3 rounded-lg outline-none" style={{ fontSize: 16, backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border-strong)', color: 'var(--app-text-primary)' }} />
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2" id="tour-target-challenges-filter">
                 <label className="text-sm font-medium" style={{ color: 'var(--app-text-muted)', whiteSpace: 'nowrap' }}>Filter by type</label>
                 <select value={challengeFilter} onChange={(e) => setChallengeFilter(e.target.value as 'all' | ChallengeType)} className="cursor-pointer rounded-lg border pl-3 pr-8 py-2.5 text-sm font-medium outline-none appearance-none bg-no-repeat bg-right" style={{ backgroundColor: 'var(--app-surface)', borderColor: 'var(--app-border-strong)', color: 'var(--app-text-primary)', minWidth: 140, backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'16\' height=\'16\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b7280\' stroke-width=\'2\'%3E%3Cpath d=\'M6 9l6 6 6-6\'/%3E%3C/svg%3E")', backgroundPosition: 'right 8px center' }}>
                   <option value="all">All</option>
@@ -406,7 +406,7 @@ export default function LearnPage() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredChallenges.map((c, i) => (
-                <motion.div key={c.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} whileHover={{ y: -3 }} className="rounded-xl p-5 cursor-pointer" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+                <motion.div key={c.id} id={i === 0 ? "tour-target-challenges-card-0" : undefined} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} whileHover={{ y: -3 }} className="rounded-xl p-5 cursor-pointer" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex gap-1.5 flex-wrap">
                       <span className="px-2 py-0.5 rounded text-xs font-semibold" style={{ backgroundColor: '#f2f1f9', color: '#5236ab' }}>{c.type}</span>
