@@ -30,6 +30,8 @@ import { Outlet } from 'react-router';
 import { Sidebar } from '../components/Sidebar';
 import { ByteBot } from '../components/ByteBot';
 import { Menu } from 'lucide-react';
+import ChallengeGuidedTour from '../components/ChallengeGuidedTour';
+import { ChallengeTourProvider } from '../context/ChallengeTourContext';
 
 export default function AppLayout() {
   // ---- State ----
@@ -37,6 +39,7 @@ export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);   // Mobile: is drawer open?
 
   return (
+    <ChallengeTourProvider>
     <div className="min-h-screen transition-colors duration-300" style={{ backgroundColor: 'var(--app-bg)', fontFamily: "var(--font-primary)" }}>
 
       {/* ============================================ */}
@@ -103,6 +106,10 @@ export default function AppLayout() {
       {/* Floating action button in the bottom-right  */}
       {/* ============================================ */}
       <ByteBot />
+
+      {/* Challenge walkthrough — start from "Show me around", skip anytime */}
+      <ChallengeGuidedTour />
     </div>
+    </ChallengeTourProvider>
   );
 }

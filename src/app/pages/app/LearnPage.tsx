@@ -37,7 +37,7 @@ import {
 } from '../../data/learnData';
 import { useUser } from '../../context/UserContext';
 import { useNavigate, useLocation } from 'react-router';
-import LearnTour from '../../components/LearnTour';
+import { useChallengeTour } from '../../context/ChallengeTourContext';
 
 export type LearnSubTab = 'path' | 'challenges' | 'trainings' | 'micro' | 'officehours' | 'prompts' | 'resources';
 
@@ -61,7 +61,6 @@ export default function LearnPage() {
   const [challengeFilter, setChallengeFilter] = useState<'all' | ChallengeType>('all');
   const [promptCategory, setPromptCategory] = useState<string>('all');
   const [officeSubTab, setOfficeSubTab] = useState<'live' | 'recordings' | 'qa' | 'coaching'>('live');
-  const [isTourOpen, setIsTourOpen] = useState(false);
   const [trainingFormatFilter, setTrainingFormatFilter] = useState<'all' | TrainingFormat>('all');
   const [trainingDifficultyFilter, setTrainingDifficultyFilter] = useState<string>('all');
   const [microSearch, setMicroSearch] = useState('');
@@ -89,9 +88,12 @@ export default function LearnPage() {
     { id: 'resources', label: 'Resources', icon: <Library size={16} /> },
   ];
 
+  const { startChallengeTour } = useChallengeTour();
   const completed = learningModules.filter(m => m.completed);
   const current = learningModules.find(m => !m.completed && !m.locked);
   const upcoming = learningModules.filter(m => !m.completed && m.id !== current?.id);
+  const dayIndex = Math.floor(Date.now() / 86400000);
+  const todayMicro = microLearnings[dayIndex % microLearnings.length];
 
   const journeyPct = progress.totalModules ? Math.round((progress.modulesCompleted / progress.totalModules) * 100) : 0;
   const completedMicroIds = getCompletedMicroIds();
@@ -126,14 +128,6 @@ export default function LearnPage() {
     podcast: <Headphones size={18} />,
     article: <FileText size={18} />,
   };
-
-  useEffect(() => {
-    const seen = typeof window !== 'undefined' ? localStorage.getItem('learn_tour_seen_v2') : 'true';
-    if (!seen) {
-      setIsTourOpen(true);
-      localStorage.setItem('learn_tour_seen_v2', 'true');
-    }
-  }, []);
 
   useEffect(() => {
     const state = location.state as { tab?: LearnSubTab } | null;
@@ -176,7 +170,7 @@ export default function LearnPage() {
             <Zap size={16} style={{ color: '#f59e0b' }} /> {progress.streak} Streak
           </span>
           <button
-            onClick={() => setIsTourOpen(true)}
+            onClick={startChallengeTour}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm font-medium"
             style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)', backgroundColor: 'var(--app-surface)' }}
           >
@@ -185,45 +179,92 @@ export default function LearnPage() {
         </div>
       </div>
 
-      {/* Continue where you left off — card design (white, purple border, progress bar) */}
-      {current && (
+      {/* Two cards: Today's Micro Learning (left) + Continue Learning / Start challenge (right) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6">
+        {/* Left card — Today's Micro Learning */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          onClick={() => setActiveTab('challenges')}
-          className="rounded-xl flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 mb-6 cursor-pointer"
+          transition={{ duration: 0.2 }}
+          className="rounded-xl flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-4 p-5 sm:p-6 cursor-pointer min-w-0"
           style={{ backgroundColor: '#ffffff', border: '1px solid #5236ab', boxShadow: '0 1px 3px rgba(82,54,171,0.08)' }}
+          onClick={() => setActiveTab('micro')}
         >
           <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(82,54,171,0.12)' }}>
-            <Play size={32} strokeWidth={2} style={{ color: '#5236ab' }} />
+            <Zap size={28} strokeWidth={2} style={{ color: '#5236ab' }} />
           </div>
           <div className="flex-1 min-w-0 flex flex-col justify-center">
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-              <span className="px-2.5 py-1 rounded-md text-xs font-semibold" style={{ backgroundColor: '#fef3c7', color: '#1c1917' }}>{current.difficulty}</span>
-              <span style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>{current.category}</span>
+              <span className="px-2.5 py-1 rounded-md text-xs font-semibold" style={{ backgroundColor: '#e0e7ff', color: '#3730a3' }}>Today</span>
+              <span style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>{todayMicro.topic}</span>
             </div>
-            <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginBottom: 4 }}>Continue where you left off</p>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--app-text-primary)', marginBottom: 8 }}>{current.title}</h2>
-            <p className="flex items-center gap-1.5 text-sm" style={{ color: 'var(--app-text-muted)', marginBottom: 10 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--app-text-primary)', marginBottom: 6 }}>Today&apos;s Micro Learning</h2>
+            <p style={{ fontSize: 15, fontWeight: 500, color: 'var(--app-text-primary)', marginBottom: 4 }}>{todayMicro.title}</p>
+            <p className="flex items-center gap-1.5 text-sm" style={{ color: 'var(--app-text-muted)' }}>
               <Clock size={14} style={{ flexShrink: 0 }} />
-              <span>{current.duration}</span>
+              <span>{todayMicro.duration}</span>
               <span style={{ opacity: 0.6 }}>·</span>
-              <span>Step {JOURNEY_STAGES.findIndex(s => s.current) + 1 || 4} of journey</span>
+              <span>{todayMicro.points} pts</span>
             </p>
-            <div className="h-2 rounded-full overflow-hidden w-full max-w-xs" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
-              <motion.div className="h-full rounded-full" style={{ backgroundColor: '#5236ab' }} initial={{ width: 0 }} animate={{ width: `${(current as any).progress ?? 60}%` }} transition={{ duration: 0.8 }} />
-            </div>
+          </div>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setActiveTab('micro'); }}
+            className="px-5 py-2.5 rounded-lg text-white font-semibold shrink-0 cursor-pointer self-center sm:self-auto text-sm"
+            style={{ backgroundColor: '#5236ab' }}
+          >
+            Do this micro
+          </button>
+        </motion.div>
+
+        {/* Right card — Continue Learning (course progress) or Start a challenge */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, delay: 0.05 }}
+          className="rounded-xl flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-4 p-5 sm:p-6 cursor-pointer min-w-0"
+          style={{ backgroundColor: '#ffffff', border: '1px solid #5236ab', boxShadow: '0 1px 3px rgba(82,54,171,0.08)' }}
+          onClick={() => setActiveTab('challenges')}
+        >
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(82,54,171,0.12)' }}>
+            <Play size={28} strokeWidth={2} style={{ color: '#5236ab' }} />
+          </div>
+          <div className="flex-1 min-w-0 flex flex-col justify-center">
+            {current ? (
+              <>
+                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                  <span className="px-2.5 py-1 rounded-md text-xs font-semibold" style={{ backgroundColor: '#fef3c7', color: '#1c1917' }}>{current.difficulty}</span>
+                  <span style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>{current.category}</span>
+                </div>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--app-text-primary)', marginBottom: 6 }}>Continue Learning</h2>
+                <p style={{ fontSize: 15, fontWeight: 500, color: 'var(--app-text-primary)', marginBottom: 4 }}>{current.title}</p>
+                <p className="flex items-center gap-1.5 text-sm" style={{ color: 'var(--app-text-muted)', marginBottom: 8 }}>
+                  <Clock size={14} style={{ flexShrink: 0 }} />
+                  <span>{current.duration}</span>
+                  <span style={{ opacity: 0.6 }}>·</span>
+                  <span>Step {JOURNEY_STAGES.findIndex(s => s.current) + 1 || 4} of journey</span>
+                </p>
+                <div className="h-2 rounded-full overflow-hidden w-full max-w-xs" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
+                  <motion.div className="h-full rounded-full" style={{ backgroundColor: '#5236ab' }} initial={{ width: 0 }} animate={{ width: `${(current as any).progress ?? 60}%` }} transition={{ duration: 0.8 }} />
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--app-text-primary)', marginBottom: 6 }}>Start a challenge</h2>
+                <p style={{ fontSize: 14, color: 'var(--app-text-secondary)', marginBottom: 0 }}>Pick a challenge and earn XP. Weekly, track, and assigned challenges await.</p>
+              </>
+            )}
           </div>
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); setActiveTab('challenges'); }}
-            className="px-6 py-3 rounded-lg text-white font-semibold shrink-0 cursor-pointer self-center sm:self-auto"
+            className="px-5 py-2.5 rounded-lg text-white font-semibold shrink-0 cursor-pointer self-center sm:self-auto text-sm"
             style={{ backgroundColor: '#5236ab' }}
           >
-            Continue Learning
+            {current ? 'Continue Learning' : 'View challenges'}
           </button>
         </motion.div>
-      )}
+      </div>
 
       {/* Tab strip */}
       <div className="flex gap-1 rounded-xl p-1 mb-8 overflow-x-auto" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
@@ -231,6 +272,7 @@ export default function LearnPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
+            data-tour-id={tab.id === 'challenges' ? 'learn-tab-challenges' : undefined}
             className="flex items-center gap-2 px-4 py-2.5 rounded-lg whitespace-nowrap transition-all cursor-pointer"
             style={{
               fontSize: 14,
@@ -291,7 +333,7 @@ export default function LearnPage() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-6 mb-8">
+              <div className="flex flex-wrap gap-6">
                 <span className="flex items-center gap-2 text-sm">
                   <span className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#d1fae5' }}><CheckCircle size={16} style={{ color: '#059669' }} /></span>
                   <span style={{ color: 'var(--app-text-primary)' }}><strong>{completed.length}</strong> Completed</span>
@@ -305,8 +347,8 @@ export default function LearnPage() {
                   <span style={{ color: 'var(--app-text-primary)' }}><strong>{progress.xp}</strong> XP Earned</span>
                 </span>
               </div>
-              {/* Horizontal stepper: circles above labels, connecting lines */}
-              <div className="flex flex-wrap items-start gap-0">
+              {/* Horizontal stepper: circles above labels, connecting lines — hidden per design */}
+              <div className="flex flex-wrap items-start gap-0" style={{ display: 'none' }} aria-hidden>
                 {JOURNEY_STAGES.map((s, i) => (
                   <React.Fragment key={s.id}>
                     <div className="flex flex-col items-center" style={{ minWidth: 80 }}>
@@ -330,7 +372,7 @@ export default function LearnPage() {
                   </React.Fragment>
                 ))}
               </div>
-              <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 16 }}>~{Math.max(1, Math.ceil(upcoming.length / 2))} weeks to go</p>
+              <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 16, display: 'none' }} aria-hidden>~{Math.max(1, Math.ceil(upcoming.length / 2))} weeks to go</p>
             </div>
 
             {/* Completed */}
@@ -354,8 +396,8 @@ export default function LearnPage() {
               </div>
             )}
 
-            {/* Upcoming Modules */}
-            <div>
+            {/* Upcoming Modules — hidden per design */}
+            <div style={{ display: 'none' }} aria-hidden>
               <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">Upcoming Modules</h2>
               <div className="space-y-3">
                 {upcoming.map((mod, i) => (
@@ -405,7 +447,17 @@ export default function LearnPage() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredChallenges.map((c, i) => (
-                <motion.div key={c.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} whileHover={{ y: -3 }} className="rounded-xl p-5 cursor-pointer" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+                <motion.div
+                  key={c.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ y: -3 }}
+                  onClick={() => navigate(`/app/learn/challenges/${c.id}`)}
+                  className="rounded-xl p-5 cursor-pointer"
+                  style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
+                  data-tour-id={i === 0 ? 'challenge-card-first-view' : undefined}
+                >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex gap-1.5 flex-wrap">
                       <span className="px-2 py-0.5 rounded text-xs font-semibold" style={{ backgroundColor: '#f2f1f9', color: '#5236ab' }}>{c.type}</span>
@@ -422,7 +474,7 @@ export default function LearnPage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="px-2 py-0.5 rounded text-xs" style={{ backgroundColor: 'var(--app-tab-bg)', color: 'var(--app-text-secondary)' }}>{c.category}</span>
-                    <button onClick={() => navigate(`/app/learn/challenges/${c.id}`)} className="text-sm font-semibold cursor-pointer" style={{ color: '#5236ab' }}>View &gt;</button>
+                    <span className="text-sm font-semibold" style={{ color: '#5236ab' }}>View &gt;</span>
                   </div>
                 </motion.div>
               ))}
@@ -797,11 +849,6 @@ export default function LearnPage() {
         )}
       </AnimatePresence>
 
-      <LearnTour
-        isOpen={isTourOpen}
-        onClose={() => setIsTourOpen(false)}
-        onStepTabChange={(tab) => setActiveTab(tab as LearnSubTab)}
-      />
     </div>
   );
 }
