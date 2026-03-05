@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ArrowRight, ArrowLeft } from 'lucide-react';
 
@@ -10,33 +10,71 @@ interface LearnTourProps {
   onStepTabChange?: (tab: LearnTabId) => void;
 }
 
-const steps: { id: number; title: string; body: string; tab?: LearnTabId }[] = [
+const steps: { id: number; title: string; body: string; tab?: LearnTabId; targetId?: string }[] = [
   { id: 1, title: 'Welcome to your Learn hub', body: 'Build your AI skills with personalized paths, challenges, and resources. Use the tabs to switch between My Learning Path, Challenges, Trainings, Micro-Learnings, Office Hours, Prompt Library, and Resources.' },
-  { id: 2, title: 'My Learning Path', body: 'Your personalized journey from AI basics to mastery. See progress, continue your current module, review completed work, and get AI recommendations.', tab: 'path' },
-  { id: 3, title: 'Challenges', body: 'Weekly, track, and assigned challenges. Filter by type and difficulty, then view details, start, or save for later.', tab: 'challenges' },
-  { id: 4, title: 'Trainings', body: 'Structured courses with certificates. Start a training, preview content, or save for later. Complete to earn points and badges.', tab: 'trainings' },
-  { id: 5, title: 'Micro-Learnings', body: 'Bite-sized content (~10 min) with quick points. Filter by topic and tool, mark complete, or apply in a challenge.', tab: 'micro' },
-  { id: 6, title: 'Office Hours', body: 'Join live sessions, watch recordings, browse Q&A, or book 1:1 coaching. See upcoming sessions and register.', tab: 'officehours' },
-  { id: 7, title: 'Prompt Library', body: 'Search and browse prompts by category. Copy, customize, bookmark, or apply in a challenge. Contribute your own prompts.', tab: 'prompts' },
-  { id: 8, title: 'Resources', body: 'Guides, videos, templates, tools, podcasts, and articles. Search and filter by type, then read, watch, or copy.', tab: 'resources' },
+  { id: 2, title: 'My Learning Path', body: 'Your personalized journey from AI basics to mastery. See progress, continue your current module, review completed work, and get AI recommendations.', tab: 'path', targetId: 'tour-target-path' },
+  { id: 3, title: 'Challenges', body: 'Weekly, track, and assigned challenges. Filter by type and difficulty, then view details, start, or save for later.', tab: 'challenges', targetId: 'tour-target-challenges' },
+  { id: 4, title: 'Trainings', body: 'Structured courses with certificates. Start a training, preview content, or save for later. Complete to earn points and badges.', tab: 'trainings', targetId: 'tour-target-trainings' },
+  { id: 5, title: 'Micro-Learnings', body: 'Bite-sized content (~10 min) with quick points. Filter by topic and tool, mark complete, or apply in a challenge.', tab: 'micro', targetId: 'tour-target-micro' },
+  { id: 6, title: 'Office Hours', body: 'Join live sessions, watch recordings, browse Q&A, or book 1:1 coaching. See upcoming sessions and register.', tab: 'officehours', targetId: 'tour-target-officehours' },
+  { id: 7, title: 'Prompt Library', body: 'Search and browse prompts by category. Copy, customize, bookmark, or apply in a challenge. Contribute your own prompts.', tab: 'prompts', targetId: 'tour-target-prompts' },
+  { id: 8, title: 'Resources', body: 'Guides, videos, templates, tools, podcasts, and articles. Search and filter by type, then read, watch, or copy.', tab: 'resources', targetId: 'tour-target-resources' },
 ];
 
 export default function LearnTour({ isOpen, onClose, onStepTabChange }: LearnTourProps) {
   const [stepIndex, setStepIndex] = useState(0);
-
-  if (!isOpen) return null;
+  const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
 
   const current = steps[stepIndex];
   const isFirst = stepIndex === 0;
   const isLast = stepIndex === steps.length - 1;
 
+  useEffect(() => {
+    if (!isOpen) {
+      setStepIndex(0);
+      setTargetRect(null);
+      return;
+    }
+
+    // Delay checking the rect to allow for potential tab change & rendering
+    const updateRect = () => {
+      if (current.targetId) {
+        const el = document.getElementById(current.targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => {
+            const freshEl = document.getElementById(current.targetId!);
+            if (freshEl) {
+              setTargetRect(freshEl.getBoundingClientRect());
+            }
+          }, 350); // wait for scroll
+        } else {
+          setTargetRect(null);
+        }
+      } else {
+        setTargetRect(null);
+      }
+    };
+
+    updateRect();
+
+    window.addEventListener('resize', updateRect);
+    window.addEventListener('scroll', updateRect);
+    return () => {
+      window.removeEventListener('resize', updateRect);
+      window.removeEventListener('scroll', updateRect);
+    };
+  }, [isOpen, stepIndex, current.targetId]);
+
+  if (!isOpen) return null;
+
   const goToStep = (index: number) => {
     const clamped = Math.max(0, Math.min(steps.length - 1, index));
-    setStepIndex(clamped);
     const step = steps[clamped];
     if (step.tab && onStepTabChange) {
       onStepTabChange(step.tab);
     }
+    setStepIndex(clamped);
   };
 
   const handleNext = () => {
@@ -57,23 +95,88 @@ export default function LearnTour({ isOpen, onClose, onStepTabChange }: LearnTou
     onClose();
   };
 
+  let popoverStyle: React.CSSProperties = {};
+  if (targetRect) {
+    const spaceBelow = window.innerHeight - targetRect.bottom;
+    const spaceAbove = targetRect.top;
+
+    let top = targetRect.bottom + 12;
+    let left = targetRect.left;
+
+    if (spaceBelow < 250 && spaceAbove > 250) {
+      top = targetRect.top - 200; // approximate popover height
+    }
+
+    if (left + 400 > window.innerWidth) {
+      left = window.innerWidth - 420;
+    }
+    if (left < 20) {
+      left = 20;
+    }
+
+    popoverStyle = {
+      position: 'fixed',
+      top: `${top}px`,
+      left: `${left}px`,
+      margin: 0,
+    };
+  }
+
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[120] flex items-center justify-center px-4"
+        className="fixed inset-0 z-[120] pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        <div className="absolute inset-0 bg-black/40" onClick={handleSkip} />
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-auto"
+          preserveAspectRatio="none"
+          onClick={handleSkip}
+        >
+          <defs>
+            <mask id="spotlight-mask">
+              <rect width="100%" height="100%" fill="white" />
+              {targetRect && (
+                <motion.rect
+                  x={targetRect.left - 6}
+                  y={targetRect.top - 6}
+                  width={targetRect.width + 12}
+                  height={targetRect.height + 12}
+                  rx="8"
+                  fill="black"
+                  initial={false}
+                  animate={{
+                    x: targetRect.left - 6,
+                    y: targetRect.top - 6,
+                    width: targetRect.width + 12,
+                    height: targetRect.height + 12,
+                  }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                />
+              )}
+            </mask>
+          </defs>
+          <rect
+            width="100%"
+            height="100%"
+            fill="rgba(0,0,0,0.6)"
+            mask="url(#spotlight-mask)"
+          />
+        </svg>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.2 }}
-          className="relative max-w-md w-full rounded-2xl bg-white shadow-xl p-6 space-y-4"
-          style={{ fontFamily: 'var(--font-primary)' }}
+          className={`relative max-w-md w-full rounded-2xl bg-white shadow-xl p-6 space-y-4 pointer-events-auto ${!targetRect ? 'mx-auto mt-[20vh]' : ''}`}
+          style={{ fontFamily: 'var(--font-primary)', ...popoverStyle }}
+          initial={false}
+          animate={{
+            top: popoverStyle.top,
+            left: popoverStyle.left,
+            y: !targetRect ? 20 : 0,
+            opacity: 1
+          }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
         >
           <button
             onClick={handleSkip}
@@ -124,4 +227,5 @@ export default function LearnTour({ isOpen, onClose, onStepTabChange }: LearnTou
     </AnimatePresence>
   );
 }
+
 

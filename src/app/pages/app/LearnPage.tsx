@@ -230,6 +230,7 @@ export default function LearnPage() {
         {tabs.map(tab => (
           <button
             key={tab.id}
+            id={`tour-target-${tab.id}`}
             onClick={() => setActiveTab(tab.id)}
             className="flex items-center gap-2 px-4 py-2.5 rounded-lg whitespace-nowrap transition-all cursor-pointer"
             style={{
