@@ -248,12 +248,13 @@ export default function LearnPage() {
         {/* --- My Learning Path --- */}
         {activeTab === 'path' && (
           <motion.div key="path" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-            {/* Optional Archetype CTA */}
+            {/* Optional Archetype CTA — hidden per product request */}
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-xl p-5 mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+              className="hidden rounded-xl p-5 mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
               style={{ backgroundColor: 'var(--app-surface)', border: '1px dashed var(--app-border-strong)' }}
+              aria-hidden
             >
               <div>
                 <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-1">Discover Your Adoption Archetype</h2>
