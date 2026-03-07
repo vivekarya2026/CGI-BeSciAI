@@ -204,7 +204,10 @@ export const officeHourLive: OfficeHourSession | null = {
 
 export const officeHourUpcoming: OfficeHourSession[] = [
   { id: 'oh1', title: 'AI for Data Teams', description: 'How data teams can integrate AI into their daily workflows.', instructor: 'Marcus Johnson', role: 'Data Scientist', attending: '18/40', duration: '60 min', date: 'Tomorrow', time: '11:00 AM' },
-  { id: 'oh2', title: 'Getting Started with AI Tools', description: 'Beginner-friendly session covering the basics of AI tool usage.', instructor: 'Emily Rodriguez', role: 'Trainer', attending: '0/60', duration: '30 min', date: 'Mar 7', time: '3:00 PM' },
+  { id: 'oh2', title: 'Getting Started with AI Tools', description: 'Beginner-friendly session covering the basics of AI to get you productive.', instructor: 'Emily Rodriguez', role: 'Trainer', attending: '0/60', duration: '30 min', date: 'Mar 7', time: '3:00 PM' },
+  { id: 'oh3', title: 'Prompt Engineering Office Hours', description: 'Bring your prompts and get live feedback from experts.', instructor: 'Sarah Chen', role: 'Senior Trainer', attending: '12/30', duration: '45 min', date: 'Mar 8', time: '2:00 PM' },
+  { id: 'oh4', title: 'AI Ethics & Best Practices', description: 'Responsible AI use, bias, and governance in the workplace.', instructor: 'Dr. James Liu', role: 'Ethics Lead', attending: '0/50', duration: '45 min', date: 'Mar 10', time: '10:00 AM' },
+  { id: 'oh5', title: 'Automation with Copilot', description: 'Hands-on session for building flows and automations.', instructor: 'Priya Sharma', role: 'Product Specialist', attending: '5/25', duration: '60 min', date: 'Mar 12', time: '4:00 PM' },
 ];
 
 export type PromptCategory = 'Communication' | 'Data' | 'Productivity' | 'Development' | 'Project Management' | 'Strategy';

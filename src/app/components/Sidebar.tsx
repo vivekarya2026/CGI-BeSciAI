@@ -40,6 +40,9 @@ import {
   LogOut,
   MessageCircle,
   X,
+  Clock,
+  Lightbulb,
+  Library,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import clsx from 'clsx';       // Utility for combining CSS class names
@@ -67,10 +70,13 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
   const { logout } = useUser();
 
   // ---- Navigation Items ----
-  // HINT: Add new pages here! Just add { icon, label, path }
-  const navItems = [
+  type NavItem = { icon: React.ComponentType<{ size?: number; className?: string }>; label: string; path: string };
+  const navItems: NavItem[] = [
     { icon: Home, label: 'Dashboard', path: '/app/dashboard' },
     { icon: BookOpen, label: 'Learn', path: '/app/learn' },
+    { icon: Clock, label: 'Office Hours', path: '/app/office-hours' },
+    { icon: Lightbulb, label: 'Prompt Library', path: '/app/prompt-library' },
+    { icon: Library, label: 'Resources', path: '/app/resources' },
     { icon: Users, label: 'Community', path: '/app/community' },
     { icon: MessageCircle, label: 'Messages', path: '/app/messages' },
     { icon: User, label: 'Profile', path: '/app/profile' },
@@ -79,7 +85,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
   // ---- Handle Navigation Click ----
   const handleNavClick = (path: string) => {
     navigate(path);
-    setMobileOpen(false);   // Close mobile drawer after navigating
+    setMobileOpen(false);
   };
 
   // ============================================
@@ -124,28 +130,27 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
       {/* ---- Navigation Links ---- */}
       <nav className="flex-1 py-6 flex flex-col gap-2 px-2">
         {navItems.map((item) => {
-          // Check if this nav item matches the current URL
-          const isActive = location.pathname.startsWith(item.path);
+          const isActive = item.path === '/app/learn' ? location.pathname.startsWith('/app/learn') : (location.pathname === item.path || location.pathname.startsWith(item.path + '/'));
           return (
             <button
               key={item.path}
               onClick={() => handleNavClick(item.path)}
-              className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left cursor-pointer"
+              className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left cursor-pointer min-h-[44px]"
               style={{
                 backgroundColor: isActive ? 'var(--app-brand-light)' : 'transparent',
-                color: isActive ? 'var(--app-brand)' : 'var(--app-text-secondary)',
+                color: isActive ? '#5236ab' : 'var(--app-text-secondary)',
               }}
             >
               {/* Nav icon */}
               <item.icon
                 size={20}
                 className="shrink-0"
-                style={{ color: isActive ? 'var(--app-brand)' : 'var(--app-text-muted)' }}
+                style={{ color: isActive ? '#5236ab' : 'var(--app-text-muted)' }}
               />
 
-              {/* Nav label (hidden when collapsed on desktop) */}
+              {/* Nav label (hidden when collapsed on desktop); bold when active per CGI guidelines */}
               {(isMobile || !collapsed) && (
-                <span className="whitespace-nowrap overflow-hidden text-sm font-medium">
+                <span className="whitespace-nowrap overflow-hidden text-sm" style={{ fontWeight: isActive ? 700 : 500 }}>
                   {item.label}
                 </span>
               )}
