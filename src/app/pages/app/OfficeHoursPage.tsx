@@ -1,11 +1,11 @@
 /**
- * Office Hours — standalone page: contributions/streak section + Live & Upcoming, Recordings, Q&A, 1:1 Coaching.
+ * Office Hours — standalone page: Your Usage Activity + Live & Upcoming, Recordings, Q&A, 1:1 Coaching.
  */
 
 import React, { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import {
-  Clock, Radio, Headphones, MessageCircle, User, Video, Search, CheckCircle,
+  Calendar, Clock, Flame, Radio, Headphones, MessageCircle, User, Video, Search, CheckCircle, Trophy,
 } from 'lucide-react';
 import {
   officeHourLive,
@@ -92,18 +92,25 @@ export default function OfficeHoursPage() {
         Join live sessions, watch recordings, browse Q&A, or book 1:1 coaching.
       </p>
 
-      {/* Contributions-style section (GitHub-like): heatmap + legend + summary cards — per guidelines */}
-      <section aria-label="Contributions and learning activity" className="rounded-xl mb-6 p-5 sm:p-6" style={{ backgroundColor: '#ffffff', boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.2)', border: '1px solid var(--app-border)', borderRadius: 8 }}>
-        <h2 className="text-lg sm:text-xl" style={{ fontWeight: 400, color: '#333333', marginBottom: 16 }}>Contributions</h2>
+      {/* Your Usage Activity — heatmap + legend + summary cards */}
+      <section aria-label="Your usage activity" className="rounded-xl mb-6 p-5 sm:p-6" style={{ backgroundColor: '#ffffff', boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.2)', border: '1px solid var(--app-border)', borderRadius: 8 }}>
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <h2 className="text-lg sm:text-xl" style={{ fontWeight: 400, color: '#333333' }}>Your Usage Activity</h2>
+          <div className="flex items-center gap-2 text-xs shrink-0" style={{ color: '#5c5c5c' }}>
+            <span>Less</span>
+            {HEATMAP_COLORS.map((color, i) => (
+              <div key={i} className="rounded-sm shrink-0" style={{ width: 10, height: 10, backgroundColor: color }} aria-hidden />
+            ))}
+            <span>More</span>
+          </div>
+        </div>
 
-        {/* Heatmap: horizontal scroll on narrow viewports (mobile-first), full width on desktop */}
         <div
           className="w-full max-w-full overflow-x-auto overflow-y-hidden"
           style={{ WebkitOverflowScrolling: 'touch', marginLeft: -4, marginRight: -4 }}
           aria-label="Scroll to see full year"
         >
           <div className="flex flex-col shrink-0" style={{ minWidth: heatmapBlockMinWidth }}>
-            {/* Month labels row — aligned above grid */}
             <div className="flex items-center mb-1" style={{ marginLeft: labelWidth + labelGap, width: gridWidth, position: 'relative', height: 16 }}>
               {monthStarts.map(({ month, col }) => (
                 <span key={`${month}-${col}`} style={{ position: 'absolute', left: col * colWidth, fontSize: 12, color: '#5c5c5c', whiteSpace: 'nowrap' }}>{month}</span>
@@ -111,13 +118,11 @@ export default function OfficeHoursPage() {
             </div>
 
             <div className="flex gap-2" style={{ gap: labelGap }}>
-              {/* Day-of-week labels */}
               <div className="flex flex-col justify-around shrink-0" style={{ width: labelWidth, fontSize: 12, color: '#5c5c5c', lineHeight: 1.4, marginTop: 2 }}>
                 {[0, 2, 4, 6].map(r => (
                   <span key={r}>{dayLabels[r]}</span>
                 ))}
               </div>
-              {/* 7 rows × 53 cols heatmap */}
               <div
                 className="rounded overflow-hidden shrink-0"
                 style={{ display: 'grid', gridTemplateColumns: `repeat(${weekCount}, ${cellSize}px)`, gridTemplateRows: `repeat(7, ${cellSize}px)`, gap: `${gap}px`, width: gridWidth }}
@@ -145,35 +150,34 @@ export default function OfficeHoursPage() {
           </div>
         </div>
 
-        {/* Legend: Less [squares] More — wraps on very narrow screens */}
-        <div className="flex flex-wrap items-center gap-2 mt-3 mb-4 sm:mb-6" style={{ fontSize: 12, color: '#5c5c5c' }}>
-          <span>Less</span>
-          {HEATMAP_COLORS.map((color, i) => (
-            <div key={i} className="rounded-sm shrink-0" style={{ width: 10, height: 10, backgroundColor: color }} />
-          ))}
-          <span>More</span>
-        </div>
-
-        <p className="text-sm" style={{ color: '#5c5c5c', lineHeight: '17px', marginBottom: 20 }}>
-          Learning activity from Office Hours, trainings, and challenges. Consistent days build your streak.
+        <p className="text-sm mt-3 mb-5" style={{ color: '#5c5c5c', lineHeight: '17px' }}>
+          A summary of your AI learning activity, modules completed, and challenges attempted. Consistent days build your streak.
         </p>
 
-        {/* Summary cards: Activity in last year, Longest streak, Current streak */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="rounded-lg p-4 sm:p-5" style={{ backgroundColor: '#efefef', border: '1px solid #a8a8a8' }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#333333', marginBottom: 4 }}>Activity in the last year</p>
+          <div className="rounded-lg p-4 sm:p-5 flex flex-col" style={{ backgroundColor: '#efefef', border: '1px solid #a8a8a8' }}>
+            <div className="flex items-center gap-2 mb-1">
+              <Calendar size={18} style={{ color: '#333333' }} aria-hidden />
+              <p style={{ fontSize: 14, fontWeight: 700, color: '#333333', marginBottom: 0 }}>Activities in the last year</p>
+            </div>
             <p style={{ fontSize: 20, fontWeight: 700, color: '#333333', lineHeight: '24px' }}>{totalActivity} <span style={{ fontSize: 14, fontWeight: 400 }}>days</span></p>
             <p style={{ fontSize: 12, color: '#5c5c5c', lineHeight: '16px', marginTop: 4 }}>{formatShortDate(lastYearStart)} – {formatShortDate(today)}</p>
           </div>
-          <div className="rounded-lg p-4 sm:p-5" style={{ backgroundColor: '#efefef', border: '1px solid #a8a8a8' }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#333333', marginBottom: 4 }}>Longest streak</p>
+          <div className="rounded-lg p-4 sm:p-5 flex flex-col" style={{ backgroundColor: '#efefef', border: '1px solid #a8a8a8' }}>
+            <div className="flex items-center gap-2 mb-1">
+              <Trophy size={18} style={{ color: '#333333' }} aria-hidden />
+              <p style={{ fontSize: 14, fontWeight: 700, color: '#333333', marginBottom: 0 }}>Longest streak</p>
+            </div>
             <p style={{ fontSize: 20, fontWeight: 700, color: '#333333', lineHeight: '24px' }}>{longestStreak} <span style={{ fontSize: 14, fontWeight: 400 }}>days</span></p>
-            <p style={{ fontSize: 12, color: '#5c5c5c', lineHeight: '16px', marginTop: 4 }}>Best consecutive run</p>
+            <p style={{ fontSize: 12, color: '#5c5c5c', lineHeight: '16px', marginTop: 4 }}>Personal best</p>
           </div>
-          <div className="rounded-lg p-4 sm:p-5" style={{ backgroundColor: '#efefef', border: '1px solid #a8a8a8' }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#333333', marginBottom: 4 }}>Current streak</p>
+          <div className="rounded-lg p-4 sm:p-5 flex flex-col" style={{ backgroundColor: '#efefef', border: '1px solid #a8a8a8' }}>
+            <div className="flex items-center gap-2 mb-1">
+              <Flame size={18} style={{ color: '#333333' }} aria-hidden />
+              <p style={{ fontSize: 14, fontWeight: 700, color: '#333333', marginBottom: 0 }}>Current streak</p>
+            </div>
             <p style={{ fontSize: 20, fontWeight: 700, color: '#5236ab', lineHeight: '24px' }}>{progress.streak} <span style={{ fontSize: 14, fontWeight: 400, color: '#333333' }}>days</span></p>
-            <p style={{ fontSize: 12, color: '#5c5c5c', lineHeight: '16px', marginTop: 4 }}>{formatShortDate(currentStreakStart)} – {formatShortDate(today)}</p>
+            <p style={{ fontSize: 12, color: '#5c5c5c', lineHeight: '16px', marginTop: 4 }}>Keep it up!</p>
           </div>
         </div>
       </section>
