@@ -27,8 +27,8 @@ export default function ResourceDetailPage() {
     return (
       <div style={{ fontFamily: 'var(--font-primary)', padding: 24 }}>
         <p style={{ color: 'var(--app-text-secondary)' }}>Resource not found.</p>
-        <button onClick={() => navigate('/app/learn')} className="mt-4 px-4 py-2 rounded-lg cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>
-          Back to Learn
+        <button onClick={() => navigate('/app/resources')} className="mt-4 px-4 py-2 rounded-lg cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>
+          Back to Resources
         </button>
       </div>
     );
@@ -65,8 +65,8 @@ export default function ResourceDetailPage() {
 
   return (
     <div style={{ fontFamily: 'var(--font-primary)', maxWidth: 800, margin: '0 auto' }}>
-      <button onClick={() => navigate('/app/learn')} className="flex items-center gap-2 mb-6 text-sm font-medium cursor-pointer" style={{ color: 'var(--app-text-secondary)' }}>
-        <ArrowLeft size={16} /> Back to Learn
+      <button onClick={() => navigate('/app/resources')} className="flex items-center gap-2 mb-6 text-sm font-medium cursor-pointer" style={{ color: 'var(--app-text-secondary)' }}>
+        <ArrowLeft size={16} /> Back to Resources
       </button>
 
       <div className="rounded-xl p-6 mb-6" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>

@@ -421,6 +421,16 @@ export default function ChallengeGuidedTour() {
     });
   };
 
+  /** When user clicks Next on the card: trigger target click first (so e.g. tab switches), then advance after a short delay so UI can update. */
+  const handleNextClick = () => {
+    if (currentStep?.advanceOnTargetClick && spotlight.element) {
+      spotlight.element.click();
+      window.setTimeout(goToNextStep, 100);
+    } else {
+      goToNextStep();
+    }
+  };
+
   const handleSkip = () => {
     closeChallengeTour();
   };
@@ -726,6 +736,15 @@ export default function ChallengeGuidedTour() {
                 style={{ color: 'rgb(118, 118, 118)' }}
               >
                 Skip Tour
+              </button>
+              <button
+                type="button"
+                onClick={handleNextClick}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#5236ab' }}
+              >
+                {stepIndex >= steps.length - 1 ? 'Finish' : 'Next'}
+                <ArrowRight size={16} />
               </button>
             </div>
           </div>

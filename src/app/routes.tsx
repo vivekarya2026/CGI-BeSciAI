@@ -52,6 +52,9 @@ import TrainingStartPage from "./pages/app/TrainingStartPage";
 import MicroLearningViewerPage from "./pages/app/MicroLearningViewerPage";
 import PromptDetailPage from "./pages/app/PromptDetailPage";
 import ResourceDetailPage from "./pages/app/ResourceDetailPage";
+import OfficeHoursPage from "./pages/app/OfficeHoursPage";
+import PromptLibraryPage from "./pages/app/PromptLibraryPage";
+import ResourcesPage from "./pages/app/ResourcesPage";
 
 /* ---- Error/Fallback Pages ---- */
 import NotFoundPage from "./pages/NotFoundPage";
@@ -97,6 +100,18 @@ export const router = createBrowserRouter([
           {
             path: "dashboard",          // "/app/dashboard"
             element: <DashboardPage />,
+          },
+          {
+            path: "office-hours",       // "/app/office-hours"
+            element: <OfficeHoursPage />,
+          },
+          {
+            path: "prompt-library",     // "/app/prompt-library"
+            element: <PromptLibraryPage />,
+          },
+          {
+            path: "resources",          // "/app/resources"
+            element: <ResourcesPage />,
           },
           {
             path: "learn",              // "/app/learn"

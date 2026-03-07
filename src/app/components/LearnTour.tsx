@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ArrowRight, ArrowLeft } from 'lucide-react';
 
-type LearnTabId = 'path' | 'challenges' | 'trainings' | 'micro' | 'officehours' | 'prompts' | 'resources';
+type LearnTabId = 'path' | 'challenges' | 'trainings' | 'micro';
 
 interface LearnTourProps {
   isOpen: boolean;
@@ -11,14 +11,11 @@ interface LearnTourProps {
 }
 
 const steps: { id: number; title: string; body: string; tab?: LearnTabId }[] = [
-  { id: 1, title: 'Welcome to your Learn hub', body: 'Build your AI skills with personalized paths, challenges, and resources. Use the tabs to switch between My Learning Path, Challenges, Trainings, Micro-Learnings, Office Hours, Prompt Library, and Resources.' },
+  { id: 1, title: 'Welcome to your Learn hub', body: 'Build your AI skills with personalized paths, challenges, and resources. Use the tabs to switch between My Learning Path, Challenges, Trainings, and Micro-Learnings. Office Hours, Prompt Library, and Resources are in the sidebar.' },
   { id: 2, title: 'My Learning Path', body: 'Your personalized journey from AI basics to mastery. See progress, continue your current module, review completed work, and get AI recommendations.', tab: 'path' },
   { id: 3, title: 'Challenges', body: 'Weekly, track, and assigned challenges. Filter by type and difficulty, then view details, start, or save for later.', tab: 'challenges' },
   { id: 4, title: 'Trainings', body: 'Structured courses with certificates. Start a training, preview content, or save for later. Complete to earn points and badges.', tab: 'trainings' },
   { id: 5, title: 'Micro-Learnings', body: 'Bite-sized content (~10 min) with quick points. Filter by topic and tool, mark complete, or apply in a challenge.', tab: 'micro' },
-  { id: 6, title: 'Office Hours', body: 'Join live sessions, watch recordings, browse Q&A, or book 1:1 coaching. See upcoming sessions and register.', tab: 'officehours' },
-  { id: 7, title: 'Prompt Library', body: 'Search and browse prompts by category. Copy, customize, bookmark, or apply in a challenge. Contribute your own prompts.', tab: 'prompts' },
-  { id: 8, title: 'Resources', body: 'Guides, videos, templates, tools, podcasts, and articles. Search and filter by type, then read, watch, or copy.', tab: 'resources' },
 ];
 
 export default function LearnTour({ isOpen, onClose, onStepTabChange }: LearnTourProps) {

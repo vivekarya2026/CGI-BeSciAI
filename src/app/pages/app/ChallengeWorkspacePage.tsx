@@ -113,11 +113,11 @@ export default function ChallengeWorkspacePage() {
             </div>
             <div>
               <h4 style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', marginBottom: 8 }}>Check Prompt Library</h4>
-              <button onClick={() => navigate('/app/learn', { state: { tab: 'prompts' } })} className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: '#5236ab' }}>Open Prompt Library <ExternalLink size={12} /></button>
+              <button onClick={() => navigate('/app/prompt-library')} className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: '#5236ab' }}>Open Prompt Library <ExternalLink size={12} /></button>
             </div>
             <div>
               <h4 style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', marginBottom: 8 }}>Join Office Hours</h4>
-              <button onClick={() => navigate('/app/learn', { state: { tab: 'officehours' } })} className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: '#5236ab' }}>See Office Hours <ExternalLink size={12} /></button>
+              <button onClick={() => navigate('/app/office-hours')} className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: '#5236ab' }}>See Office Hours <ExternalLink size={12} /></button>
             </div>
           </div>
         </motion.div>
