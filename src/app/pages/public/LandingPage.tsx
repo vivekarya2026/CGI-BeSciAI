@@ -21,7 +21,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { Sparkles, Clock, Target, Users, ArrowRight, Zap, Brain, TrendingUp } from 'lucide-react';
+import { Sparkles, Clock, Target, Users, ArrowRight, Zap, Brain, TrendingUp, CheckCircle } from 'lucide-react';
 
 export default function LandingPage() {
   // `useNavigate` lets us change pages programmatically when buttons are clicked
