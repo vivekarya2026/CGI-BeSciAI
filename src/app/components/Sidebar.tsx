@@ -41,6 +41,8 @@ import {
   LogOut,
   X,
   Library,
+  GraduationCap,
+  Zap,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import clsx from 'clsx';
@@ -70,7 +72,11 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
   const [learnExpanded, setLearnExpanded] = useState(true);
 
   // ---- Navigation Items with Sub-items ----
-  type SubItem = { label: string; path: string };
+  type SubItem = { 
+    label: string; 
+    path: string;
+    icon?: React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>;
+  };
   type NavItem = { 
     icon: React.ComponentType<{ size?: number; className?: string }>; 
     label: string; 
@@ -85,8 +91,8 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
       label: 'Learn', 
       path: '/app/learn',
       subItems: [
-        { label: 'Trainings', path: '/app/learn?tab=trainings' },
-        { label: 'Micro-learnings', path: '/app/learn?tab=micro' },
+        { label: 'Trainings', path: '/app/learn?tab=trainings', icon: GraduationCap },
+        { label: 'Micro-learnings', path: '/app/learn?tab=micro', icon: Zap },
       ]
     },
     { icon: Target, label: 'Challenges', path: '/app/challenges' },
@@ -223,12 +229,19 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                         key={subItem.path}
                         {...secondaryButtonMotion()}
                         onClick={() => handleNavClick(subItem.path)}
-                        className="flex items-center gap-3 pl-12 pr-3 py-2.5 rounded-lg transition-colors w-full text-left cursor-pointer hover:bg-[#ede9fe]"
+                        className="flex items-center gap-3 pl-10 pr-3 py-2.5 rounded-lg transition-colors w-full text-left cursor-pointer hover:bg-[#ede9fe]"
                         style={{
                           backgroundColor: isSubActive ? '#f3f4f6' : 'transparent',
                           color: isSubActive ? '#8b5cf6' : 'var(--app-text-secondary)',
                         }}
                       >
+                        {subItem.icon && (
+                          <subItem.icon
+                            size={16}
+                            className="shrink-0"
+                            style={{ color: isSubActive ? '#8b5cf6' : 'var(--app-text-muted)' }}
+                          />
+                        )}
                         <span className="text-sm" style={{ fontWeight: isSubActive ? 600 : 400 }}>
                           {subItem.label}
                         </span>
