@@ -21,6 +21,13 @@ import {
   officeHourUpcoming,
 } from '../../data/learnData';
 import { NotificationsPanel } from '../../components/NotificationsPanel';
+import {
+  cardHoverMotion,
+  primaryButtonMotion,
+  secondaryButtonMotion,
+  chipToggleMotion,
+  staggerContainer,
+} from '../../components/ui/motionPresets';
 
 const JOURNEY_STAGES = [
   { id: 1, label: 'AI Basics', done: true },
@@ -55,18 +62,30 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full" style={{ backgroundColor: '#f2f1f9', color: '#5236ab' }}>
+          <motion.div
+            {...chipToggleMotion()}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer"
+            style={{ backgroundColor: '#f2f1f9', color: '#5236ab' }}
+          >
             <Sparkles size={16} />
             <span style={{ fontSize: 14, fontWeight: 600 }}>{progress.xp} XP</span>
-          </div>
-          <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full" style={{ backgroundColor: '#e8f8f1', color: '#0b4e32' }}>
+          </motion.div>
+          <motion.div
+            {...chipToggleMotion()}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer"
+            style={{ backgroundColor: '#e8f8f1', color: '#0b4e32' }}
+          >
             <BookOpen size={16} />
             <span style={{ fontSize: 14, fontWeight: 600 }}>{progress.modulesCompleted}/{progress.totalModules} Modules</span>
-          </div>
-          <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full" style={{ backgroundColor: '#fef6e9', color: '#654510' }}>
+          </motion.div>
+          <motion.div
+            {...chipToggleMotion()}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer"
+            style={{ backgroundColor: '#fef6e9', color: '#654510' }}
+          >
             <Zap size={16} />
             <span style={{ fontSize: 14, fontWeight: 600 }}>{progress.streak} Streak</span>
-          </div>
+          </motion.div>
           <NotificationsPanel onNavigate={(path) => navigate(path)} />
         </div>
       </div>
@@ -133,6 +152,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               {/* Today's Micro Learning Challenge */}
               <motion.div
+                {...cardHoverMotion()}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="rounded-xl p-5 flex flex-col gap-4 cursor-pointer"
@@ -161,19 +181,21 @@ export default function DashboardPage() {
                       <Star size={14} /> {todayMicro.points} pts
                     </span>
                   </p>
-                  <button
+                  <motion.button
+                    {...primaryButtonMotion()}
                     type="button"
                     onClick={(e) => { e.stopPropagation(); navigate('/app/learn', { state: { tab: 'micro' } }); }}
                     className="px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer shrink-0"
                     style={{ backgroundColor: '#5236ab', color: 'white', boxShadow: '0 1px 2px rgba(82,54,171,0.2)' }}
                   >
                     Do this micro
-                  </button>
+                  </motion.button>
                 </div>
               </motion.div>
 
               {/* Continue Learning */}
               <motion.div
+                {...cardHoverMotion()}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05 }}
@@ -215,14 +237,15 @@ export default function DashboardPage() {
                   ) : (
                     <span />
                   )}
-                  <button
+                  <motion.button
+                    {...primaryButtonMotion()}
                     type="button"
                     onClick={(e) => { e.stopPropagation(); navigate('/app/learn', { state: { tab: current ? 'path' : 'challenges' } }); }}
                     className="px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer shrink-0"
                     style={{ backgroundColor: '#5236ab', color: 'white', boxShadow: '0 1px 2px rgba(82,54,171,0.2)' }}
                   >
                     {current ? 'Continue' : 'View challenges'}
-                  </button>
+                  </motion.button>
                 </div>
               </motion.div>
             </div>
@@ -235,6 +258,7 @@ export default function DashboardPage() {
                 { label: 'Review Completed', sub: 'Revisit past modules', icon: <RotateCcw size={18} style={{ color: '#5236ab' }} />, tab: 'path' as const },
               ].map((item) => (
                 <motion.button
+                  {...cardHoverMotion()}
                   key={item.label}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -263,43 +287,49 @@ export default function DashboardPage() {
             style={{ maxHeight: '70vh', WebkitOverflowScrolling: 'touch' }}
           >
             {officeHourLive && (
-              <div
-                className="rounded-xl p-5 flex flex-col gap-3 shrink-0"
+              <motion.div
+                {...cardHoverMotion()}
+                className="rounded-xl p-5 flex flex-col gap-3 shrink-0 cursor-pointer"
                 style={{ background: 'linear-gradient(135deg, #e31937 0%, #a82465 100%)', color: 'white' }}
+                onClick={() => navigate('/app/office-hours')}
               >
                 <div className="flex items-center justify-between gap-3">
                   <span className="flex items-center gap-1.5 px-2 py-1 rounded text-xs font-bold bg-white/20">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> LIVE NOW
                   </span>
-                  <button
-                    onClick={() => navigate('/app/office-hours')}
+                  <motion.button
+                    {...primaryButtonMotion()}
+                    onClick={(e) => { e.stopPropagation(); navigate('/app/office-hours'); }}
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold bg-white cursor-pointer shrink-0"
                     style={{ color: '#e31937' }}
                   >
                     <Video size={18} /> Join Session
-                  </button>
+                  </motion.button>
                 </div>
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: 'white', margin: 0 }}>{officeHourLive.title}</h3>
                 <p style={{ fontSize: 14, opacity: 0.9, margin: 0 }}>{officeHourLive.instructor} · {officeHourLive.attending} attending · {officeHourLive.duration}</p>
-              </div>
+              </motion.div>
             )}
             {officeHourUpcoming.map((s) => (
-              <div
+              <motion.div
+                {...cardHoverMotion()}
                 key={s.id}
-                className="rounded-xl p-5 flex flex-col gap-3 shrink-0"
+                className="rounded-xl p-5 flex flex-col gap-3 shrink-0 cursor-pointer"
                 style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
+                onClick={() => navigate('/app/office-hours')}
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: '#f2f1f9' }}>
                     <Calendar size={20} style={{ color: '#5236ab' }} />
                   </div>
-                  <button
-                    onClick={() => navigate('/app/office-hours')}
+                  <motion.button
+                    {...secondaryButtonMotion()}
+                    onClick={(e) => { e.stopPropagation(); navigate('/app/office-hours'); }}
                     className="px-4 py-2 rounded-lg font-semibold cursor-pointer shrink-0 text-sm"
                     style={{ backgroundColor: '#f2f1f9', color: '#5236ab' }}
                   >
                     Register
-                  </button>
+                  </motion.button>
                 </div>
                 <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)', margin: 0 }}>{s.title}</h4>
                 {s.description && (
@@ -320,7 +350,7 @@ export default function DashboardPage() {
                     {s.duration}
                   </span>
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

@@ -7,6 +7,12 @@ import { motion } from 'motion/react';
 import { Search, Bookmark } from 'lucide-react';
 import { promptLibrary, isPromptSaved } from '../../data/learnData';
 import { useNavigate } from 'react-router';
+import {
+  cardHoverMotion,
+  primaryButtonMotion,
+  secondaryButtonMotion,
+  staggerContainer,
+} from '../../components/ui/motionPresets';
 
 export default function PromptLibraryPage() {
   const navigate = useNavigate();
@@ -35,7 +41,14 @@ export default function PromptLibraryPage() {
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--app-text-hint)' }} />
           <input type="text" placeholder="Search prompts by title, tag, or description..." value={promptSearch} onChange={(e) => setPromptSearch(e.target.value)} className="w-full pl-10 pr-4 py-3 rounded-lg outline-none" style={{ fontSize: 16, backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border-strong)', color: 'var(--app-text-primary)' }} />
         </div>
-        <button onClick={() => setContributePromptOpen(true)} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg font-semibold cursor-pointer shrink-0" style={{ backgroundColor: '#5236ab', color: 'white' }}>+ Contribute Prompt</button>
+        <motion.button
+          {...primaryButtonMotion()}
+          onClick={() => setContributePromptOpen(true)}
+          className="inline-flex items-center gap-2 px-4 py-3 rounded-lg font-semibold cursor-pointer shrink-0"
+          style={{ backgroundColor: '#5236ab', color: 'white' }}
+        >
+          + Contribute Prompt
+        </motion.button>
       </div>
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <label className="text-sm font-medium" style={{ color: 'var(--app-text-muted)' }}>Category</label>
@@ -55,9 +68,18 @@ export default function PromptLibraryPage() {
         </select>
       </div>
       <div className="text-right text-sm mb-4" style={{ color: 'var(--app-text-muted)' }}>{filteredPrompts.length} prompts</div>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <motion.div {...staggerContainer} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredPrompts.map((p, i) => (
-          <motion.div key={p.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} whileHover={{ y: -3 }} onClick={() => navigate(`/app/learn/prompts/${p.id}`)} className="rounded-xl p-5 cursor-pointer" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+          <motion.div
+            {...cardHoverMotion()}
+            key={p.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.04 }}
+            onClick={() => navigate(`/app/learn/prompts/${p.id}`)}
+            className="rounded-xl p-5 cursor-pointer"
+            style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
+          >
             <div className="flex items-center justify-between mb-3">
               <span className="px-2 py-0.5 rounded text-xs font-semibold" style={{ backgroundColor: 'var(--app-tab-bg)', color: 'var(--app-text-secondary)' }}>{p.category}</span>
               <div className="flex items-center gap-2">
@@ -75,7 +97,7 @@ export default function PromptLibraryPage() {
             </div>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {contributePromptOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
@@ -89,8 +111,22 @@ export default function PromptLibraryPage() {
               <input type="text" placeholder="Tags (comma-separated)" className="w-full px-4 py-2 rounded-lg outline-none text-sm" style={{ backgroundColor: 'var(--app-tab-bg)', border: '1px solid var(--app-border)', color: 'var(--app-text-primary)' }} />
             </div>
             <div className="flex gap-3">
-              <button onClick={() => setContributePromptOpen(false)} className="px-4 py-2 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)' }}>Cancel</button>
-              <button onClick={() => setContributePromptOpen(false)} className="px-4 py-2 rounded-lg font-semibold cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>Submit — Thanks, pending approval</button>
+              <motion.button
+                {...secondaryButtonMotion()}
+                onClick={() => setContributePromptOpen(false)}
+                className="px-4 py-2 rounded-lg font-semibold cursor-pointer border"
+                style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)' }}
+              >
+                Cancel
+              </motion.button>
+              <motion.button
+                {...primaryButtonMotion()}
+                onClick={() => setContributePromptOpen(false)}
+                className="px-4 py-2 rounded-lg font-semibold cursor-pointer"
+                style={{ backgroundColor: '#5236ab', color: 'white' }}
+              >
+                Submit — Thanks, pending approval
+              </motion.button>
             </div>
           </motion.div>
         </div>

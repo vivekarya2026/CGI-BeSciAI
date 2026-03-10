@@ -26,6 +26,13 @@ import {
 import { useUser } from '../../context/UserContext';
 import { useNavigate, useLocation } from 'react-router';
 import { useChallengeTour } from '../../context/ChallengeTourContext';
+import {
+  cardHoverMotion,
+  primaryButtonMotion,
+  secondaryButtonMotion,
+  chipToggleMotion,
+  staggerContainer,
+} from '../../components/ui/motionPresets';
 
 export type LearnSubTab = 'path' | 'challenges' | 'trainings' | 'micro';
 
@@ -112,25 +119,38 @@ export default function LearnPage() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full" style={{ backgroundColor: '#f2f1f9', color: '#5236ab' }}>
+          <motion.div
+            {...chipToggleMotion()}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer"
+            style={{ backgroundColor: '#f2f1f9', color: '#5236ab' }}
+          >
             <Sparkles size={16} />
             <span style={{ fontSize: 14, fontWeight: 600 }}>{progress.xp} XP</span>
-          </div>
-          <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full" style={{ backgroundColor: '#e8f8f1', color: '#0b4e32' }}>
+          </motion.div>
+          <motion.div
+            {...chipToggleMotion()}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer"
+            style={{ backgroundColor: '#e8f8f1', color: '#0b4e32' }}
+          >
             <BookOpen size={16} />
             <span style={{ fontSize: 14, fontWeight: 600 }}>{progress.modulesCompleted}/{progress.totalModules} Modules</span>
-          </div>
-          <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full" style={{ backgroundColor: '#fef6e9', color: '#654510' }}>
+          </motion.div>
+          <motion.div
+            {...chipToggleMotion()}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer"
+            style={{ backgroundColor: '#fef6e9', color: '#654510' }}
+          >
             <Zap size={16} />
             <span style={{ fontSize: 14, fontWeight: 600 }}>{progress.streak} Streak</span>
-          </div>
-          <button
+          </motion.div>
+          <motion.button
+            {...secondaryButtonMotion()}
             onClick={startChallengeTour}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm font-medium"
             style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)', backgroundColor: 'var(--app-surface)' }}
           >
             <BookOpen size={14} /> Show me around
-          </button>
+          </motion.button>
         </div>
       </div>
 
@@ -138,6 +158,7 @@ export default function LearnPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6">
         {/* Left card — Today's Micro Learning */}
         <motion.div
+          {...cardHoverMotion()}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}
@@ -162,18 +183,20 @@ export default function LearnPage() {
               <span>{todayMicro.points} pts</span>
             </p>
           </div>
-          <button
+          <motion.button
+            {...primaryButtonMotion()}
             type="button"
             onClick={(e) => { e.stopPropagation(); setActiveTab('micro'); }}
             className="px-5 py-2.5 rounded-lg text-white font-semibold shrink-0 cursor-pointer self-center sm:self-auto text-sm"
             style={{ backgroundColor: '#5236ab' }}
           >
             Do this micro
-          </button>
+          </motion.button>
         </motion.div>
 
         {/* Right card — Continue Learning (course progress) or Start a challenge */}
         <motion.div
+          {...cardHoverMotion()}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2, delay: 0.05 }}
@@ -210,21 +233,23 @@ export default function LearnPage() {
               </>
             )}
           </div>
-          <button
+          <motion.button
+            {...primaryButtonMotion()}
             type="button"
             onClick={(e) => { e.stopPropagation(); setActiveTab('challenges'); }}
             className="px-5 py-2.5 rounded-lg text-white font-semibold shrink-0 cursor-pointer self-center sm:self-auto text-sm"
             style={{ backgroundColor: '#5236ab' }}
           >
             {current ? 'Continue Learning' : 'View challenges'}
-          </button>
+          </motion.button>
         </motion.div>
       </div>
 
       {/* Tab strip */}
       <div className="flex gap-1 rounded-xl p-1 mb-8 overflow-x-auto" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
         {tabs.map(tab => (
-          <button
+          <motion.button
+            {...(activeTab === tab.id ? chipToggleMotion() : secondaryButtonMotion())}
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             data-tour-id={tab.id === 'challenges' ? 'learn-tab-challenges' : undefined}
@@ -239,7 +264,7 @@ export default function LearnPage() {
           >
             {tab.icon}
             {tab.label}
-          </button>
+          </motion.button>
         ))}
       </div>
 

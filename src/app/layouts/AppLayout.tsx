@@ -26,7 +26,8 @@
  */
 
 import React, { useState } from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation, useNavigation } from 'react-router';
+import { AnimatePresence, motion } from 'motion/react';
 import { Sidebar } from '../components/Sidebar';
 import { ByteBot } from '../components/ByteBot';
 import { Menu } from 'lucide-react';
@@ -37,6 +38,9 @@ export default function AppLayout() {
   // ---- State ----
   const [collapsed, setCollapsed] = useState(false);     // Desktop: is sidebar collapsed?
   const [mobileOpen, setMobileOpen] = useState(false);   // Mobile: is drawer open?
+  const location = useLocation();
+  const navigation = useNavigation();
+  const isNavigating = navigation.state === 'loading';
 
   return (
     <ChallengeTourProvider>
@@ -55,6 +59,23 @@ export default function AppLayout() {
       />
 
       {/* ============================================ */}
+      {/* GLOBAL LOADING INDICATOR                    */}
+      {/* ============================================ */}
+      {isNavigating && (
+        <motion.div
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{ scaleX: 1, opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="fixed top-0 left-0 right-0 h-1 z-[100] origin-left"
+          style={{
+            background: 'linear-gradient(90deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)',
+            boxShadow: '0 0 10px rgba(79,70,229,0.6)',
+          }}
+        />
+      )}
+
+      {/* ============================================ */}
       {/* SECTION 2: MOBILE TOP BAR                   */}
       {/* Only visible on screens smaller than 1024px */}
       {/* Contains hamburger menu + app logo          */}
@@ -64,14 +85,16 @@ export default function AppLayout() {
         style={{ backgroundColor: 'var(--app-surface)', borderBottom: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
       >
         {/* Hamburger menu button */}
-        <button
+        <motion.button
           onClick={() => setMobileOpen(true)}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
           className="p-2 -ml-1 rounded-lg cursor-pointer"
           style={{ color: 'var(--app-text-primary)' }}
           aria-label="Open menu"
         >
           <Menu size={22} />
-        </button>
+        </motion.button>
 
         {/* App logo + name */}
         <div className="flex items-center gap-2">
@@ -96,8 +119,18 @@ export default function AppLayout() {
             }
           `}</style>
 
-          {/* This renders the current page based on the URL */}
-          <Outlet />
+          {/* This renders the current page based on the URL with a smooth transition */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
 

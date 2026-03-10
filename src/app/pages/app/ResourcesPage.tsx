@@ -7,6 +7,7 @@ import { motion } from 'motion/react';
 import { Search, FileText, Video, Copy, Target, Headphones, Clock, Bookmark } from 'lucide-react';
 import { resources as resourcesList, isResourceSaved, type ResourceType } from '../../data/learnData';
 import { useNavigate } from 'react-router';
+import { cardHoverMotion, staggerContainer } from '../../components/ui/motionPresets';
 
 const typeIcons: Record<string, React.ReactNode> = {
   guide: <FileText size={18} />,
@@ -53,9 +54,18 @@ export default function ResourcesPage() {
           </select>
         </div>
       </div>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <motion.div {...staggerContainer} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredResources.map((r, i) => (
-          <motion.div key={r.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} whileHover={{ y: -3 }} onClick={() => navigate(`/app/learn/resources/${r.id}`)} className="rounded-xl p-5 cursor-pointer" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+          <motion.div
+            {...cardHoverMotion()}
+            key={r.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.04 }}
+            onClick={() => navigate(`/app/learn/resources/${r.id}`)}
+            className="rounded-xl p-5 cursor-pointer"
+            style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
+          >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: r.type === 'guide' ? '#f2f1f9' : r.type === 'video' ? '#fce8eb' : r.type === 'template' ? '#ccfbf1' : r.type === 'tool' ? '#fef6e9' : r.type === 'podcast' ? '#ede9fe' : '#e0f2fe', color: r.type === 'guide' ? '#5236ab' : r.type === 'video' ? '#e31937' : r.type === 'template' ? '#14b8a6' : r.type === 'tool' ? '#f59e0b' : r.type === 'podcast' ? '#8b5cf6' : '#0ea5e9' }}>{typeIcons[r.type] || <FileText size={18} />}</div>
@@ -71,7 +81,7 @@ export default function ResourcesPage() {
             </div>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }

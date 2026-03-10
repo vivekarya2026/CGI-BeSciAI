@@ -45,8 +45,9 @@ import {
   Library,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import clsx from 'clsx';       // Utility for combining CSS class names
+import clsx from 'clsx';
 import { useUser } from '../context/UserContext';
+import { secondaryButtonMotion, iconButtonMotion } from './ui/motionPresets';
 
 // ============================================
 // SECTION 1: PROPS TYPE
@@ -116,14 +117,15 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
         </div>
         {/* Close button (mobile only) */}
         {isMobile && (
-          <button
+          <motion.button
+            {...iconButtonMotion()}
             onClick={() => setMobileOpen(false)}
             className="p-2 rounded-lg cursor-pointer"
             aria-label="Close menu"
             style={{ color: 'var(--app-text-muted)' }}
           >
             <X size={20} />
-          </button>
+          </motion.button>
         )}
       </div>
 
@@ -132,7 +134,8 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
         {navItems.map((item) => {
           const isActive = item.path === '/app/learn' ? location.pathname.startsWith('/app/learn') : (location.pathname === item.path || location.pathname.startsWith(item.path + '/'));
           return (
-            <button
+            <motion.button
+              {...secondaryButtonMotion()}
               key={item.path}
               onClick={() => handleNavClick(item.path)}
               className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left cursor-pointer min-h-[44px]"
@@ -169,7 +172,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                   className="absolute left-0 w-1 h-6 bg-[#5236ab] rounded-r-full"
                 />
               )}
-            </button>
+            </motion.button>
           );
         })}
       </nav>
@@ -178,7 +181,8 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
       <div className="p-2 flex flex-col gap-2" style={{ borderTop: '1px solid var(--app-border)' }}>
         {/* Collapse toggle (desktop only) */}
         {!isMobile && (
-          <button
+          <motion.button
+            {...secondaryButtonMotion()}
             onClick={() => setCollapsed(!collapsed)}
             className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors w-full cursor-pointer"
             style={{ color: 'var(--app-text-muted)' }}
@@ -189,11 +193,12 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                 Collapse
               </span>
             )}
-          </button>
+          </motion.button>
         )}
 
         {/* Sign Out button */}
-        <button
+        <motion.button
+          {...secondaryButtonMotion()}
           className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors w-full cursor-pointer"
           style={{ color: 'var(--app-text-muted)' }}
           onClick={() => {
@@ -208,7 +213,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
               Sign Out
             </span>
           )}
-        </button>
+        </motion.button>
       </div>
     </div>
   );
