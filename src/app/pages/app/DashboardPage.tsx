@@ -457,6 +457,149 @@ export default function DashboardPage() {
               </div>
             </div>
           </motion.section>
+
+          {/* Activity & Usage Stats */}
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+            className="rounded-xl p-5 md:p-6"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            <h2 className="text-lg sm:text-xl font-semibold mb-5" style={{ color: 'var(--app-text-primary)' }}>
+              Your Activity
+            </h2>
+
+            {/* Activity Stats Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              {/* Learning Streak */}
+              <motion.div
+                {...cardHoverMotion()}
+                className="rounded-lg p-4 cursor-pointer"
+                style={{
+                  backgroundColor: '#fef3c7',
+                  border: '1px solid #fde68a',
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Flame size={20} style={{ color: '#f59e0b' }} />
+                  <span className="text-2xl font-bold" style={{ color: '#92400e' }}>
+                    {progress.streak || 14}
+                  </span>
+                </div>
+                <p className="text-xs font-medium" style={{ color: '#92400e' }}>
+                  Day Streak
+                </p>
+              </motion.div>
+
+              {/* Trainings Completed */}
+              <motion.div
+                {...cardHoverMotion()}
+                className="rounded-lg p-4 cursor-pointer"
+                style={{
+                  backgroundColor: '#dbeafe',
+                  border: '1px solid #bfdbfe',
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Trophy size={20} style={{ color: '#3b82f6' }} />
+                  <span className="text-2xl font-bold" style={{ color: '#1e40af' }}>
+                    {progress.modulesCompleted || 8}
+                  </span>
+                </div>
+                <p className="text-xs font-medium" style={{ color: '#1e40af' }}>
+                  Trainings Done
+                </p>
+              </motion.div>
+
+              {/* Challenges Completed */}
+              <motion.div
+                {...cardHoverMotion()}
+                className="rounded-lg p-4 cursor-pointer"
+                style={{
+                  backgroundColor: '#dcfce7',
+                  border: '1px solid #bbf7d0',
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Target size={20} style={{ color: '#22c55e' }} />
+                  <span className="text-2xl font-bold" style={{ color: '#166534' }}>
+                    23
+                  </span>
+                </div>
+                <p className="text-xs font-medium" style={{ color: '#166534' }}>
+                  Challenges
+                </p>
+              </motion.div>
+
+              {/* Total Learning Hours */}
+              <motion.div
+                {...cardHoverMotion()}
+                className="rounded-lg p-4 cursor-pointer"
+                style={{
+                  backgroundColor: '#ede9fe',
+                  border: '1px solid #ddd6fe',
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Clock size={20} style={{ color: '#8b5cf6' }} />
+                  <span className="text-2xl font-bold" style={{ color: '#6d28d9' }}>
+                    42
+                  </span>
+                </div>
+                <p className="text-xs font-medium" style={{ color: '#6d28d9' }}>
+                  Hours Learned
+                </p>
+              </motion.div>
+            </div>
+
+            {/* Activity Heatmap - Last Year */}
+            <div>
+              <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--app-text-secondary)' }}>
+                Activity in the last year
+              </h3>
+              
+              {/* Simplified heatmap visualization */}
+              <div className="grid grid-cols-12 gap-1">
+                {[...Array(52)].map((_, weekIdx) => {
+                  // Simulate activity data (0-4 intensity)
+                  const intensity = Math.floor(Math.random() * 5);
+                  const colors = ['#f3f4f6', '#c4b5fd', '#a78bfa', '#8b5cf6', '#7c3aed'];
+                  
+                  return (
+                    <motion.div
+                      key={weekIdx}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 + weekIdx * 0.01 }}
+                      className="aspect-square rounded-sm cursor-pointer"
+                      style={{
+                        backgroundColor: colors[intensity],
+                      }}
+                      title={`Week ${weekIdx + 1}: ${intensity} activities`}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* Legend */}
+              <div className="flex items-center justify-end gap-2 mt-3">
+                <span className="text-xs" style={{ color: 'var(--app-text-muted)' }}>Less</span>
+                {['#f3f4f6', '#c4b5fd', '#a78bfa', '#8b5cf6', '#7c3aed'].map((color, idx) => (
+                  <div
+                    key={idx}
+                    className="w-3 h-3 rounded-sm"
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+                <span className="text-xs" style={{ color: 'var(--app-text-muted)' }}>More</span>
+              </div>
+            </div>
+          </motion.section>
         </div>
 
         {/* RIGHT COLUMN - SIDEBAR */}

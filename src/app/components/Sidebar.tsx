@@ -34,14 +34,11 @@ import {
   Home,
   BookOpen,
   Users,
-  User,
+  Target,
   ChevronRight,
   ChevronLeft,
   LogOut,
-  MessageCircle,
   X,
-  Clock,
-  Lightbulb,
   Library,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -75,12 +72,9 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
   const navItems: NavItem[] = [
     { icon: Home, label: 'Dashboard', path: '/app/dashboard' },
     { icon: BookOpen, label: 'Learn', path: '/app/learn' },
-    { icon: Clock, label: 'Office Hours', path: '/app/office-hours' },
-    { icon: Lightbulb, label: 'Prompt Library', path: '/app/prompt-library' },
+    { icon: Target, label: 'Challenges', path: '/app/challenges' },
     { icon: Library, label: 'Resources', path: '/app/resources' },
     { icon: Users, label: 'Community', path: '/app/community' },
-    { icon: MessageCircle, label: 'Messages', path: '/app/messages' },
-    { icon: User, label: 'Profile', path: '/app/profile' },
   ];
 
   // ---- Handle Navigation Click ----

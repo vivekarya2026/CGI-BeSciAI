@@ -68,21 +68,14 @@ export default function LandingPage() {
           {/* Right Actions Section */}
           <div className="flex items-center gap-3">
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/onboarding')}
-              className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all cursor-pointer ${isScrolled
-                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                : 'border border-white/20 text-white hover:bg-white/10 backdrop-blur-md'
-                }`}
-            >
-              Set Your Goals
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, boxShadow: '0 8px 24px rgba(139,92,246,0.4)' }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/app/dashboard')}
-              className="px-5 py-2.5 rounded-xl bg-[#e31937] text-white font-bold text-sm shadow-xl hover:bg-[#c1152e] transition-all cursor-pointer"
+              className="px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all cursor-pointer"
+              style={{
+                backgroundColor: '#8b5cf6',
+                color: 'white',
+              }}
             >
               Sign In
             </motion.button>
@@ -151,33 +144,24 @@ export default function LandingPage() {
               Connect with like-minded peers, and accelerate your AI journey.
             </p>
 
-            {/* Call to Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* Call to Action Button */}
+            <div className="flex justify-center">
               <motion.button
-                whileHover={{ scale: 1.02, y: -2 }}  // Slight lift effect on hover
-                whileTap={{ scale: 0.98 }}           // Slight shrink effect on click
+                whileHover={{ scale: 1.05, y: -3, boxShadow: '0 12px 32px rgba(139,92,246,0.5)' }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => navigate('/onboarding')}
-                className="inline-flex items-center justify-center gap-2 text-white px-8 py-4 rounded-lg font-semibold transition-shadow cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 text-white px-10 py-4 rounded-xl font-bold transition-all cursor-pointer"
                 style={{
-                  backgroundColor: '#e31937',        // Primary Red Color
-                  fontSize: 16,
+                  background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+                  fontSize: 18,
                   lineHeight: '24px',
-                  minHeight: 44,
-                  boxShadow: '0px 1px 5px rgba(0,0,0,0.12), 0px 2px 2px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.2)',
+                  minHeight: 52,
+                  boxShadow: '0 8px 24px rgba(139,92,246,0.4)',
                 }}
               >
-                Start Your Plan
-                <ArrowRight size={18} />
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => navigate('/app/dashboard')}
-                className="inline-flex items-center justify-center gap-2 bg-white/15 backdrop-blur text-white px-8 py-4 rounded-lg font-medium border border-white/25 transition-all hover:bg-white/25 cursor-pointer"
-                style={{ fontSize: 16, lineHeight: '24px', minHeight: 44 }}
-              >
-                Skip to Dashboard
+                <Sparkles size={20} />
+                Start your Journey
+                <ArrowRight size={20} />
               </motion.button>
             </div>
 
@@ -190,76 +174,217 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 2: BENEFITS (Why take it?)         */}
+      {/* SECTION 2: START WITH THE GOALS - FUTURISTIC */}
       {/* ============================================ */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-5xl mx-auto">
+      <section
+        className="relative py-24 px-6 overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%)',
+        }}
+      >
+        {/* Animated background particles */}
+        <div className="absolute inset-0 overflow-hidden opacity-30">
+          {[...Array(15)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                width: Math.random() * 150 + 30,
+                height: Math.random() * 150 + 30,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                background: `radial-gradient(circle, rgba(139,92,246,0.4) 0%, transparent 70%)`,
+                filter: 'blur(40px)',
+              }}
+              animate={{
+                y: [0, -40, 0],
+                x: [0, Math.random() * 20 - 10, 0],
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: Math.random() * 5 + 4,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto">
           {/* Section Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}   // Animates only when scrolled into view
-            viewport={{ once: true }}            // Only animates the first time it's seen
-            transition={{ duration: 0.5 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 style={{ fontSize: 28, fontWeight: 600, color: '#151515', lineHeight: '1.3' }} className="mb-3">
-              Why Start With Goals?
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: 'white' }}>
+              Start with the Goals
             </h2>
-            <p style={{ fontSize: 18, lineHeight: '28px', color: '#5c5c5c' }} className="max-w-2xl mx-auto">
-              Clarifying your AI goals is the first step to a personalized, effective learning journey.
+            <p className="text-lg text-white/80 max-w-2xl mx-auto">
+              Define your AI ambitions and watch your skills evolve with intelligent, adaptive learning
             </p>
           </motion.div>
 
-          {/* 3-Column Grid of Benefits */}
-          <div className="grid md:grid-cols-3 gap-8">
+          {/* Glassmorphism Cards Grid */}
+          <div className="grid md:grid-cols-3 gap-6">
             {[
               {
-                icon: <Target size={28} />,
-                title: 'Personalized Path',
-                desc: 'Get a learning path tailored to your unique behavioral archetype and motivation style.',
-                color: '#5236ab',
-                bg: '#f2f1f9',
+                icon: <Brain size={32} />,
+                title: 'AI-Powered Insights',
+                desc: 'Machine learning algorithms analyze your progress and adapt your learning path in real-time.',
+                gradient: 'linear-gradient(135deg, rgba(139,92,246,0.2) 0%, rgba(109,40,217,0.2) 100%)',
               },
               {
-                icon: <Users size={28} />,
-                title: 'Find Your Tribe',
-                desc: 'Connect with peers who share your learning style and grow together through collaboration.',
-                color: '#14b8a6',
-                bg: '#ccfbf1',
+                icon: <TrendingUp size={32} />,
+                title: 'Dynamic Growth Tracking',
+                desc: 'Visualize your skill development with interactive timelines and predictive analytics.',
+                gradient: 'linear-gradient(135deg, rgba(168,85,247,0.2) 0%, rgba(139,92,246,0.2) 100%)',
               },
               {
-                icon: <Zap size={28} />,
-                title: 'Quick Wins',
-                desc: 'Start seeing results immediately with targeted quick-win exercises matched to your goals.',
-                color: '#f59e0b',
-                bg: '#fef3c7',
+                icon: <Sparkles size={32} />,
+                title: 'Gamified Milestones',
+                desc: 'Unlock achievements, earn XP, and compete on leaderboards as you master AI capabilities.',
+                gradient: 'linear-gradient(135deg, rgba(217,70,239,0.2) 0%, rgba(168,85,247,0.2) 100%)',
               },
             ].map((item, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                whileHover={{ y: -4 }}
-                className="bg-white rounded-xl p-8 border border-gray-100"
-                style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.08)' }}
+                transition={{ duration: 0.5, delay: i * 0.15 }}
+                whileHover={{ y: -6, scale: 1.02 }}
+                className="rounded-2xl p-8 border cursor-pointer relative overflow-hidden"
+                style={{
+                  background: item.gradient,
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  borderColor: 'rgba(255,255,255,0.2)',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                }}
               >
-                <div
-                  className="w-14 h-14 rounded-xl flex items-center justify-center mb-5"
-                  style={{ backgroundColor: item.bg, color: item.color }}
-                >
-                  {item.icon}
+                {/* Neon glow effect on hover */}
+                <motion.div
+                  className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity"
+                  style={{
+                    background: 'radial-gradient(circle at 50% 50%, rgba(139,92,246,0.3) 0%, transparent 70%)',
+                    pointerEvents: 'none',
+                  }}
+                />
+
+                <div className="relative z-10">
+                  <div
+                    className="w-16 h-16 rounded-xl flex items-center justify-center mb-5"
+                    style={{
+                      backgroundColor: 'rgba(255,255,255,0.15)',
+                      color: 'white',
+                      backdropFilter: 'blur(10px)',
+                    }}
+                  >
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-white">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-white/80">
+                    {item.desc}
+                  </p>
                 </div>
-                <h3 style={{ fontSize: 20, fontWeight: 600, color: '#151515', lineHeight: '1.3' }} className="mb-3">
-                  {item.title}
-                </h3>
-                <p style={{ fontSize: 16, lineHeight: '24px', color: '#5c5c5c' }}>
-                  {item.desc}
-                </p>
+
+                {/* Animated progress ring preview */}
+                <motion.div
+                  className="absolute bottom-4 right-4 w-12 h-12"
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                >
+                  <svg className="w-full h-full" viewBox="0 0 36 36">
+                    <circle
+                      cx="18"
+                      cy="18"
+                      r="16"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.2)"
+                      strokeWidth="2"
+                    />
+                    <circle
+                      cx="18"
+                      cy="18"
+                      r="16"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="2"
+                      strokeDasharray="60 40"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </motion.div>
               </motion.div>
             ))}
           </div>
+
+          {/* Animated Timeline Preview */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-12 rounded-2xl p-8 border"
+            style={{
+              background: 'linear-gradient(135deg, rgba(139,92,246,0.15) 0%, rgba(109,40,217,0.15) 100%)',
+              backdropFilter: 'blur(20px)',
+              borderColor: 'rgba(255,255,255,0.2)',
+            }}
+          >
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-white mb-2">Your AI Journey Timeline</h3>
+              <p className="text-white/70">Watch your skills compound over time</p>
+            </div>
+
+            {/* Timeline visualization */}
+            <div className="flex items-center justify-between relative">
+              {/* Progress line */}
+              <div className="absolute top-6 left-0 right-0 h-1 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{ background: 'linear-gradient(90deg, #8b5cf6 0%, #a855f7 100%)' }}
+                  initial={{ width: 0 }}
+                  whileInView={{ width: '60%' }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 2, ease: 'easeOut', delay: 0.6 }}
+                />
+              </div>
+
+              {/* Milestones */}
+              {['Start', 'Week 2', 'Month 1', 'Month 2', 'Month 3', 'Mastery'].map((label, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.8 + idx * 0.1 }}
+                  className="flex flex-col items-center relative z-10"
+                >
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center mb-2"
+                    style={{
+                      backgroundColor: idx <= 2 ? '#8b5cf6' : 'rgba(255,255,255,0.2)',
+                      border: '2px solid rgba(255,255,255,0.3)',
+                      color: 'white',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {idx <= 2 ? <CheckCircle size={20} /> : idx + 1}
+                  </div>
+                  <span className="text-xs text-white/70 text-center whitespace-nowrap">
+                    {label}
+                  </span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
 
