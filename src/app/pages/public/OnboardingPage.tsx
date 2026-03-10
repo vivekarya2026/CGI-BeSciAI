@@ -262,7 +262,10 @@ export default function OnboardingPage() {
             {step === 3 && (
               <motion.div key="step3" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.3 }}>
                 <h2 style={{ fontSize: 24, fontWeight: 600, color: '#151515' }} className="mb-2 text-center">Choose Your Learning Path</h2>
-                <p style={{ fontSize: 16, color: '#5c5c5c' }} className="text-center mb-8">Select the journey that fits your schedule and learning goals</p>
+                <p style={{ fontSize: 16, color: '#5c5c5c' }} className="text-center mb-2">Select the journey that fits your schedule and learning goals</p>
+                <p style={{ fontSize: 13, color: '#9ca3af' }} className="text-center mb-8">
+                  💡 You can update your goals and learning path anytime from your dashboard
+                </p>
 
                 {/* Learning Path Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -301,9 +304,19 @@ export default function OnboardingPage() {
                         </div>
 
                         {/* Title */}
-                        <h3 style={{ fontSize: 18, fontWeight: 600, color: '#151515', marginBottom: 6 }}>
-                          {path.title}
-                        </h3>
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 style={{ fontSize: 18, fontWeight: 600, color: '#151515', margin: 0 }}>
+                            {path.title}
+                          </h3>
+                          {path.id === 'quick-start' && (
+                            <span
+                              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold"
+                              style={{ backgroundColor: '#22c55e', color: 'white' }}
+                            >
+                              Recommended
+                            </span>
+                          )}
+                        </div>
 
                         {/* Timeline + Commitment Badge */}
                         <div className="flex items-center gap-2 mb-3">
