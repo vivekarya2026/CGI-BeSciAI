@@ -109,38 +109,13 @@ export default function LearnPage() {
       {/* ============================================ */}
       <div className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: 'var(--app-text-primary)' }}>
-          Learn
+          {activeTab === 'trainings' ? 'Trainings' : 'Micro-learnings'}
         </h1>
-        <p className="text-sm sm:text-base mb-6" style={{ color: 'var(--app-text-secondary)' }}>
-          Build your AI skills with personalized paths, challenges, and resources.
+        <p className="text-sm sm:text-base" style={{ color: 'var(--app-text-secondary)' }}>
+          {activeTab === 'trainings' 
+            ? 'Build your AI skills with personalized training paths' 
+            : 'Quick, focused lessons to master specific AI tools and techniques'}
         </p>
-
-        {/* Tab Navigation */}
-        <div className="flex gap-1 p-1 rounded-lg inline-flex" style={{ backgroundColor: '#f3f4f6' }}>
-          {[
-            { id: 'trainings', label: 'Trainings', icon: <GraduationCap size={18} /> },
-            { id: 'micro', label: 'Micro-learnings', icon: <Zap size={18} /> },
-          ].map(tab => (
-            <motion.button
-              key={tab.id}
-              {...chipToggleMotion()}
-              onClick={() => {
-                setActiveTab(tab.id as LearnSubTab);
-                navigate(`/app/learn?tab=${tab.id}`);
-              }}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-lg whitespace-nowrap transition-all cursor-pointer"
-              style={{
-                fontSize: 14,
-                fontWeight: activeTab === tab.id ? 600 : 500,
-                backgroundColor: activeTab === tab.id ? '#8b5cf6' : 'transparent',
-                color: activeTab === tab.id ? '#ffffff' : 'var(--app-text-secondary)',
-              }}
-            >
-              {tab.icon}
-              {tab.label}
-            </motion.button>
-          ))}
-        </div>
       </div>
 
       {/* ============================================ */}
