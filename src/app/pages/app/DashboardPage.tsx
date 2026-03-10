@@ -626,7 +626,7 @@ export default function DashboardPage() {
                 {...cardHoverMotion()}
                 className="rounded-lg p-4 cursor-pointer"
                 style={{
-                  background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                   color: 'white',
                 }}
                 onClick={() => navigate('/app/office-hours')}
@@ -637,7 +637,7 @@ export default function DashboardPage() {
                     Live Session
                   </span>
                 </div>
-                <h3 className="text-sm font-bold mb-2">{officeHourLive.title}</h3>
+                <h3 className="text-sm font-bold mb-2 text-white">{officeHourLive.title}</h3>
                 <p className="text-xs opacity-90 mb-3">
                   {officeHourLive.instructor} • {officeHourLive.duration}
                 </p>
@@ -648,7 +648,7 @@ export default function DashboardPage() {
                     navigate('/app/office-hours');
                   }}
                   className="inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold text-xs bg-white cursor-pointer"
-                  style={{ color: '#8b5cf6' }}
+                  style={{ color: '#ef4444' }}
                 >
                   <Video size={14} />
                   Join
