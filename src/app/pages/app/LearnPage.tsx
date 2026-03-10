@@ -207,16 +207,18 @@ export default function LearnPage() {
                         </div>
                       </div>
 
-                      {/* Continue Button */}
-                      <motion.button
-                        {...primaryButtonMotion()}
-                        onClick={() => navigate(`/app/learn/trainings/${unfinishedTraining.id}`)}
-                        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm cursor-pointer"
-                        style={{ backgroundColor: '#8b5cf6', color: 'white' }}
-                      >
-                        <Play size={16} />
-                        Continue Learning
-                      </motion.button>
+                      {/* Continue Button - Aligned Right */}
+                      <div className="flex justify-end">
+                        <motion.button
+                          {...primaryButtonMotion()}
+                          onClick={() => navigate(`/app/learn/trainings/${unfinishedTraining.id}`)}
+                          className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm cursor-pointer"
+                          style={{ backgroundColor: '#8b5cf6', color: 'white' }}
+                        >
+                          <Play size={16} />
+                          Continue Learning
+                        </motion.button>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
