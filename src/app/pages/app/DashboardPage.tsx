@@ -1,18 +1,18 @@
 /**
  * ============================================
- * DASHBOARD PAGE — DashboardPage.tsx (CGI Design System v16)
+ * DASHBOARD PAGE — DashboardPage.tsx
  * ============================================
- * Redesigned to match Capstone Figma with CGI Experience Design System
- * Three-column responsive layout with gamified microinteractions
+ * Gamified dashboard with CGI Design System 16.0.0
+ * Layout: Header with stats, Resume card, Today's Challenge, Learning Journey, Sidebar updates
  */
 
-import React, { useState, useEffect } from 'react';
-import { motion, useAnimate } from 'motion/react';
+import React from 'react';
+import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import {
-  CheckCircle2, Flame, Star, Trophy, Play, Zap, Sparkles,
-  Clock, Calendar, Video, Bell, BookOpen, Users, FileText,
-  AlertCircle, MessageSquare,
+  Trophy, Flame, Star, CheckCircle2, Play, Clock, Target,
+  Sparkles, Calendar, Bell, Users, FileText, MessageSquare,
+  Video, ChevronRight,
 } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 import { learningModules } from '../../data/archetypes';
@@ -22,645 +22,645 @@ import {
   officeHourLive,
   officeHourUpcoming,
 } from '../../data/learnData';
+import { NotificationsPanel } from '../../components/NotificationsPanel';
 import {
   cardHoverMotion,
   primaryButtonMotion,
   secondaryButtonMotion,
   chipToggleMotion,
+  staggerContainer,
 } from '../../components/ui/motionPresets';
 
-// CGI Design System Colors
-const CGI_COLORS = {
-  primary: '#9810fa',
-  textPrimary: '#101828',
-  textSecondary: '#4a5565',
-  border: '#e5e7eb',
-  background: '#f9fafb',
-  white: '#ffffff',
-  success: '#10b981',
-  warning: '#f59e0b',
-};
-
-// Learning Journey Stages (6 stages as per Figma)
-const JOURNEY_STAGES = [
-  { id: 1, label: 'AI Basics', status: 'completed' as const },
-  { id: 2, label: 'Prompt Engineering', status: 'completed' as const },
-  { id: 3, label: 'Productivity', status: 'completed' as const },
-  { id: 4, label: 'Automation', status: 'current' as const },
-  { id: 5, label: 'Advanced AI', status: 'locked' as const },
-  { id: 6, label: 'AI Mastery', status: 'locked' as const },
+const LEARNING_JOURNEY_STAGES = [
+  { id: 1, label: 'AI Basics', done: true },
+  { id: 2, label: 'Prompt Engineering', done: true },
+  { id: 3, label: 'Productivity', done: true },
+  { id: 4, label: 'Automation', done: false, current: true },
+  { id: 5, label: 'Advanced AI', done: false },
+  { id: 6, label: 'AI Mastery', done: false },
 ];
-
-// Animated counter component
-function AnimatedCounter({ value, duration = 1 }: { value: number; duration?: number }) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    let start = 0;
-    const end = value;
-    const increment = end / (duration * 60);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        setCount(end);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 1000 / 60);
-    return () => clearInterval(timer);
-  }, [value, duration]);
-
-  return <span>{count.toLocaleString()}</span>;
-}
-
-// Time-based greeting
-function getTimeBasedGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return 'Good morning';
-  if (hour < 17) return 'Good afternoon';
-  return 'Good evening';
-}
 
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { user, progress } = useUser();
 
-  // Calculate stats
-  const longestStreak = 21;
-  const currentStreak = progress.streak || 14;
-  const totalXP = progress.xp || 1850;
-  const challengesCompleted = 23;
+  // Get current time for greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 
-  // Current lesson (first incomplete module)
-  const currentLesson = learningModules.find(m => !m.completed && !m.locked);
-  const lessonProgress = 80; // 80% complete
-  const timeRemaining = '8 min remaining';
+  // Get current training module
+  const currentModule = learningModules.find(m => !m.completed && !m.locked);
+  const completionPct = currentModule ? ((currentModule as any).progress || 60) : 0;
 
-  // Today's challenge
+  // Get today's challenge
   const dayIndex = Math.floor(Date.now() / 86400000);
   const todayChallenge = challenges[dayIndex % challenges.length];
 
-  // Journey progress
-  const completedStages = JOURNEY_STAGES.filter(s => s.status === 'completed').length;
-  const totalStages = JOURNEY_STAGES.length;
-  const journeyProgress = Math.round((completedStages / totalStages) * 100);
-
-  // Announcements data
-  const announcements = [
-    {
-      id: 1,
-      type: 'new' as const,
-      icon: <Bell size={20} />,
-      title: 'Platform Update',
-      description: 'New learning paths available',
-      action: 'View',
-    },
-    {
-      id: 2,
-      type: 'action' as const,
-      icon: <MessageSquare size={20} />,
-      title: 'Quick Survey',
-      description: 'Help us improve the course',
-      action: 'Take Survey',
-    },
-    {
-      id: 3,
-      type: 'info' as const,
-      icon: <Users size={20} />,
-      title: 'Instructor Announcement',
-      description: 'New office hours added',
-      action: 'View',
-    },
-  ];
+  // Calculate journey progress
+  const completedStages = LEARNING_JOURNEY_STAGES.filter(s => s.done).length;
+  const journeyProgress = Math.round((completedStages / LEARNING_JOURNEY_STAGES.length) * 100);
 
   return (
-    <div style={{ fontFamily: 'Inter, sans-serif', backgroundColor: CGI_COLORS.background, minHeight: '100vh' }}>
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-8 py-6 sm:py-8">
-        {/* Header Section */}
-        <motion.header
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="mb-6"
-        >
-          {/* Greeting */}
-          <h1 style={{
-            fontSize: 30,
-            fontWeight: 700,
-            color: CGI_COLORS.textPrimary,
-            letterSpacing: '-0.4px',
-            marginBottom: 8,
-          }}>
-            {getTimeBasedGreeting()}, {user?.name || 'Alex'}! 👋
-          </h1>
-          <p style={{
-            fontSize: 18,
-            fontWeight: 400,
-            color: CGI_COLORS.textSecondary,
-            letterSpacing: '-0.44px',
-            marginBottom: 24,
-          }}>
-            Ready to continue your learning journey today?
-          </p>
-
-          {/* KPI Stats Row */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Longest Streak */}
-            <motion.div
-              {...cardHoverMotion()}
-              className="bg-white border rounded-[14px] p-4 flex items-center gap-3"
-              style={{
-                borderColor: CGI_COLORS.border,
-                boxShadow: '0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px rgba(0,0,0,0.1)',
-              }}
-            >
-              <div className="text-2xl">🏆</div>
-              <div>
-                <div style={{ fontSize: 20, fontWeight: 700, color: CGI_COLORS.primary, letterSpacing: '-0.45px' }}>
-                  <AnimatedCounter value={longestStreak} />
-                </div>
-                <div style={{ fontSize: 12, color: CGI_COLORS.textSecondary }}>Longest streak</div>
-              </div>
-            </motion.div>
-
-            {/* Current Streak */}
-            <motion.div
-              {...cardHoverMotion()}
-              className="bg-white border rounded-[14px] p-4 flex items-center gap-3"
-              style={{
-                borderColor: CGI_COLORS.border,
-                boxShadow: '0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px rgba(0,0,0,0.1)',
-              }}
-            >
-              <div className="text-2xl">🔥</div>
-              <div>
-                <div style={{ fontSize: 20, fontWeight: 700, color: CGI_COLORS.primary, letterSpacing: '-0.45px' }}>
-                  <AnimatedCounter value={currentStreak} />
-                </div>
-                <div style={{ fontSize: 12, color: CGI_COLORS.textSecondary }}>Current streak</div>
-              </div>
-            </motion.div>
-
-            {/* XP */}
-            <motion.div
-              {...cardHoverMotion()}
-              className="bg-white border rounded-[14px] p-4 flex items-center gap-3"
-              style={{
-                borderColor: CGI_COLORS.border,
-                boxShadow: '0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px rgba(0,0,0,0.1)',
-              }}
-            >
-              <div className="text-2xl">⭐</div>
-              <div>
-                <div style={{ fontSize: 20, fontWeight: 700, color: CGI_COLORS.primary, letterSpacing: '-0.45px' }}>
-                  <AnimatedCounter value={totalXP} />
-                </div>
-                <div style={{ fontSize: 12, color: CGI_COLORS.textSecondary }}>XP</div>
-              </div>
-            </motion.div>
-
-            {/* Challenges Completed */}
-            <motion.div
-              {...cardHoverMotion()}
-              className="bg-white border rounded-[14px] p-4 flex items-center gap-3"
-              style={{
-                borderColor: CGI_COLORS.border,
-                boxShadow: '0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px rgba(0,0,0,0.1)',
-              }}
-            >
-              <div className="text-2xl">✅</div>
-              <div>
-                <div style={{ fontSize: 20, fontWeight: 700, color: CGI_COLORS.primary, letterSpacing: '-0.45px' }}>
-                  <AnimatedCounter value={challengesCompleted} />
-                </div>
-                <div style={{ fontSize: 12, color: CGI_COLORS.textSecondary }}>Challenges Completed</div>
-              </div>
-            </motion.div>
+    <div style={{ fontFamily: 'var(--font-primary)', backgroundColor: 'var(--app-bg)', minHeight: '100vh' }}>
+      {/* ============================================ */}
+      {/* HEADER SECTION */}
+      {/* ============================================ */}
+      <header className="mb-5 sm:mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-1" style={{ color: 'var(--app-text-primary)' }}>
+              {greeting}, {user?.name || 'Alex'}! 👋
+            </h1>
+            <p className="text-sm sm:text-base" style={{ color: 'var(--app-text-secondary)' }}>
+              Ready to continue your learning journey today?
+            </p>
           </div>
-        </motion.header>
+          <NotificationsPanel onNavigate={(path) => navigate(path)} />
+        </div>
 
-        {/* Main Content: 3-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
-          {/* Left Column */}
-          <div className="space-y-6">
-            {/* Resume Where You Left Off */}
-            <motion.section
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-white border rounded-[14px] p-6"
-              style={{
-                borderColor: CGI_COLORS.border,
-                boxShadow: '0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px rgba(0,0,0,0.1)',
-              }}
-            >
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: CGI_COLORS.textPrimary, marginBottom: 16 }}>
-                Resume Where You Left Off
-              </h2>
+        {/* Stats Row - 4 Cards */}
+        <motion.div
+          {...staggerContainer}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+        >
+          {/* Longest Streak */}
+          <motion.div
+            {...cardHoverMotion()}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0 }}
+            className="rounded-xl p-4 sm:p-5 cursor-pointer"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#fef3c7' }}>
+                <Trophy size={20} style={{ color: '#f59e0b' }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--app-text-primary)' }}>
+                  21
+                </div>
+              </div>
+            </div>
+            <p className="text-xs sm:text-sm font-medium" style={{ color: 'var(--app-text-secondary)' }}>
+              Longest streak
+            </p>
+          </motion.div>
 
-              {currentLesson && (
-                <motion.div
-                  {...cardHoverMotion()}
-                  className="flex flex-col sm:flex-row gap-4 cursor-pointer"
-                  onClick={() => navigate('/app/learn')}
+          {/* Current Streak */}
+          <motion.div
+            {...cardHoverMotion()}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="rounded-xl p-4 sm:p-5 cursor-pointer"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#fef2f2' }}>
+                <Flame size={20} style={{ color: '#ef4444' }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--app-text-primary)' }}>
+                  {progress.streak || 14}
+                </div>
+              </div>
+            </div>
+            <p className="text-xs sm:text-sm font-medium" style={{ color: 'var(--app-text-secondary)' }}>
+              Current streak
+            </p>
+          </motion.div>
+
+          {/* XP */}
+          <motion.div
+            {...cardHoverMotion()}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="rounded-xl p-4 sm:p-5 cursor-pointer"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#fef3c7' }}>
+                <Star size={20} style={{ color: '#eab308' }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--app-text-primary)' }}>
+                  {progress.xp?.toLocaleString() || '1,850'}
+                </div>
+              </div>
+            </div>
+            <p className="text-xs sm:text-sm font-medium" style={{ color: 'var(--app-text-secondary)' }}>
+              XP
+            </p>
+          </motion.div>
+
+          {/* Challenges Completed */}
+          <motion.div
+            {...cardHoverMotion()}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="rounded-xl p-4 sm:p-5 cursor-pointer"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#dcfce7' }}>
+                <CheckCircle2 size={20} style={{ color: '#22c55e' }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--app-text-primary)' }}>
+                  23
+                </div>
+              </div>
+            </div>
+            <p className="text-xs sm:text-sm font-medium" style={{ color: 'var(--app-text-secondary)' }}>
+              Challenges Completed
+            </p>
+          </motion.div>
+        </motion.div>
+      </header>
+
+      {/* ============================================ */}
+      {/* MAIN CONTENT - TWO COLUMN LAYOUT */}
+      {/* ============================================ */}
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,2.1fr)_minmax(320px,1fr)] lg:gap-6">
+        {/* LEFT COLUMN */}
+        <div className="flex flex-col gap-5">
+          {/* Resume Where You Left Off */}
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="rounded-xl p-5 md:p-6"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            <h2 className="text-lg sm:text-xl font-semibold mb-4" style={{ color: 'var(--app-text-primary)' }}>
+              Resume Where You Left Off
+            </h2>
+
+            {currentModule ? (
+              <div className="flex flex-col sm:flex-row gap-4">
+                {/* Module Image */}
+                <div
+                  className="w-full sm:w-32 h-32 rounded-lg shrink-0 overflow-hidden"
+                  style={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    position: 'relative',
+                  }}
                 >
-                  {/* Thumbnail */}
-                  <div
-                    className="w-full sm:w-32 h-32 rounded-lg shrink-0 flex items-center justify-center"
-                    style={{
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    }}
-                  >
-                    <BookOpen size={48} color="white" />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 flex flex-col justify-between">
-                    <div>
-                      <h3 style={{ fontSize: 18, fontWeight: 600, color: CGI_COLORS.textPrimary, marginBottom: 8 }}>
-                        Understanding AI Context Windows
-                      </h3>
-                      <span
-                        className="inline-block px-2 py-1 rounded text-xs font-medium mb-3"
-                        style={{ backgroundColor: '#f3f4f6', color: CGI_COLORS.textSecondary }}
-                      >
-                        Communication Foundations
-                      </span>
-                    </div>
-
-                    <div>
-                      {/* Progress Bar */}
-                      <div className="flex items-center justify-between mb-2 text-sm">
-                        <span style={{ color: CGI_COLORS.textSecondary }}>{lessonProgress}% complete</span>
-                        <span style={{ color: CGI_COLORS.textSecondary }}>{timeRemaining}</span>
-                      </div>
-                      <div className="h-1 bg-gray-200 rounded-full overflow-hidden mb-4">
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{ backgroundColor: CGI_COLORS.primary }}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${lessonProgress}%` }}
-                          transition={{ duration: 1, ease: 'easeOut' }}
-                        />
-                      </div>
-
-                      {/* Button */}
-                      <motion.button
-                        {...primaryButtonMotion()}
-                        onClick={(e) => { e.stopPropagation(); navigate('/app/learn'); }}
-                        className="px-6 py-2.5 rounded-[10px] font-semibold text-sm"
-                        style={{ backgroundColor: CGI_COLORS.primary, color: 'white' }}
-                      >
-                        Resume Lesson
-                      </motion.button>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </motion.section>
-
-            {/* Today's Challenge */}
-            <motion.section
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white border rounded-[14px] p-6"
-              style={{
-                borderColor: CGI_COLORS.border,
-                boxShadow: '0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px rgba(0,0,0,0.1)',
-              }}
-            >
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: CGI_COLORS.textPrimary, marginBottom: 8 }}>
-                Today's Challenge
-              </h2>
-              <p style={{ fontSize: 14, color: CGI_COLORS.textSecondary, marginBottom: 16 }}>
-                Complete this to keep your streak going
-              </p>
-
-              <motion.div
-                {...cardHoverMotion()}
-                className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-[10px] p-5 cursor-pointer"
-                onClick={() => navigate('/app/challenges')}
-              >
-                <div className="flex items-start gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shrink-0">
-                    <Zap size={20} style={{ color: CGI_COLORS.primary }} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 style={{ fontSize: 16, fontWeight: 600, color: CGI_COLORS.textPrimary, marginBottom: 4 }}>
-                      {todayChallenge.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-sm" style={{ color: CGI_COLORS.textSecondary }}>
-                      <Clock size={14} />
-                      <span>{todayChallenge.time}</span>
-                    </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Sparkles size={48} style={{ color: 'white', opacity: 0.9 }} />
                   </div>
                 </div>
 
-                <motion.button
-                  {...primaryButtonMotion()}
-                  onClick={(e) => { e.stopPropagation(); navigate('/app/challenges'); }}
-                  className="w-full px-6 py-3 rounded-[10px] font-semibold text-sm"
-                  style={{ backgroundColor: CGI_COLORS.primary, color: 'white' }}
-                >
-                  Start Challenge
-                </motion.button>
-              </motion.div>
-            </motion.section>
+                {/* Module Details */}
+                <div className="flex-1 flex flex-col justify-between min-w-0">
+                  <div>
+                    <h3 className="text-base sm:text-lg font-bold mb-1" style={{ color: 'var(--app-text-primary)' }}>
+                      {currentModule.title}
+                    </h3>
+                    <p className="text-sm mb-3" style={{ color: 'var(--app-text-secondary)' }}>
+                      {currentModule.category}
+                    </p>
+                  </div>
 
-            {/* Your Learning Journey */}
-            <motion.section
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white border rounded-[14px] p-6"
-              style={{
-                borderColor: CGI_COLORS.border,
-                boxShadow: '0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px rgba(0,0,0,0.1)',
-              }}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles size={20} style={{ color: CGI_COLORS.primary }} />
-                <h2 style={{ fontSize: 20, fontWeight: 700, color: CGI_COLORS.textPrimary }}>
-                  Your Learning Journey
-                </h2>
-              </div>
-              <p style={{ fontSize: 14, color: CGI_COLORS.textSecondary, marginBottom: 24 }}>
-                You'll gain 6 new skills by completing this program
-              </p>
-
-              {/* Timeline */}
-              <div className="flex items-center justify-between mb-4 overflow-x-auto pb-2">
-                {JOURNEY_STAGES.map((stage, index) => (
-                  <React.Fragment key={stage.id}>
-                    {/* Stage Circle */}
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.4 + index * 0.1 }}
-                      className="flex flex-col items-center gap-2"
-                      style={{ minWidth: 80 }}
-                    >
-                      <div
-                        className="w-12 h-12 rounded-full flex items-center justify-center font-semibold text-sm"
-                        style={{
-                          backgroundColor:
-                            stage.status === 'completed'
-                              ? CGI_COLORS.primary
-                              : stage.status === 'current'
-                              ? 'white'
-                              : '#f3f4f6',
-                          color:
-                            stage.status === 'completed'
-                              ? 'white'
-                              : stage.status === 'current'
-                              ? CGI_COLORS.primary
-                              : CGI_COLORS.textSecondary,
-                          border: stage.status === 'current' ? `2px solid ${CGI_COLORS.primary}` : 'none',
-                        }}
-                      >
-                        {stage.status === 'completed' ? <CheckCircle2 size={24} /> : index + 1}
-                      </div>
-                      <span
-                        className="text-xs text-center"
-                        style={{
-                          color:
-                            stage.status === 'completed' || stage.status === 'current'
-                              ? CGI_COLORS.textPrimary
-                              : CGI_COLORS.textSecondary,
-                          fontWeight: stage.status === 'current' ? 600 : 400,
-                        }}
-                      >
-                        {stage.label}
+                  {/* Progress Bar */}
+                  <div className="mb-3">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-xs font-medium" style={{ color: 'var(--app-text-muted)' }}>
+                        {completionPct}% complete
                       </span>
-                    </motion.div>
-
-                    {/* Connector Line */}
-                    {index < JOURNEY_STAGES.length - 1 && (
-                      <div
-                        className="flex-1 h-0.5 mx-2"
-                        style={{
-                          backgroundColor:
-                            JOURNEY_STAGES[index + 1].status === 'completed'
-                              ? CGI_COLORS.primary
-                              : '#e5e7eb',
-                          minWidth: 20,
-                        }}
+                      <span className="text-xs font-medium" style={{ color: 'var(--app-text-muted)' }}>
+                        8 min remaining
+                      </span>
+                    </div>
+                    <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#f3f4f6' }}>
+                      <motion.div
+                        className="h-full rounded-full"
+                        style={{ backgroundColor: '#8b5cf6' }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${completionPct}%` }}
+                        transition={{ duration: 1, ease: 'easeOut' }}
                       />
-                    )}
-                  </React.Fragment>
+                    </div>
+                  </div>
+
+                  {/* Resume Button */}
+                  <motion.button
+                    {...primaryButtonMotion()}
+                    onClick={() => navigate('/app/learn', { state: { mode: 'training' } })}
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm cursor-pointer self-start"
+                    style={{ backgroundColor: '#8b5cf6', color: 'white' }}
+                  >
+                    <Play size={16} />
+                    Resume Lesson
+                  </motion.button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm" style={{ color: 'var(--app-text-secondary)' }}>
+                No active lessons. Start a new module from the Learn page!
+              </p>
+            )}
+          </motion.section>
+
+          {/* Today's Challenge */}
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="rounded-xl p-5 md:p-6"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            <h2 className="text-lg sm:text-xl font-semibold mb-4" style={{ color: 'var(--app-text-primary)' }}>
+              Today&apos;s Challenge
+            </h2>
+
+            <p className="text-sm mb-4" style={{ color: 'var(--app-text-secondary)' }}>
+              Complete this to keep your streak going
+            </p>
+
+            {/* Challenge Card */}
+            <motion.div
+              {...cardHoverMotion()}
+              className="rounded-xl p-5 cursor-pointer"
+              style={{
+                background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
+                border: '1px solid #d1d5db',
+              }}
+              onClick={() => navigate('/app/challenges')}
+            >
+              <div
+                className="rounded-lg p-4 mb-4"
+                style={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e5e7eb',
+                }}
+              >
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-2">
+                    <Target size={20} style={{ color: '#8b5cf6' }} />
+                    <h3 className="text-base font-bold" style={{ color: 'var(--app-text-primary)' }}>
+                      {todayChallenge?.title || 'Practice reflection exercise'}
+                    </h3>
+                  </div>
+                </div>
+
+                <p className="text-sm mb-3" style={{ color: 'var(--app-text-secondary)' }}>
+                  {todayChallenge?.description || 'Reflect on your AI learning journey and identify key takeaways'}
+                </p>
+
+                <div className="flex items-center gap-4 text-xs" style={{ color: 'var(--app-text-muted)' }}>
+                  <span className="inline-flex items-center gap-1">
+                    <Clock size={14} />
+                    5 min
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <Users size={14} />
+                    {todayChallenge?.participants || 234} participants
+                  </span>
+                </div>
+              </div>
+
+              {/* Start Challenge Button */}
+              <motion.button
+                {...primaryButtonMotion()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate('/app/challenges');
+                }}
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold text-sm cursor-pointer"
+                style={{ backgroundColor: '#8b5cf6', color: 'white' }}
+              >
+                <Play size={16} />
+                Start Challenge
+              </motion.button>
+            </motion.div>
+          </motion.section>
+
+          {/* Your Learning Journey */}
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="rounded-xl p-5 md:p-6"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles size={20} style={{ color: '#8b5cf6' }} />
+              <h2 className="text-lg sm:text-xl font-semibold" style={{ color: 'var(--app-text-primary)' }}>
+                Your Learning Journey
+              </h2>
+            </div>
+
+            <p className="text-sm mb-5" style={{ color: 'var(--app-text-secondary)' }}>
+              You&apos;ll gain 6 new skills by completing this program
+            </p>
+
+            {/* Journey Timeline */}
+            <div className="relative">
+              {/* Progress Bar Background */}
+              <div className="absolute top-5 left-0 right-0 h-1 rounded-full" style={{ backgroundColor: '#f3f4f6', zIndex: 0 }}>
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{ backgroundColor: '#8b5cf6' }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${journeyProgress}%` }}
+                  transition={{ duration: 1.2, ease: 'easeOut', delay: 0.4 }}
+                />
+              </div>
+
+              {/* Journey Stages */}
+              <div className="relative flex justify-between" style={{ zIndex: 1 }}>
+                {LEARNING_JOURNEY_STAGES.map((stage, idx) => (
+                  <motion.div
+                    key={stage.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 + idx * 0.1 }}
+                    className="flex flex-col items-center"
+                    style={{ flex: '0 0 auto' }}
+                  >
+                    {/* Stage Circle */}
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center mb-2 relative"
+                      style={{
+                        backgroundColor: stage.done ? '#8b5cf6' : stage.current ? '#8b5cf6' : '#ffffff',
+                        border: `2px solid ${stage.done || stage.current ? '#8b5cf6' : '#e5e7eb'}`,
+                        color: stage.done || stage.current ? '#ffffff' : '#9ca3af',
+                        fontWeight: 600,
+                        fontSize: 14,
+                      }}
+                    >
+                      {stage.done ? (
+                        <CheckCircle2 size={20} />
+                      ) : stage.current ? (
+                        <span>{idx + 1}</span>
+                      ) : (
+                        <span>{idx + 1}</span>
+                      )}
+                    </div>
+
+                    {/* Stage Label */}
+                    <span
+                      className="text-xs text-center font-medium"
+                      style={{
+                        color: stage.done || stage.current ? 'var(--app-text-primary)' : 'var(--app-text-muted)',
+                        maxWidth: 80,
+                      }}
+                    >
+                      {stage.label}
+                    </span>
+                  </motion.div>
                 ))}
               </div>
+            </div>
 
-              {/* Progress Bar */}
-              <div className="mt-6">
-                <div className="flex items-center justify-between mb-2 text-sm">
-                  <span style={{ color: CGI_COLORS.textSecondary }}>
-                    {completedStages} of {totalStages} modules completed
-                  </span>
-                  <span style={{ color: CGI_COLORS.textPrimary, fontWeight: 600 }}>
-                    {journeyProgress}% complete
-                  </span>
-                </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full rounded-full"
-                    style={{ backgroundColor: CGI_COLORS.primary }}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${journeyProgress}%` }}
-                    transition={{ duration: 1.5, ease: 'easeOut' }}
-                  />
-                </div>
+            {/* Journey Stats */}
+            <div className="mt-6 pt-4 border-t" style={{ borderColor: '#f3f4f6' }}>
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium" style={{ color: 'var(--app-text-secondary)' }}>
+                  3 of 6 modules completed
+                </span>
+                <span className="text-sm font-bold" style={{ color: '#8b5cf6' }}>
+                  50% complete
+                </span>
               </div>
-            </motion.section>
-          </div>
+            </div>
+          </motion.section>
+        </div>
 
-          {/* Right Column */}
-          <div className="space-y-6">
-            {/* Upcoming & Learning Updates */}
-            <motion.section
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-white border rounded-[14px] p-6"
-              style={{
-                borderColor: CGI_COLORS.border,
-                boxShadow: '0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px rgba(0,0,0,0.1)',
-              }}
-            >
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: CGI_COLORS.textPrimary, marginBottom: 16 }}>
-                Upcoming & Learning Updates
-              </h2>
+        {/* RIGHT COLUMN - SIDEBAR */}
+        <aside className="flex flex-col gap-5">
+          {/* Upcoming & Learning Updates */}
+          <motion.section
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.35 }}
+            className="rounded-xl p-5 md:p-6 flex flex-col gap-4"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            <h2 className="text-base sm:text-lg font-semibold" style={{ color: 'var(--app-text-primary)' }}>
+              Upcoming & Learning Updates
+            </h2>
 
-              <div className="space-y-4">
-                {/* Live Session */}
-                {officeHourLive && (
-                  <motion.div
-                    {...cardHoverMotion()}
-                    className="border rounded-[10px] p-4 cursor-pointer"
-                    style={{ borderColor: CGI_COLORS.border }}
-                    onClick={() => navigate('/app/office-hours')}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <span
-                        className="px-2 py-1 rounded text-xs font-semibold"
-                        style={{ backgroundColor: '#fef3c7', color: '#92400e' }}
-                      >
-                        Live Session
-                      </span>
-                      <Users size={16} style={{ color: CGI_COLORS.textSecondary }} />
-                    </div>
-                    <h3 style={{ fontSize: 16, fontWeight: 600, color: CGI_COLORS.textPrimary, marginBottom: 8 }}>
-                      {officeHourLive.title}
-                    </h3>
-                    <p className="text-sm mb-3" style={{ color: CGI_COLORS.textSecondary }}>
-                      Tomorrow • 2:00 PM
-                    </p>
-                    <p className="text-xs mb-3" style={{ color: CGI_COLORS.textSecondary }}>
-                      Instructor: {officeHourLive.instructor}
-                    </p>
-                    <div className="flex gap-2">
-                      <motion.button
-                        {...primaryButtonMotion()}
-                        onClick={(e) => { e.stopPropagation(); navigate('/app/office-hours'); }}
-                        className="flex-1 px-4 py-2 rounded-[10px] font-medium text-sm"
-                        style={{ backgroundColor: CGI_COLORS.primary, color: 'white' }}
-                      >
-                        Join
-                      </motion.button>
-                      <motion.button
-                        {...secondaryButtonMotion()}
-                        onClick={(e) => e.stopPropagation()}
-                        className="px-4 py-2 rounded-[10px] font-medium text-sm border"
-                        style={{ borderColor: CGI_COLORS.border, color: CGI_COLORS.textPrimary }}
-                      >
-                        Remind Me
-                      </motion.button>
-                    </div>
-                  </motion.div>
-                )}
+            {/* Live Session */}
+            {officeHourLive && (
+              <motion.div
+                {...cardHoverMotion()}
+                className="rounded-lg p-4 cursor-pointer"
+                style={{
+                  background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+                  color: 'white',
+                }}
+                onClick={() => navigate('/app/office-hours')}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-bold bg-white/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                    Live Session
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold mb-2">{officeHourLive.title}</h3>
+                <p className="text-xs opacity-90 mb-3">
+                  {officeHourLive.instructor} • {officeHourLive.duration}
+                </p>
+                <motion.button
+                  {...secondaryButtonMotion()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/app/office-hours');
+                  }}
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold text-xs bg-white cursor-pointer"
+                  style={{ color: '#8b5cf6' }}
+                >
+                  <Video size={14} />
+                  Join
+                </motion.button>
+              </motion.div>
+            )}
 
-                {/* Upcoming Sessions */}
-                {officeHourUpcoming.slice(0, 2).map((session) => (
-                  <motion.div
-                    key={session.id}
-                    {...cardHoverMotion()}
-                    className="border rounded-[10px] p-4 cursor-pointer"
-                    style={{ borderColor: CGI_COLORS.border }}
-                    onClick={() => navigate('/app/office-hours')}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <span
-                        className="px-2 py-1 rounded text-xs font-semibold"
-                        style={{ backgroundColor: '#dbeafe', color: '#1e40af' }}
-                      >
-                        New Lesson
-                      </span>
-                      <BookOpen size={16} style={{ color: CGI_COLORS.textSecondary }} />
-                    </div>
-                    <h3 style={{ fontSize: 16, fontWeight: 600, color: CGI_COLORS.textPrimary, marginBottom: 8 }}>
+            {/* Upcoming Sessions */}
+            {officeHourUpcoming.slice(0, 3).map((session, idx) => (
+              <motion.div
+                key={session.id}
+                {...cardHoverMotion()}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + idx * 0.05 }}
+                className="rounded-lg p-4 cursor-pointer"
+                style={{
+                  backgroundColor: '#f9fafb',
+                  border: '1px solid #e5e7eb',
+                }}
+                onClick={() => navigate('/app/office-hours')}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: '#ede9fe' }}>
+                    {idx === 0 ? <Video size={16} style={{ color: '#8b5cf6' }} /> : <Calendar size={16} style={{ color: '#8b5cf6' }} />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold mb-1" style={{ backgroundColor: '#ede9fe', color: '#6d28d9' }}>
+                      {idx === 0 ? 'New Lesson' : 'Community'}
+                    </span>
+                    <h4 className="text-sm font-semibold mb-1" style={{ color: 'var(--app-text-primary)' }}>
                       {session.title}
-                    </h3>
-                    <p className="text-sm mb-3" style={{ color: CGI_COLORS.textSecondary }}>
-                      {session.duration}
+                    </h4>
+                    <p className="text-xs mb-2" style={{ color: 'var(--app-text-muted)' }}>
+                      {session.date} • {session.time}
                     </p>
                     <motion.button
                       {...secondaryButtonMotion()}
-                      onClick={(e) => { e.stopPropagation(); navigate('/app/office-hours'); }}
-                      className="w-full px-4 py-2 rounded-[10px] font-medium text-sm border"
-                      style={{ borderColor: CGI_COLORS.border, color: CGI_COLORS.textPrimary }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate('/app/office-hours');
+                      }}
+                      className="text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer"
+                      style={{ backgroundColor: '#ffffff', color: '#8b5cf6', border: '1px solid #e5e7eb' }}
                     >
-                      Start
+                      {idx === 0 ? 'Start' : idx === 1 ? 'Join' : 'View'}
                     </motion.button>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.section>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.section>
 
-            {/* Announcements & Feedback */}
-            <motion.section
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="bg-white border rounded-[14px] p-6"
+          {/* Announcements & Feedback */}
+          <motion.section
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="rounded-xl p-5 md:p-6 flex flex-col gap-4"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            <h2 className="text-base sm:text-lg font-semibold" style={{ color: 'var(--app-text-primary)' }}>
+              Announcements & Feedback
+            </h2>
+
+            {/* Platform Update */}
+            <motion.div
+              {...cardHoverMotion()}
+              className="rounded-lg p-4 cursor-pointer"
               style={{
-                borderColor: CGI_COLORS.border,
-                boxShadow: '0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px rgba(0,0,0,0.1)',
+                backgroundColor: '#f9fafb',
+                border: '1px solid #e5e7eb',
               }}
             >
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: CGI_COLORS.textPrimary, marginBottom: 16 }}>
-                Announcements & Feedback
-              </h2>
-
-              <div className="space-y-4">
-                {announcements.map((item) => (
-                  <motion.div
-                    key={item.id}
-                    {...cardHoverMotion()}
-                    className="border rounded-[10px] p-4 cursor-pointer"
-                    style={{ borderColor: CGI_COLORS.border }}
-                  >
-                    <div className="flex items-start gap-3 mb-3">
-                      <div
-                        className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                        style={{
-                          backgroundColor:
-                            item.type === 'new'
-                              ? '#dbeafe'
-                              : item.type === 'action'
-                              ? '#fef3c7'
-                              : '#f3f4f6',
-                          color:
-                            item.type === 'new'
-                              ? '#1e40af'
-                              : item.type === 'action'
-                              ? '#92400e'
-                              : CGI_COLORS.textSecondary,
-                        }}
-                      >
-                        {item.icon}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 style={{ fontSize: 14, fontWeight: 600, color: CGI_COLORS.textPrimary }}>
-                            {item.title}
-                          </h3>
-                          {item.type === 'new' && (
-                            <span
-                              className="px-2 py-0.5 rounded text-xs font-semibold"
-                              style={{ backgroundColor: '#dbeafe', color: '#1e40af' }}
-                            >
-                              New
-                            </span>
-                          )}
-                          {item.type === 'action' && (
-                            <span
-                              className="px-2 py-0.5 rounded text-xs font-semibold"
-                              style={{ backgroundColor: '#fef3c7', color: '#92400e' }}
-                            >
-                              Action Needed
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm mb-3" style={{ color: CGI_COLORS.textSecondary }}>
-                          {item.description}
-                        </p>
-                        <motion.button
-                          {...secondaryButtonMotion()}
-                          className="px-4 py-1.5 rounded-[10px] font-medium text-xs border"
-                          style={{ borderColor: CGI_COLORS.border, color: CGI_COLORS.textPrimary }}
-                        >
-                          {item.action}
-                        </motion.button>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: '#dbeafe' }}>
+                  <Bell size={16} style={{ color: '#3b82f6' }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold mb-1" style={{ backgroundColor: '#dbeafe', color: '#1e40af' }}>
+                    New
+                  </span>
+                  <h4 className="text-sm font-semibold mb-1" style={{ color: 'var(--app-text-primary)' }}>
+                    Platform Update
+                  </h4>
+                  <p className="text-xs" style={{ color: 'var(--app-text-muted)' }}>
+                    New learning paths available
+                  </p>
+                </div>
               </div>
-            </motion.section>
-          </div>
-        </div>
+            </motion.div>
+
+            {/* Quick Survey */}
+            <motion.div
+              {...cardHoverMotion()}
+              className="rounded-lg p-4 cursor-pointer"
+              style={{
+                backgroundColor: '#fef3c7',
+                border: '1px solid #fde68a',
+              }}
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: '#fef3c7' }}>
+                  <MessageSquare size={16} style={{ color: '#f59e0b' }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold mb-1" style={{ backgroundColor: '#fde68a', color: '#92400e' }}>
+                    Action Needed
+                  </span>
+                  <h4 className="text-sm font-semibold mb-1" style={{ color: 'var(--app-text-primary)' }}>
+                    Quick Survey
+                  </h4>
+                  <p className="text-xs mb-2" style={{ color: 'var(--app-text-muted)' }}>
+                    Help us improve the course
+                  </p>
+                  <motion.button
+                    {...secondaryButtonMotion()}
+                    className="text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer"
+                    style={{ backgroundColor: '#ffffff', color: '#f59e0b', border: '1px solid #fde68a' }}
+                  >
+                    Take Survey
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Instructor Announcement */}
+            <motion.div
+              {...cardHoverMotion()}
+              className="rounded-lg p-4 cursor-pointer"
+              style={{
+                backgroundColor: '#f9fafb',
+                border: '1px solid #e5e7eb',
+              }}
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: '#e0e7ff' }}>
+                  <FileText size={16} style={{ color: '#6366f1' }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-semibold mb-1" style={{ color: 'var(--app-text-primary)' }}>
+                    Instructor Announcement
+                  </h4>
+                  <p className="text-xs" style={{ color: 'var(--app-text-muted)' }}>
+                    New office hours added
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.section>
+        </aside>
       </div>
     </div>
   );
