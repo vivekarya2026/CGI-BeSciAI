@@ -48,18 +48,67 @@ const focusAreas = [
   { id: 'pm', label: 'Project Management', icon: <FolderKanban size={16} /> },
 ];
 
-const commitments = [
-  { id: 'light', label: 'Light', desc: '10 min/day', emoji: '🌱' },
-  { id: 'moderate', label: 'Moderate', desc: '20 min/day', emoji: '🌿' },
-  { id: 'intensive', label: 'Intensive', desc: '30+ min/day', emoji: '🌳' },
-];
-
-const timelineOptions = [
-  { id: '2weeks', label: '2 Weeks', duration: 2, skills: 2, desc: 'Quick start basics', icon: <Zap size={24} /> },
-  { id: '1month', label: '1 Month', duration: 4, skills: 3, desc: 'Build foundation', icon: <TrendingUp size={24} /> },
-  { id: '3months', label: '3 Months', duration: 12, skills: 4, desc: 'Comprehensive learning', icon: <Brain size={24} /> },
-  { id: '6months', label: '6 Months', duration: 24, skills: 5, desc: 'Advanced mastery', icon: <Workflow size={24} /> },
-  { id: '1year', label: '1 Year', duration: 52, skills: 6, desc: 'Complete expertise', icon: <Sparkles size={24} /> },
+const learningPaths = [
+  {
+    id: 'quick-start',
+    title: 'Quick Start',
+    timeline: '2 Weeks',
+    commitment: 'Light',
+    dailyTime: '10 min/day',
+    duration: 2,
+    skills: 2,
+    desc: 'Perfect for busy schedules - get AI basics fast',
+    icon: <Zap size={24} />,
+    emoji: '🌱',
+  },
+  {
+    id: 'foundation',
+    title: 'Foundation Builder',
+    timeline: '1 Month',
+    commitment: 'Moderate',
+    dailyTime: '20 min/day',
+    duration: 4,
+    skills: 3,
+    desc: 'Balanced approach to build solid AI fundamentals',
+    icon: <TrendingUp size={24} />,
+    emoji: '🌿',
+  },
+  {
+    id: 'comprehensive',
+    title: 'Comprehensive Path',
+    timeline: '3 Months',
+    commitment: 'Moderate',
+    dailyTime: '20 min/day',
+    duration: 12,
+    skills: 4,
+    desc: 'Thorough learning with practical applications',
+    icon: <Brain size={24} />,
+    emoji: '🌿',
+  },
+  {
+    id: 'mastery',
+    title: 'Mastery Track',
+    timeline: '6 Months',
+    commitment: 'Intensive',
+    dailyTime: '30+ min/day',
+    duration: 24,
+    skills: 5,
+    desc: 'Deep dive into advanced AI capabilities',
+    icon: <Workflow size={24} />,
+    emoji: '🌳',
+  },
+  {
+    id: 'expert',
+    title: 'Expert Journey',
+    timeline: '1 Year',
+    commitment: 'Intensive',
+    dailyTime: '30+ min/day',
+    duration: 52,
+    skills: 6,
+    desc: 'Complete transformation to AI expert',
+    icon: <Sparkles size={24} />,
+    emoji: '🌳',
+  },
 ];
 
 // ============================================
@@ -73,8 +122,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [selectedFocus, setSelectedFocus] = useState<string[]>([]);
-  const [selectedTimeline, setSelectedTimeline] = useState<string | null>(null);
-  const [commitment, setCommitment] = useState<string | null>(null);
+  const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
 
   // -- Action: Toggle Focus Items --
@@ -94,7 +142,7 @@ export default function OnboardingPage() {
   const canProceed = () => {
     if (step === 1) return !!selectedGoal;             // Must have picked 1 goal
     if (step === 2) return selectedFocus.length >= 2;  // Must pick at least 2 focuses
-    if (step === 3) return !!selectedTimeline && !!commitment;  // Must select timeline and commitment
+    if (step === 3) return !!selectedPath;             // Must select a learning path
     return false;
   };
 
@@ -209,108 +257,90 @@ export default function OnboardingPage() {
             )}
 
             {/* ------------------------------------- */}
-            {/* STEP 3: Timeline Cards & Commitment   */}
+            {/* STEP 3: Choose Learning Path          */}
             {/* ------------------------------------- */}
             {step === 3 && (
               <motion.div key="step3" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.3 }}>
-                <h2 style={{ fontSize: 24, fontWeight: 600, color: '#151515' }} className="mb-2 text-center">Set Timeline & Commitment</h2>
-                <p style={{ fontSize: 16, color: '#5c5c5c' }} className="text-center mb-8">Choose your learning timeline and see projected skill growth</p>
+                <h2 style={{ fontSize: 24, fontWeight: 600, color: '#151515' }} className="mb-2 text-center">Choose Your Learning Path</h2>
+                <p style={{ fontSize: 16, color: '#5c5c5c' }} className="text-center mb-8">Select the journey that fits your schedule and learning goals</p>
 
-                {/* Timeline Card Selection */}
-                <div className="mb-8">
-                  <label style={{ fontSize: 14, fontWeight: 600, color: '#151515' }} className="block mb-4">Select Timeline</label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {timelineOptions.map((option) => {
-                      const isSelected = selectedTimeline === option.id;
-                      return (
-                        <motion.button
-                          key={option.id}
-                          whileHover={{ y: -4, scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => setSelectedTimeline(option.id)}
-                          className="p-5 rounded-xl border-2 bg-white text-left cursor-pointer transition-all"
-                          style={{
-                            borderColor: isSelected ? '#8b5cf6' : '#e5e7eb',
-                            boxShadow: isSelected ? '0 8px 24px rgba(139,92,246,0.2)' : '0 1px 3px rgba(0,0,0,0.04)',
-                          }}
-                        >
-                          <div className="flex items-center justify-between mb-3">
-                            <div
-                              className="w-12 h-12 rounded-xl flex items-center justify-center"
-                              style={{ backgroundColor: isSelected ? '#ede9fe' : '#f3f4f6', color: isSelected ? '#8b5cf6' : '#6b7280' }}
-                            >
-                              {option.icon}
-                            </div>
-                            {isSelected && (
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                className="w-6 h-6 rounded-full flex items-center justify-center"
-                                style={{ backgroundColor: '#8b5cf6' }}
-                              >
-                                <Check size={14} className="text-white" />
-                              </motion.div>
-                            )}
-                          </div>
-
-                          <h3 style={{ fontSize: 18, fontWeight: 600, color: '#151515', marginBottom: 4 }}>
-                            {option.label}
-                          </h3>
-                          <p style={{ fontSize: 13, color: '#767676', marginBottom: 8 }}>
-                            {option.desc}
-                          </p>
-
-                          {/* Projected skill growth visualization */}
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#f3f4f6' }}>
-                              <motion.div
-                                className="h-full rounded-full"
-                                style={{ backgroundColor: isSelected ? '#8b5cf6' : '#d1d5db' }}
-                                initial={{ width: 0 }}
-                                animate={{ width: isSelected ? `${(option.skills / 6) * 100}%` : '0%' }}
-                                transition={{ duration: 0.8, ease: 'easeOut' }}
-                              />
-                            </div>
-                          </div>
-                          <p style={{ fontSize: 11, color: '#9ca3af' }}>
-                            Gain {option.skills} skills • {option.duration} weeks
-                          </p>
-                        </motion.button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Daily Commitment Choices */}
-                <label style={{ fontSize: 14, fontWeight: 600, color: '#151515' }} className="block mb-4">Daily Commitment</label>
-                <div className="grid grid-cols-3 gap-4">
-                  {commitments.map((c) => {
-                    const isSelected = commitment === c.id;
+                {/* Learning Path Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {learningPaths.map((path) => {
+                    const isSelected = selectedPath === path.id;
                     return (
                       <motion.button
-                        key={c.id}
-                        whileHover={{ y: -2, scale: 1.02 }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={() => setCommitment(c.id)}
-                        className="p-5 rounded-xl border-2 bg-white text-center cursor-pointer transition-all"
+                        key={path.id}
+                        whileHover={{ y: -4, scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setSelectedPath(path.id)}
+                        className="p-5 rounded-xl border-2 bg-white text-left cursor-pointer transition-all relative"
                         style={{
                           borderColor: isSelected ? '#8b5cf6' : '#e5e7eb',
-                          boxShadow: isSelected ? '0 4px 12px rgba(139,92,246,0.15)' : '0 1px 3px rgba(0,0,0,0.04)',
+                          boxShadow: isSelected ? '0 8px 24px rgba(139,92,246,0.2)' : '0 1px 3px rgba(0,0,0,0.04)',
                         }}
                       >
-                        <div className="text-2xl mb-2">{c.emoji}</div>
-                        <div style={{ fontSize: 16, fontWeight: 600, color: '#151515' }}>{c.label}</div>
-                        <div style={{ fontSize: 12, color: '#767676' }}>{c.desc}</div>
-                        {isSelected && (
-                          <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center"
-                            style={{ backgroundColor: '#8b5cf6' }}
+                        {/* Header: Icon + Checkmark */}
+                        <div className="flex items-center justify-between mb-3">
+                          <div
+                            className="w-12 h-12 rounded-xl flex items-center justify-center"
+                            style={{ backgroundColor: isSelected ? '#ede9fe' : '#f3f4f6', color: isSelected ? '#8b5cf6' : '#6b7280' }}
                           >
-                            <Check size={12} className="text-white" />
-                          </motion.div>
-                        )}
+                            {path.icon}
+                          </div>
+                          {isSelected && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="w-6 h-6 rounded-full flex items-center justify-center"
+                              style={{ backgroundColor: '#8b5cf6' }}
+                            >
+                              <Check size={14} className="text-white" />
+                            </motion.div>
+                          )}
+                        </div>
+
+                        {/* Title */}
+                        <h3 style={{ fontSize: 18, fontWeight: 600, color: '#151515', marginBottom: 6 }}>
+                          {path.title}
+                        </h3>
+
+                        {/* Timeline + Commitment Badge */}
+                        <div className="flex items-center gap-2 mb-3">
+                          <span
+                            className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
+                            style={{
+                              backgroundColor: isSelected ? '#ede9fe' : '#f3f4f6',
+                              color: isSelected ? '#8b5cf6' : '#6b7280',
+                            }}
+                          >
+                            {path.timeline} • {path.dailyTime}
+                          </span>
+                          <span className="text-lg">{path.emoji}</span>
+                        </div>
+
+                        {/* Description */}
+                        <p style={{ fontSize: 13, color: '#767676', marginBottom: 10, lineHeight: 1.5 }}>
+                          {path.desc}
+                        </p>
+
+                        {/* Skill Growth Progress Bar */}
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#f3f4f6' }}>
+                            <motion.div
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: isSelected ? '#8b5cf6' : '#d1d5db' }}
+                              initial={{ width: 0 }}
+                              animate={{ width: isSelected ? `${(path.skills / 6) * 100}%` : '0%' }}
+                              transition={{ duration: 0.8, ease: 'easeOut' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Footer: Skills + Duration */}
+                        <p style={{ fontSize: 11, color: '#9ca3af' }}>
+                          Gain {path.skills} skills • {path.duration} weeks
+                        </p>
                       </motion.button>
                     );
                   })}
