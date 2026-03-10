@@ -11,7 +11,7 @@ import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import {
   Target, Trophy, Flame, Star, Clock, Users, Search,
-  ChevronRight, CheckCircle2, Play, Calendar, TrendingUp,
+  ChevronRight, ChevronDown, CheckCircle2, Play, Calendar, TrendingUp,
 } from 'lucide-react';
 import {
   challenges,
@@ -279,22 +279,25 @@ export default function ChallengesPage() {
         </div>
 
         {/* Filter by Type Dropdown */}
-        <select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value)}
-          className="px-4 py-3 rounded-lg text-sm cursor-pointer outline-none"
-          style={{
-            backgroundColor: '#ffffff',
-            border: '1px solid #e5e7eb',
-            color: 'var(--app-text-primary)',
-          }}
-        >
-          <option value="all">Filter by type - All</option>
-          <option value="daily">Daily</option>
-          <option value="weekly">Weekly</option>
-          <option value="skill">Track</option>
-          <option value="community">Assigned</option>
-        </select>
+        <div className="relative">
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="appearance-none pl-4 pr-10 py-3 rounded-lg text-sm font-medium cursor-pointer outline-none"
+            style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e5e7eb',
+              color: 'var(--app-text-primary)',
+            }}
+          >
+            <option value="all">Filter by type - All</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="skill">Track</option>
+            <option value="community">Assigned</option>
+          </select>
+          <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+        </div>
       </div>
 
       {/* ============================================ */}

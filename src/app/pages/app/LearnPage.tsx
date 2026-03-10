@@ -227,56 +227,65 @@ export default function LearnPage() {
 
             {/* Filters */}
             <div className="flex flex-wrap gap-3 mb-6">
-              <select
-                value={trainingSubjectFilter}
-                onChange={(e) => setTrainingSubjectFilter(e.target.value)}
-                className="px-4 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e7eb',
-                  color: 'var(--app-text-primary)',
-                }}
-              >
-                {subjects.map(subject => (
-                  <option key={subject} value={subject}>
-                    {subject === 'all' ? 'All Subject' : subject}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  value={trainingSubjectFilter}
+                  onChange={(e) => setTrainingSubjectFilter(e.target.value)}
+                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
+                  style={{
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
+                    color: 'var(--app-text-primary)',
+                  }}
+                >
+                  {subjects.map(subject => (
+                    <option key={subject} value={subject}>
+                      {subject === 'all' ? 'All Subject' : subject}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+              </div>
 
-              <select
-                value={trainingFormatFilter}
-                onChange={(e) => setTrainingFormatFilter(e.target.value)}
-                className="px-4 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e7eb',
-                  color: 'var(--app-text-primary)',
-                }}
-              >
-                {formats.map(format => (
-                  <option key={format} value={format}>
-                    {format === 'all' ? 'All Format' : format}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  value={trainingFormatFilter}
+                  onChange={(e) => setTrainingFormatFilter(e.target.value)}
+                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
+                  style={{
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
+                    color: 'var(--app-text-primary)',
+                  }}
+                >
+                  {formats.map(format => (
+                    <option key={format} value={format}>
+                      {format === 'all' ? 'All Format' : format}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+              </div>
 
-              <select
-                value={trainingLevelFilter}
-                onChange={(e) => setTrainingLevelFilter(e.target.value)}
-                className="px-4 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e7eb',
-                  color: 'var(--app-text-primary)',
-                }}
-              >
-                {levels.map(level => (
-                  <option key={level} value={level}>
-                    {level === 'all' ? 'All Level' : level}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  value={trainingLevelFilter}
+                  onChange={(e) => setTrainingLevelFilter(e.target.value)}
+                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
+                  style={{
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
+                    color: 'var(--app-text-primary)',
+                  }}
+                >
+                  {levels.map(level => (
+                    <option key={level} value={level}>
+                      {level === 'all' ? 'All Level' : level}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+              </div>
             </div>
 
             {/* Training Grid - 3 columns */}
@@ -484,54 +493,63 @@ export default function LearnPage() {
 
             {/* Filters */}
             <div className="flex flex-wrap gap-3 mb-6">
-              <select
-                value={microTopicFilter}
-                onChange={(e) => setMicroTopicFilter(e.target.value)}
-                className="px-4 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e7eb',
-                  color: 'var(--app-text-primary)',
-                }}
-              >
-                {topics.map(topic => (
-                  <option key={topic} value={topic}>
-                    {topic === 'all' ? 'All Topic' : topic}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  value={microTopicFilter}
+                  onChange={(e) => setMicroTopicFilter(e.target.value)}
+                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm font-medium cursor-pointer outline-none"
+                  style={{
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
+                    color: 'var(--app-text-primary)',
+                  }}
+                >
+                  {topics.map(topic => (
+                    <option key={topic} value={topic}>
+                      {topic === 'all' ? 'All Topic' : topic}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+              </div>
 
-              <select
-                value={microToolFilter}
-                onChange={(e) => setMicroToolFilter(e.target.value)}
-                className="px-4 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e7eb',
-                  color: 'var(--app-text-primary)',
-                }}
-              >
-                {tools.map(tool => (
-                  <option key={tool} value={tool}>
-                    {tool === 'all' ? 'All Tool' : tool}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  value={microToolFilter}
+                  onChange={(e) => setMicroToolFilter(e.target.value)}
+                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm font-medium cursor-pointer outline-none"
+                  style={{
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
+                    color: 'var(--app-text-primary)',
+                  }}
+                >
+                  {tools.map(tool => (
+                    <option key={tool} value={tool}>
+                      {tool === 'all' ? 'All Tool' : tool}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+              </div>
 
-              <select
-                value={microSortFilter}
-                onChange={(e) => setMicroSortFilter(e.target.value)}
-                className="px-4 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e7eb',
-                  color: 'var(--app-text-primary)',
-                }}
-              >
-                <option value="default">Default</option>
-                <option value="recent">Recent</option>
-                <option value="popular">Popular</option>
-              </select>
+              <div className="relative">
+                <select
+                  value={microSortFilter}
+                  onChange={(e) => setMicroSortFilter(e.target.value)}
+                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm font-medium cursor-pointer outline-none"
+                  style={{
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
+                    color: 'var(--app-text-primary)',
+                  }}
+                >
+                  <option value="default">Default</option>
+                  <option value="recent">Recent</option>
+                  <option value="popular">Popular</option>
+                </select>
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+              </div>
             </div>
 
             {/* Micro-learning Grid - 3 columns, 6 items */}
