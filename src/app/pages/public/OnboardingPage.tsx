@@ -21,7 +21,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  TrendingUp, Sparkles, Brain, Workflow,
+  TrendingUp, Sparkles, Brain, Workflow, Zap,
   PenTool, BarChart3, Code, Search, Palette, FolderKanban,
   ArrowLeft, ArrowRight, Rocket, Check,
 } from 'lucide-react';
