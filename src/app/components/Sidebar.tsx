@@ -169,7 +169,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                     handleNavClick(item.path);
                   }
                 }}
-                className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left cursor-pointer min-h-[44px]"
+                className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left cursor-pointer min-h-[44px] hover:bg-[#f3f4f6]"
                 style={{
                   backgroundColor: (isActive && !isLearnItem) ? 'var(--app-brand-light)' : 'transparent',
                   color: (isActive && !isLearnItem) ? '#8b5cf6' : 'var(--app-text-secondary)',
@@ -177,19 +177,20 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
               >
                 <item.icon
                   size={20}
-                  className="shrink-0"
+                  className="shrink-0 group-hover:text-[#8b5cf6] transition-colors"
                   style={{ color: (isActive && !isLearnItem) ? '#8b5cf6' : 'var(--app-text-muted)' }}
                 />
 
                 {(isMobile || !collapsed) && (
                   <>
-                    <span className="whitespace-nowrap overflow-hidden text-sm flex-1" style={{ fontWeight: isActive ? 600 : 500 }}>
+                    <span className="whitespace-nowrap overflow-hidden text-sm flex-1 group-hover:text-[#8b5cf6] transition-colors" style={{ fontWeight: isActive ? 600 : 500 }}>
                       {item.label}
                     </span>
                     {hasSubItems && (
                       <motion.div
                         animate={{ rotate: learnExpanded ? 180 : 0 }}
                         transition={{ duration: 0.2 }}
+                        className="group-hover:text-[#8b5cf6] transition-colors"
                       >
                         <ChevronDown size={16} style={{ color: 'var(--app-text-muted)' }} />
                       </motion.div>
@@ -223,13 +224,13 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                         key={subItem.path}
                         {...secondaryButtonMotion()}
                         onClick={() => handleNavClick(subItem.path)}
-                        className="flex items-center gap-3 pl-12 pr-3 py-2.5 rounded-lg transition-colors w-full text-left cursor-pointer"
+                        className="flex items-center gap-3 pl-12 pr-3 py-2.5 rounded-lg transition-colors w-full text-left cursor-pointer group hover:bg-[#f3f4f6]"
                         style={{
                           backgroundColor: isSubActive ? '#f3f4f6' : 'transparent',
                           color: isSubActive ? '#8b5cf6' : 'var(--app-text-secondary)',
                         }}
                       >
-                        <span className="text-sm" style={{ fontWeight: isSubActive ? 600 : 400 }}>
+                        <span className="text-sm group-hover:text-[#8b5cf6] transition-colors" style={{ fontWeight: isSubActive ? 600 : 400 }}>
                           {subItem.label}
                         </span>
                       </motion.button>
