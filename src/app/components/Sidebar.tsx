@@ -171,7 +171,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                 }}
                 className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left cursor-pointer min-h-[44px]"
                 style={{
-                  backgroundColor: isActive ? 'var(--app-brand-light)' : 'transparent',
+                  backgroundColor: (isActive && !isLearnItem) ? 'var(--app-brand-light)' : 'transparent',
                   color: isActive ? '#8b5cf6' : 'var(--app-text-secondary)',
                 }}
               >
