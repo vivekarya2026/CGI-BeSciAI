@@ -172,13 +172,13 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                 className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left cursor-pointer min-h-[44px]"
                 style={{
                   backgroundColor: (isActive && !isLearnItem) ? 'var(--app-brand-light)' : 'transparent',
-                  color: isActive ? '#8b5cf6' : 'var(--app-text-secondary)',
+                  color: (isActive && !isLearnItem) ? '#8b5cf6' : 'var(--app-text-secondary)',
                 }}
               >
                 <item.icon
                   size={20}
                   className="shrink-0"
-                  style={{ color: isActive ? '#8b5cf6' : 'var(--app-text-muted)' }}
+                  style={{ color: (isActive && !isLearnItem) ? '#8b5cf6' : 'var(--app-text-muted)' }}
                 />
 
                 {(isMobile || !collapsed) && (
