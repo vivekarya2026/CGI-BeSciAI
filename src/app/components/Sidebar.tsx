@@ -28,7 +28,7 @@
  * `navItems` array below with an icon, label, and path.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import {
   Home,
@@ -37,6 +37,7 @@ import {
   Target,
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
   LogOut,
   X,
   Library,
@@ -64,14 +65,30 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: SidebarProps) {
   const navigate = useNavigate();
-  const location = useLocation();   // Tells us the current URL path
-  const { logout } = useUser();
+  const location = useLocation();
+  const { logout, user } = useUser();
+  const [learnExpanded, setLearnExpanded] = useState(true);
 
-  // ---- Navigation Items ----
-  type NavItem = { icon: React.ComponentType<{ size?: number; className?: string }>; label: string; path: string };
+  // ---- Navigation Items with Sub-items ----
+  type SubItem = { label: string; path: string };
+  type NavItem = { 
+    icon: React.ComponentType<{ size?: number; className?: string }>; 
+    label: string; 
+    path: string;
+    subItems?: SubItem[];
+  };
+  
   const navItems: NavItem[] = [
-    { icon: Home, label: 'Dashboard', path: '/app/dashboard' },
-    { icon: BookOpen, label: 'Learn', path: '/app/learn' },
+    { icon: Home, label: 'Home', path: '/app/dashboard' },
+    { 
+      icon: BookOpen, 
+      label: 'Learn', 
+      path: '/app/learn',
+      subItems: [
+        { label: 'Trainings', path: '/app/learn?tab=trainings' },
+        { label: 'Micro-learnings', path: '/app/learn?tab=micro' },
+      ]
+    },
     { icon: Target, label: 'Challenges', path: '/app/challenges' },
     { icon: Library, label: 'Resources', path: '/app/resources' },
     { icon: Users, label: 'Community', path: '/app/community' },
@@ -81,6 +98,14 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
   const handleNavClick = (path: string) => {
     navigate(path);
     setMobileOpen(false);
+  };
+
+  // ---- Handle Learn Toggle ----
+  const handleLearnToggle = () => {
+    if (collapsed) {
+      setCollapsed(false);
+    }
+    setLearnExpanded(!learnExpanded);
   };
 
   // ============================================
@@ -124,76 +149,142 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
       </div>
 
       {/* ---- Navigation Links ---- */}
-      <nav className="flex-1 py-6 flex flex-col gap-2 px-2">
+      <nav className="flex-1 py-6 flex flex-col gap-1 px-2 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = item.path === '/app/learn' ? location.pathname.startsWith('/app/learn') : (location.pathname === item.path || location.pathname.startsWith(item.path + '/'));
+          const isActive = item.path === '/app/learn' 
+            ? location.pathname.startsWith('/app/learn') 
+            : (location.pathname === item.path || location.pathname.startsWith(item.path + '/'));
+          const hasSubItems = item.subItems && item.subItems.length > 0;
+          const isLearnItem = item.label === 'Learn';
+
           return (
-            <motion.button
-              {...secondaryButtonMotion()}
-              key={item.path}
-              onClick={() => handleNavClick(item.path)}
-              className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left cursor-pointer min-h-[44px]"
-              style={{
-                backgroundColor: isActive ? 'var(--app-brand-light)' : 'transparent',
-                color: isActive ? '#5236ab' : 'var(--app-text-secondary)',
-              }}
-            >
-              {/* Nav icon */}
-              <item.icon
-                size={20}
-                className="shrink-0"
-                style={{ color: isActive ? '#5236ab' : 'var(--app-text-muted)' }}
-              />
-
-              {/* Nav label (hidden when collapsed on desktop); bold when active per CGI guidelines */}
-              {(isMobile || !collapsed) && (
-                <span className="whitespace-nowrap overflow-hidden text-sm" style={{ fontWeight: isActive ? 700 : 500 }}>
-                  {item.label}
-                </span>
-              )}
-
-              {/* Tooltip popup (only when desktop sidebar is collapsed) */}
-              {!isMobile && collapsed && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
-                  {item.label}
-                </div>
-              )}
-
-              {/* Purple active indicator bar on the left */}
-              {isActive && (isMobile || !collapsed) && (
-                <motion.div
-                  layoutId={isMobile ? "mobileActiveIndicator" : "activeIndicator"}
-                  className="absolute left-0 w-1 h-6 bg-[#5236ab] rounded-r-full"
+            <div key={item.path}>
+              {/* Main Nav Item */}
+              <motion.button
+                {...secondaryButtonMotion()}
+                onClick={() => {
+                  if (isLearnItem) {
+                    handleLearnToggle();
+                  } else {
+                    handleNavClick(item.path);
+                  }
+                }}
+                className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left cursor-pointer min-h-[44px]"
+                style={{
+                  backgroundColor: isActive ? 'var(--app-brand-light)' : 'transparent',
+                  color: isActive ? '#8b5cf6' : 'var(--app-text-secondary)',
+                }}
+              >
+                <item.icon
+                  size={20}
+                  className="shrink-0"
+                  style={{ color: isActive ? '#8b5cf6' : 'var(--app-text-muted)' }}
                 />
+
+                {(isMobile || !collapsed) && (
+                  <>
+                    <span className="whitespace-nowrap overflow-hidden text-sm flex-1" style={{ fontWeight: isActive ? 600 : 500 }}>
+                      {item.label}
+                    </span>
+                    {hasSubItems && (
+                      <motion.div
+                        animate={{ rotate: learnExpanded ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <ChevronDown size={16} style={{ color: 'var(--app-text-muted)' }} />
+                      </motion.div>
+                    )}
+                  </>
+                )}
+
+                {!isMobile && collapsed && (
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                    {item.label}
+                  </div>
+                )}
+              </motion.button>
+
+              {/* Sub-items (only for Learn) */}
+              {hasSubItems && learnExpanded && (isMobile || !collapsed) && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  {item.subItems!.map((subItem) => {
+                    const isSubActive = location.pathname.startsWith('/app/learn') && 
+                      (location.search.includes(subItem.path.split('?')[1]) || 
+                       (subItem.label === 'Trainings' && !location.search));
+                    
+                    return (
+                      <motion.button
+                        key={subItem.path}
+                        {...secondaryButtonMotion()}
+                        onClick={() => handleNavClick(subItem.path)}
+                        className="flex items-center gap-3 pl-12 pr-3 py-2.5 rounded-lg transition-colors w-full text-left cursor-pointer"
+                        style={{
+                          backgroundColor: isSubActive ? '#f3f4f6' : 'transparent',
+                          color: isSubActive ? '#8b5cf6' : 'var(--app-text-secondary)',
+                        }}
+                      >
+                        <span className="text-sm" style={{ fontWeight: isSubActive ? 600 : 400 }}>
+                          {subItem.label}
+                        </span>
+                      </motion.button>
+                    );
+                  })}
+                </motion.div>
               )}
-            </motion.button>
+            </div>
           );
         })}
       </nav>
 
-      {/* ---- Footer Actions ---- */}
+      {/* ---- Footer: User Profile + Actions ---- */}
       <div className="p-2 flex flex-col gap-2" style={{ borderTop: '1px solid var(--app-border)' }}>
+        {/* User Profile */}
+        {(isMobile || !collapsed) && (
+          <div className="px-3 py-2 flex items-center gap-3">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold text-white"
+              style={{ backgroundColor: '#8b5cf6' }}
+            >
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'JD'}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold truncate" style={{ color: 'var(--app-text-primary)' }}>
+                {user?.name || 'Jane Doe'}
+              </div>
+              <div className="text-xs truncate" style={{ color: 'var(--app-text-muted)' }}>
+                {user?.email || 'jane@example.com'}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Collapse toggle (desktop only) */}
         {!isMobile && (
           <motion.button
             {...secondaryButtonMotion()}
             onClick={() => setCollapsed(!collapsed)}
-            className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors w-full cursor-pointer"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full cursor-pointer"
             style={{ color: 'var(--app-text-muted)' }}
           >
-            {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
             {!collapsed && (
-              <span className="whitespace-nowrap overflow-hidden text-sm font-medium">
+              <span className="whitespace-nowrap overflow-hidden text-xs font-medium">
                 Collapse
               </span>
             )}
           </motion.button>
         )}
 
-        {/* Sign Out button */}
+        {/* Logout button */}
         <motion.button
           {...secondaryButtonMotion()}
-          className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors w-full cursor-pointer"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full cursor-pointer"
           style={{ color: 'var(--app-text-muted)' }}
           onClick={() => {
             logout();
@@ -201,10 +292,10 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
             setMobileOpen(false);
           }}
         >
-          <LogOut size={20} />
+          <LogOut size={18} />
           {(isMobile || !collapsed) && (
-            <span className="whitespace-nowrap overflow-hidden text-sm font-medium">
-              Sign Out
+            <span className="whitespace-nowrap overflow-hidden text-xs font-medium">
+              Logout
             </span>
           )}
         </motion.button>
