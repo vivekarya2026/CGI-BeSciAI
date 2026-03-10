@@ -262,21 +262,10 @@ export default function OnboardingPage() {
             {step === 3 && (
               <motion.div key="step3" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.3 }}>
                 <h2 style={{ fontSize: 24, fontWeight: 600, color: '#151515' }} className="mb-2 text-center">Choose Your Learning Path</h2>
-                <p style={{ fontSize: 16, color: '#5c5c5c' }} className="text-center mb-3">Select the journey that fits your schedule and learning goals</p>
-                
-                {/* Helpful Notes */}
-                <div className="max-w-2xl mx-auto mb-6">
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-sm">
-                    <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg" style={{ backgroundColor: '#f0fdf4', color: '#166534' }}>
-                      <Sparkles size={16} />
-                      <span>You can update your goals anytime</span>
-                    </div>
-                    <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg" style={{ backgroundColor: '#fef3c7', color: '#92400e' }}>
-                      <TrendingUp size={16} />
-                      <span>Higher daily commitment = Faster completion</span>
-                    </div>
-                  </div>
-                </div>
+                <p style={{ fontSize: 16, color: '#5c5c5c' }} className="text-center mb-2">Select the journey that fits your schedule and learning goals</p>
+                <p style={{ fontSize: 13, color: '#9ca3af' }} className="text-center mb-8">
+                  💡 Don't worry, you can update your goals and preferences anytime from your dashboard
+                </p>
 
                 {/* Learning Path Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -289,15 +278,11 @@ export default function OnboardingPage() {
                         whileHover={{ y: -4, scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setSelectedPath(path.id)}
-                        className="p-5 rounded-xl border-2 bg-white text-left cursor-pointer transition-all relative"
+                        className="p-5 rounded-xl border-2 text-left cursor-pointer transition-all relative"
                         style={{
-                          borderColor: isSelected ? '#8b5cf6' : isRecommended ? '#22c55e' : '#e5e7eb',
-                          boxShadow: isSelected 
-                            ? '0 8px 24px rgba(139,92,246,0.2)' 
-                            : isRecommended 
-                              ? '0 4px 16px rgba(34,197,94,0.15)' 
-                              : '0 1px 3px rgba(0,0,0,0.04)',
-                          background: isRecommended && !isSelected ? 'linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%)' : '#ffffff',
+                          backgroundColor: isRecommended && !isSelected ? '#fefce8' : 'white',
+                          borderColor: isSelected ? '#8b5cf6' : isRecommended ? '#eab308' : '#e5e7eb',
+                          boxShadow: isSelected ? '0 8px 24px rgba(139,92,246,0.2)' : isRecommended ? '0 4px 16px rgba(234,179,8,0.15)' : '0 1px 3px rgba(0,0,0,0.04)',
                         }}
                       >
                         {/* Recommended Badge */}
@@ -305,11 +290,14 @@ export default function OnboardingPage() {
                           <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1"
-                            style={{ backgroundColor: '#22c55e', color: 'white', boxShadow: '0 2px 8px rgba(34,197,94,0.3)' }}
+                            className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+                            style={{
+                              backgroundColor: '#eab308',
+                              color: 'white',
+                              boxShadow: '0 2px 8px rgba(234,179,8,0.3)',
+                            }}
                           >
-                            <Sparkles size={12} />
-                            Recommended
+                            ⭐ Recommended
                           </motion.div>
                         )}
 
