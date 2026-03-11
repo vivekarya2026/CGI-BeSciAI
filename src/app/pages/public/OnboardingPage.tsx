@@ -21,7 +21,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  TrendingUp, Sparkles, Brain, Workflow,
+  TrendingUp, Sparkles, Brain, Workflow, Zap,
   PenTool, BarChart3, Code, Search, Palette, FolderKanban,
   ArrowLeft, ArrowRight, Rocket, Check,
 } from 'lucide-react';
@@ -48,10 +48,67 @@ const focusAreas = [
   { id: 'pm', label: 'Project Management', icon: <FolderKanban size={16} /> },
 ];
 
-const commitments = [
-  { id: 'light', label: 'Light', desc: '10 min/day', emoji: '🌱' },
-  { id: 'moderate', label: 'Moderate', desc: '20 min/day', emoji: '🌿' },
-  { id: 'intensive', label: 'Intensive', desc: '30+ min/day', emoji: '🌳' },
+const learningPaths = [
+  {
+    id: 'quick-start',
+    title: 'Quick Start',
+    timeline: '6 Weeks',
+    commitment: 'Light',
+    dailyTime: '10 min/day',
+    duration: 6,
+    skills: 3,
+    desc: 'Perfect for busy schedules - steady progress at your pace',
+    icon: <Zap size={24} />,
+    emoji: '🌱',
+  },
+  {
+    id: 'foundation',
+    title: 'Foundation Builder',
+    timeline: '1 Month',
+    commitment: 'Moderate',
+    dailyTime: '20 min/day',
+    duration: 4,
+    skills: 3,
+    desc: 'Balanced approach to build solid AI fundamentals faster',
+    icon: <TrendingUp size={24} />,
+    emoji: '🌿',
+  },
+  {
+    id: 'comprehensive',
+    title: 'Comprehensive Path',
+    timeline: '2 Months',
+    commitment: 'Moderate',
+    dailyTime: '20 min/day',
+    duration: 8,
+    skills: 4,
+    desc: 'Thorough learning with practical applications',
+    icon: <Brain size={24} />,
+    emoji: '🌿',
+  },
+  {
+    id: 'mastery',
+    title: 'Mastery Track',
+    timeline: '6 Weeks',
+    commitment: 'Intensive',
+    dailyTime: '30+ min/day',
+    duration: 6,
+    skills: 5,
+    desc: 'Deep dive into advanced AI - accelerated learning',
+    icon: <Workflow size={24} />,
+    emoji: '🌳',
+  },
+  {
+    id: 'expert',
+    title: 'Expert Journey',
+    timeline: '3 Months',
+    commitment: 'Intensive',
+    dailyTime: '30+ min/day',
+    duration: 12,
+    skills: 6,
+    desc: 'Complete transformation to AI expert with intensive focus',
+    icon: <Sparkles size={24} />,
+    emoji: '🌳',
+  },
 ];
 
 // ============================================
@@ -65,8 +122,8 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
   const [selectedFocus, setSelectedFocus] = useState<string[]>([]);
-  const [timeline, setTimeline] = useState(4); // default: 4 weeks
-  const [commitment, setCommitment] = useState<string | null>(null);
+  const [selectedPath, setSelectedPath] = useState<string | null>(null);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   // -- Action: Toggle Focus Items --
   // This allows multiple selections, up to a maximum of 4
@@ -85,23 +142,28 @@ export default function OnboardingPage() {
   const canProceed = () => {
     if (step === 1) return !!selectedGoal;             // Must have picked 1 goal
     if (step === 2) return selectedFocus.length >= 2;  // Must pick at least 2 focuses
-    if (step === 3) return !!commitment;               // Must select a daily commitment
+    if (step === 3) return !!selectedPath;             // Must select a learning path
     return false;
   };
 
   // -- Action: Finish Onboarding --
-  // Sends them into the Learn hub to start their journey
+  // Show celebration then redirect to Dashboard
   const handleLaunch = () => {
     try {
-      // Mark that the user just completed onboarding so we can
-      // trigger the post-onboarding challenge walkthrough once.
       if (typeof window !== 'undefined') {
         window.localStorage.setItem('post_onboarding_challenge_tour', 'true');
       }
     } catch {
-      // Ignore storage errors in demo mode
+      // Ignore storage errors
     }
-    navigate('/app/learn');
+    
+    // Show celebration animation
+    setShowCelebration(true);
+    
+    // Redirect to Dashboard after animation
+    setTimeout(() => {
+      navigate('/app/dashboard');
+    }, 2000);
   };
 
   // ============================================
@@ -195,41 +257,111 @@ export default function OnboardingPage() {
             )}
 
             {/* ------------------------------------- */}
-            {/* STEP 3: Timeline & Commitment Range   */}
+            {/* STEP 3: Choose Learning Path          */}
             {/* ------------------------------------- */}
             {step === 3 && (
               <motion.div key="step3" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.3 }}>
-                <h2 style={{ fontSize: 24, fontWeight: 600, color: '#151515' }} className="mb-2 text-center">Set Timeline & Commitment</h2>
-                <p style={{ fontSize: 16, color: '#5c5c5c' }} className="text-center mb-10">How much time can you dedicate to your AI journey?</p>
+                <h2 style={{ fontSize: 24, fontWeight: 600, color: '#151515' }} className="mb-2 text-center">Choose Your Learning Path</h2>
+                <p style={{ fontSize: 16, color: '#5c5c5c' }} className="text-center mb-2">Select the journey that fits your schedule and learning goals</p>
+                <p style={{ fontSize: 13, color: '#9ca3af' }} className="text-center mb-8">
+                  💡 Don't worry, you can update your goals and preferences anytime from your dashboard
+                </p>
 
-                {/* Range Slider for Timeline */}
-                <div className="mb-10">
-                  <label style={{ fontSize: 14, fontWeight: 600, color: '#151515' }} className="block mb-4">Timeline: {timeline} weeks</label>
-                  <input
-                    type="range" min={2} max={12} value={timeline}
-                    onChange={(e) => setTimeline(Number(e.target.value))}
-                    className="w-full accent-[#5236ab]" style={{ height: 6 }}
-                  />
-                  <div className="flex justify-between mt-1">
-                    <span style={{ fontSize: 12, color: '#a8a8a8' }}>2 weeks</span>
-                    <span style={{ fontSize: 12, color: '#a8a8a8' }}>3 months</span>
-                  </div>
-                </div>
-
-                {/* Daily Commitment Choices */}
-                <label style={{ fontSize: 14, fontWeight: 600, color: '#151515' }} className="block mb-4">Daily Commitment</label>
-                <div className="grid grid-cols-3 gap-4">
-                  {commitments.map((c) => {
-                    const isSelected = commitment === c.id;
+                {/* Learning Path Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {learningPaths.map((path) => {
+                    const isSelected = selectedPath === path.id;
+                    const isRecommended = path.id === 'quick-start';
                     return (
                       <motion.button
-                        key={c.id} whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => setCommitment(c.id)}
-                        className="p-5 rounded-xl border-2 bg-white text-center cursor-pointer transition-all"
-                        style={{ borderColor: isSelected ? '#5236ab' : '#e5e7eb', boxShadow: isSelected ? '0 4px 12px rgba(82,54,171,0.12)' : '0 1px 3px rgba(0,0,0,0.04)' }}
+                        key={path.id}
+                        whileHover={{ y: -4, scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setSelectedPath(path.id)}
+                        className="p-5 rounded-xl border-2 text-left cursor-pointer transition-all relative"
+                        style={{
+                          backgroundColor: isRecommended && !isSelected ? '#fefce8' : 'white',
+                          borderColor: isSelected ? '#8b5cf6' : isRecommended ? '#eab308' : '#e5e7eb',
+                          boxShadow: isSelected ? '0 8px 24px rgba(139,92,246,0.2)' : isRecommended ? '0 4px 16px rgba(234,179,8,0.15)' : '0 1px 3px rgba(0,0,0,0.04)',
+                        }}
                       >
-                        <div className="text-2xl mb-2">{c.emoji}</div>
-                        <div style={{ fontSize: 16, fontWeight: 600, color: '#151515' }}>{c.label}</div>
-                        <div style={{ fontSize: 12, color: '#767676' }}>{c.desc}</div>
+                        {/* Recommended Badge */}
+                        {isRecommended && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+                            style={{
+                              backgroundColor: '#eab308',
+                              color: 'white',
+                              boxShadow: '0 2px 8px rgba(234,179,8,0.3)',
+                            }}
+                          >
+                            ⭐ Recommended
+                          </motion.div>
+                        )}
+
+                        {/* Header: Icon + Checkmark */}
+                        <div className="flex items-center justify-between mb-3">
+                          <div
+                            className="w-12 h-12 rounded-xl flex items-center justify-center"
+                            style={{ backgroundColor: isSelected ? '#ede9fe' : '#f3f4f6', color: isSelected ? '#8b5cf6' : '#6b7280' }}
+                          >
+                            {path.icon}
+                          </div>
+                          {isSelected && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="w-6 h-6 rounded-full flex items-center justify-center"
+                              style={{ backgroundColor: '#8b5cf6' }}
+                            >
+                              <Check size={14} className="text-white" />
+                            </motion.div>
+                          )}
+                        </div>
+
+                        {/* Title */}
+                        <h3 style={{ fontSize: 18, fontWeight: 600, color: '#151515', marginBottom: 6 }}>
+                          {path.title}
+                        </h3>
+
+                        {/* Timeline + Commitment Badge */}
+                        <div className="flex items-center gap-2 mb-3">
+                          <span
+                            className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
+                            style={{
+                              backgroundColor: isSelected ? '#ede9fe' : '#f3f4f6',
+                              color: isSelected ? '#8b5cf6' : '#6b7280',
+                            }}
+                          >
+                            {path.timeline} • {path.dailyTime}
+                          </span>
+                          <span className="text-lg">{path.emoji}</span>
+                        </div>
+
+                        {/* Description */}
+                        <p style={{ fontSize: 13, color: '#767676', marginBottom: 10, lineHeight: 1.5 }}>
+                          {path.desc}
+                        </p>
+
+                        {/* Skill Growth Progress Bar */}
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#f3f4f6' }}>
+                            <motion.div
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: isSelected ? '#8b5cf6' : '#d1d5db' }}
+                              initial={{ width: 0 }}
+                              animate={{ width: isSelected ? `${(path.skills / 6) * 100}%` : '0%' }}
+                              transition={{ duration: 0.8, ease: 'easeOut' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Footer: Skills + Duration */}
+                        <p style={{ fontSize: 11, color: '#9ca3af' }}>
+                          Gain {path.skills} skills • {path.duration} weeks
+                        </p>
                       </motion.button>
                     );
                   })}
@@ -284,6 +416,58 @@ export default function OnboardingPage() {
           )}
         </div>
       </footer>
+
+      {/* ============================================ */}
+      {/* CELEBRATION OVERLAY */}
+      {/* ============================================ */}
+      {showCelebration && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-[200] flex items-center justify-center"
+          style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+            className="text-center"
+          >
+            <motion.div
+              animate={{
+                scale: [1, 1.2, 1],
+                rotate: [0, 10, -10, 0],
+              }}
+              transition={{
+                duration: 0.6,
+                repeat: 2,
+                ease: 'easeInOut',
+              }}
+              className="text-6xl mb-4"
+            >
+              🎉
+            </motion.div>
+            <h2 className="text-3xl font-bold text-white mb-2">Goals Set!</h2>
+            <p className="text-lg text-white/80">Redirecting to your dashboard...</p>
+            
+            {/* Sparkle effects */}
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ scale: 0, x: 0, y: 0 }}
+                animate={{
+                  scale: [0, 1, 0],
+                  x: Math.cos((i * Math.PI) / 4) * 100,
+                  y: Math.sin((i * Math.PI) / 4) * 100,
+                }}
+                transition={{ duration: 1, delay: i * 0.1 }}
+                className="absolute w-2 h-2 rounded-full"
+                style={{ backgroundColor: '#8b5cf6' }}
+              />
+            ))}
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 }

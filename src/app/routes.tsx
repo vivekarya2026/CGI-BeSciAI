@@ -40,6 +40,7 @@ import OnboardingPage from "./pages/public/OnboardingPage";
 /* ---- App Pages (inside the dashboard with sidebar) ---- */
 import DashboardPage from "./pages/app/DashboardPage";
 import LearnPage from "./pages/app/LearnPage";
+import ChallengesPage from "./pages/app/ChallengesPage";
 import CommunityPage from "./pages/app/CommunityPage";
 import ProfilePage from "./pages/app/ProfilePage";
 import MessagesPage from "./pages/app/MessagesPage";
@@ -116,6 +117,10 @@ export const router = createBrowserRouter([
           {
             path: "learn",              // "/app/learn"
             element: <LearnPage />,
+          },
+          {
+            path: "challenges",         // "/app/challenges"
+            element: <ChallengesPage />,
           },
           {
             path: "learn/challenges/:challengeId",                    // "/app/learn/challenges/:id"
