@@ -86,20 +86,20 @@ export default function OfficeHoursPage() {
   }, [yearActivity.length, today]);
 
   return (
-    <div style={{ fontFamily: 'var(--font-primary)' }}>
-      <h1 style={{ fontSize: 28, fontWeight: 600, color: 'var(--app-text-primary)', marginBottom: 8 }}>Office Hours</h1>
-      <p style={{ fontSize: 16, color: 'var(--app-text-secondary)', lineHeight: '24px', marginBottom: 24 }}>
+    <div className="font-primary">
+      <h1 className="page-title">Office Hours</h1>
+      <p className="page-subtitle">
         Join live sessions, watch recordings, browse Q&A, or book 1:1 coaching.
       </p>
 
       {/* Your Usage Activity — heatmap + legend + summary cards */}
-      <section aria-label="Your usage activity" className="rounded-xl mb-6 p-5 sm:p-6" style={{ backgroundColor: '#ffffff', boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.2)', border: '1px solid var(--app-border)', borderRadius: 8 }}>
+      <section aria-label="Your usage activity" className="heatmap-container">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-          <h2 className="text-lg sm:text-xl" style={{ fontWeight: 400, color: '#333333' }}>Your Usage Activity</h2>
-          <div className="flex items-center gap-2 text-xs shrink-0" style={{ color: '#5c5c5c' }}>
+          <h2 className="heatmap-title text-lg sm:text-xl">Your Usage Activity</h2>
+          <div className="flex items-center gap-2 heatmap-legend-text shrink-0">
             <span>Less</span>
             {HEATMAP_COLORS.map((color, i) => (
-              <div key={i} className="rounded-sm shrink-0" style={{ width: 10, height: 10, backgroundColor: color }} aria-hidden />
+              <div key={i} className="heatmap-legend-box shrink-0" style={{ backgroundColor: color }} aria-hidden />
             ))}
             <span>More</span>
           </div>
@@ -113,12 +113,12 @@ export default function OfficeHoursPage() {
           <div className="flex flex-col shrink-0" style={{ minWidth: heatmapBlockMinWidth }}>
             <div className="flex items-center mb-1" style={{ marginLeft: labelWidth + labelGap, width: gridWidth, position: 'relative', height: 16 }}>
               {monthStarts.map(({ month, col }) => (
-                <span key={`${month}-${col}`} style={{ position: 'absolute', left: col * colWidth, fontSize: 12, color: '#5c5c5c', whiteSpace: 'nowrap' }}>{month}</span>
+                <span key={`${month}-${col}`} className="heatmap-month-label" style={{ position: 'absolute', left: col * colWidth }}>{month}</span>
               ))}
             </div>
 
             <div className="flex gap-2" style={{ gap: labelGap }}>
-              <div className="flex flex-col justify-around shrink-0" style={{ width: labelWidth, fontSize: 12, color: '#5c5c5c', lineHeight: 1.4, marginTop: 2 }}>
+              <div className="flex flex-col justify-around shrink-0 heatmap-day-label" style={{ width: labelWidth, marginTop: 2 }}>
                 {[0, 2, 4, 6].map(r => (
                   <span key={r}>{dayLabels[r]}</span>
                 ))}
@@ -150,34 +150,34 @@ export default function OfficeHoursPage() {
           </div>
         </div>
 
-        <p className="text-sm mt-3 mb-5" style={{ color: '#5c5c5c', lineHeight: '17px' }}>
+        <p className="heatmap-summary-text">
           A summary of your AI learning activity, modules completed, and challenges attempted. Consistent days build your streak.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="rounded-lg p-4 sm:p-5 flex flex-col" style={{ backgroundColor: '#efefef', border: '1px solid #a8a8a8' }}>
+          <div className="stat-card-gray">
             <div className="flex items-center gap-2 mb-1">
-              <Calendar size={18} style={{ color: '#333333' }} aria-hidden />
-              <p style={{ fontSize: 14, fontWeight: 700, color: '#333333', marginBottom: 0 }}>Activities in the last year</p>
+              <Calendar size={18} className="text-[#333333]" aria-hidden />
+              <p className="stat-card-label">Activities in the last year</p>
             </div>
-            <p style={{ fontSize: 20, fontWeight: 700, color: '#333333', lineHeight: '24px' }}>{totalActivity} <span style={{ fontSize: 14, fontWeight: 400 }}>days</span></p>
-            <p style={{ fontSize: 12, color: '#5c5c5c', lineHeight: '16px', marginTop: 4 }}>{formatShortDate(lastYearStart)} – {formatShortDate(today)}</p>
+            <p className="stat-card-value">{totalActivity} <span className="stat-card-unit">days</span></p>
+            <p className="stat-card-caption">{formatShortDate(lastYearStart)} – {formatShortDate(today)}</p>
           </div>
-          <div className="rounded-lg p-4 sm:p-5 flex flex-col" style={{ backgroundColor: '#efefef', border: '1px solid #a8a8a8' }}>
+          <div className="stat-card-gray">
             <div className="flex items-center gap-2 mb-1">
-              <Trophy size={18} style={{ color: '#333333' }} aria-hidden />
-              <p style={{ fontSize: 14, fontWeight: 700, color: '#333333', marginBottom: 0 }}>Longest streak</p>
+              <Trophy size={18} className="text-[#333333]" aria-hidden />
+              <p className="stat-card-label">Longest streak</p>
             </div>
-            <p style={{ fontSize: 20, fontWeight: 700, color: '#333333', lineHeight: '24px' }}>{longestStreak} <span style={{ fontSize: 14, fontWeight: 400 }}>days</span></p>
-            <p style={{ fontSize: 12, color: '#5c5c5c', lineHeight: '16px', marginTop: 4 }}>Personal best</p>
+            <p className="stat-card-value">{longestStreak} <span className="stat-card-unit">days</span></p>
+            <p className="stat-card-caption">Personal best</p>
           </div>
-          <div className="rounded-lg p-4 sm:p-5 flex flex-col" style={{ backgroundColor: '#efefef', border: '1px solid #a8a8a8' }}>
+          <div className="stat-card-gray">
             <div className="flex items-center gap-2 mb-1">
-              <Flame size={18} style={{ color: '#333333' }} aria-hidden />
-              <p style={{ fontSize: 14, fontWeight: 700, color: '#333333', marginBottom: 0 }}>Current streak</p>
+              <Flame size={18} className="text-[#333333]" aria-hidden />
+              <p className="stat-card-label">Current streak</p>
             </div>
-            <p style={{ fontSize: 20, fontWeight: 700, color: '#5236ab', lineHeight: '24px' }}>{progress.streak} <span style={{ fontSize: 14, fontWeight: 400, color: '#333333' }}>days</span></p>
-            <p style={{ fontSize: 12, color: '#5c5c5c', lineHeight: '16px', marginTop: 4 }}>Keep it up!</p>
+            <p className="stat-card-value stat-card-value-highlight">{progress.streak} <span className="stat-card-unit">days</span></p>
+            <p className="stat-card-caption">Keep it up!</p>
           </div>
         </div>
       </section>
@@ -192,12 +192,7 @@ export default function OfficeHoursPage() {
           <button
             key={id}
             onClick={() => setOfficeSubTab(id as typeof officeSubTab)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg whitespace-nowrap cursor-pointer"
-            style={{
-              backgroundColor: officeSubTab === id ? '#5236ab' : 'var(--app-surface)',
-              color: officeSubTab === id ? 'white' : 'var(--app-text-secondary)',
-              border: officeSubTab === id ? 'none' : '1px solid var(--app-border-strong)',
-            }}
+            className={`tab-button ${officeSubTab === id ? 'tab-button-active' : 'tab-button-inactive'}`}
           >
             {icon}
             {label}
@@ -206,7 +201,7 @@ export default function OfficeHoursPage() {
       </div>
 
       {officePostSession && (
-        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl p-4 mb-6 flex items-center gap-3" style={{ backgroundColor: '#d1fae5', color: '#065f46' }}>
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="success-message flex items-center gap-3 mb-6">
           <CheckCircle size={24} />
           <p className="font-medium">{officePostSession}</p>
         </motion.div>
@@ -215,29 +210,29 @@ export default function OfficeHoursPage() {
       {officeSubTab === 'live' && (
         <>
           {officeHourLive && (
-            <div className="rounded-xl p-5 mb-6 flex flex-col gap-3" style={{ background: 'linear-gradient(135deg, #e31937 0%, #a82465 100%)', color: 'white' }}>
+            <div className="gradient-red-purple rounded-xl p-5 mb-6 flex flex-col gap-3">
               <div className="flex items-center justify-between gap-3">
-                <span className="flex items-center gap-1.5 px-2 py-1 rounded text-xs font-bold bg-white/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> LIVE NOW
+                <span className="live-badge">
+                  <span className="live-dot" /> LIVE NOW
                 </span>
-                <button onClick={() => setOfficePostSession('Recording saved. Attendance tracked. Follow-up materials shared.')} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold bg-white text-[#e31937] cursor-pointer shrink-0">
+                <button onClick={() => setOfficePostSession('Recording saved. Attendance tracked. Follow-up materials shared.')} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold bg-white cursor-pointer shrink-0 text-[#e31937]">
                   <Video size={18} /> Join Session
                 </button>
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'white', margin: 0 }}>{officeHourLive.title}</h3>
-              <p style={{ fontSize: 14, opacity: 0.9, margin: 0 }}>{officeHourLive.instructor} · {officeHourLive.attending} attending · {officeHourLive.duration}</p>
+              <h3 className="text-lg-semibold text-white m-0">{officeHourLive.title}</h3>
+              <p className="text-sm-regular" style={{ opacity: 0.9, margin: 0 }}>{officeHourLive.instructor} · {officeHourLive.attending} attending · {officeHourLive.duration}</p>
             </div>
           )}
-          <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">Upcoming Sessions</h2>
+          <h2 className="section-title">Upcoming Sessions</h2>
           <div className="space-y-4">
             {officeHourUpcoming.map((s) => (
-              <div key={s.id} className="rounded-xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+              <div key={s.id} className="session-card flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex-1">
-                  <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }}>{s.title}</h4>
-                  {s.description && <p style={{ fontSize: 14, color: 'var(--app-text-secondary)', marginTop: 4 }}>{s.description}</p>}
-                  <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 8 }}>{s.instructor}{s.role ? ` – ${s.role}` : ''} · {s.date} {s.time} · {s.duration} · {s.attending}</p>
+                  <h4 className="session-title">{s.title}</h4>
+                  {s.description && <p className="session-description">{s.description}</p>}
+                  <p className="session-meta mt-2">{s.instructor}{s.role ? ` – ${s.role}` : ''} · {s.date} {s.time} · {s.duration} · {s.attending}</p>
                 </div>
-                <button onClick={() => setOfficePostSession('Calendar invite sent. Prep materials shared.')} className="px-4 py-2 rounded-lg font-semibold cursor-pointer shrink-0" style={{ backgroundColor: '#5236ab', color: 'white' }}>Register</button>
+                <button onClick={() => setOfficePostSession('Calendar invite sent. Prep materials shared.')} className="btn-primary-purple shrink-0">Register</button>
               </div>
             ))}
           </div>
@@ -246,20 +241,20 @@ export default function OfficeHoursPage() {
 
       {officeSubTab === 'recordings' && (
         <>
-          <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">Recordings</h2>
-          <p style={{ fontSize: 14, color: 'var(--app-text-muted)', marginBottom: 16 }}>Filter by topic, jump to sections, bookmark moments, take notes, and share with your team.</p>
+          <h2 className="section-title">Recordings</h2>
+          <p className="section-subtitle">Filter by topic, jump to sections, bookmark moments, take notes, and share with your team.</p>
           <div className="space-y-4">
             {officeHourRecordings.map((rec) => (
-              <div key={rec.id} className="rounded-xl p-5" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+              <div key={rec.id} className="session-card">
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                   <div className="flex-1">
-                    <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }}>{rec.title}</h4>
-                    <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 4 }}>{rec.instructor} · {rec.duration} · {rec.topic}</p>
+                    <h4 className="session-title">{rec.title}</h4>
+                    <p className="session-meta">{rec.instructor} · {rec.duration} · {rec.topic}</p>
                     <div className="mt-3 flex gap-2">
-                      <button onClick={() => setOfficePostSession('Recording saved. Notes shared.')} className="px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>Watch</button>
-                      <span className="text-xs self-center" style={{ color: 'var(--app-text-hint)' }}>Timestamp navigation · Bookmark moments</span>
+                      <button onClick={() => setOfficePostSession('Recording saved. Notes shared.')} className="px-3 py-1.5 rounded-lg text-sm-medium cursor-pointer btn-primary-purple">Watch</button>
+                      <span className="text-xs self-center text-app-hint">Timestamp navigation · Bookmark moments</span>
                     </div>
-                    <textarea placeholder="Take notes (saved locally)" value={recordingNotes[rec.id] || ''} onChange={(e) => setRecordingNotes(prev => ({ ...prev, [rec.id]: e.target.value }))} rows={2} className="mt-3 w-full p-3 rounded-lg text-sm outline-none resize-y" style={{ backgroundColor: 'var(--app-tab-bg)', border: '1px solid var(--app-border)', color: 'var(--app-text-primary)' }} />
+                    <textarea placeholder="Take notes (saved locally)" value={recordingNotes[rec.id] || ''} onChange={(e) => setRecordingNotes(prev => ({ ...prev, [rec.id]: e.target.value }))} rows={2} className="mt-3 textarea-field" />
                   </div>
                 </div>
               </div>
@@ -272,38 +267,38 @@ export default function OfficeHoursPage() {
         <>
           <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <div className="relative flex-1">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--app-text-hint)' }} />
-              <input type="text" placeholder="Search questions..." value={qaSearch} onChange={(e) => setQaSearch(e.target.value)} className="w-full pl-10 pr-4 py-3 rounded-lg outline-none" style={{ fontSize: 16, backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border-strong)', color: 'var(--app-text-primary)' }} />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-app-hint" />
+              <input type="text" placeholder="Search questions..." value={qaSearch} onChange={(e) => setQaSearch(e.target.value)} className="input-search" />
             </div>
-            <button onClick={() => setAskQuestionOpen(true)} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg font-semibold cursor-pointer shrink-0" style={{ backgroundColor: '#5236ab', color: 'white' }}>Ask new question</button>
+            <button onClick={() => setAskQuestionOpen(true)} className="btn-primary-purple shrink-0">Ask new question</button>
           </div>
-          <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">Q&A Archive</h2>
+          <h2 className="section-title">Q&A Archive</h2>
           <div className="space-y-3">
             {officeHourQA.filter(q => !qaSearch.trim() || q.question.toLowerCase().includes(qaSearch.toLowerCase()) || q.topic.toLowerCase().includes(qaSearch.toLowerCase())).map((q) => (
-              <div key={q.id} className="rounded-xl p-4" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}>
+              <div key={q.id} className="qa-card">
                 <button onClick={() => setQaExpandedId(qaExpandedId === q.id ? null : q.id)} className="w-full text-left flex items-center justify-between gap-2 cursor-pointer">
-                  <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>{q.question}</span>
-                  <span style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>{q.upvotes} upvotes · {q.answerCount} answers</span>
+                  <span className="qa-question">{q.question}</span>
+                  <span className="text-xs text-app-muted">{q.upvotes} upvotes · {q.answerCount} answers</span>
                 </button>
-                <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 4 }}>{q.author} · {q.date} · {q.topic}</p>
+                <p className="qa-meta">{q.author} · {q.date} · {q.topic}</p>
                 {qaExpandedId === q.id && q.answer && (
-                  <div className="mt-4 pt-4 border-t" style={{ borderColor: 'var(--app-border)' }}>
-                    <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', marginBottom: 6 }}>Expert answer</p>
-                    <p style={{ fontSize: 14, color: 'var(--app-text-secondary)' }}>{q.answer}</p>
+                  <div className="mt-4 pt-4 border-t border-app">
+                    <p className="qa-answer-label">Expert answer</p>
+                    <p className="qa-answer-text">{q.answer}</p>
                   </div>
                 )}
               </div>
             ))}
           </div>
           {askQuestionOpen && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="rounded-xl p-6 w-full max-w-md" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}>
-                <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--app-text-primary)', marginBottom: 12 }}>Ask a question</h3>
-                <textarea placeholder="Your question..." rows={4} className="w-full p-3 rounded-lg text-sm mb-4 outline-none resize-y" style={{ backgroundColor: 'var(--app-tab-bg)', border: '1px solid var(--app-border)', color: 'var(--app-text-primary)' }} />
-                <input type="text" placeholder="Topic" className="w-full px-4 py-2 rounded-lg outline-none text-sm mb-4" style={{ backgroundColor: 'var(--app-tab-bg)', border: '1px solid var(--app-border)', color: 'var(--app-text-primary)' }} />
+            <div className="modal-backdrop">
+              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="modal-content">
+                <h3 className="text-lg-semibold text-app-primary mb-3">Ask a question</h3>
+                <textarea placeholder="Your question..." rows={4} className="textarea-modal mb-4" />
+                <input type="text" placeholder="Topic" className="input-modal mb-4" />
                 <div className="flex gap-3">
-                  <button onClick={() => setAskQuestionOpen(false)} className="px-4 py-2 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)' }}>Cancel</button>
-                  <button onClick={() => { setAskQuestionOpen(false); setOfficePostSession('Question submitted. Community discussion and expert answers coming soon.'); }} className="px-4 py-2 rounded-lg font-semibold cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>Submit</button>
+                  <button onClick={() => setAskQuestionOpen(false)} className="btn-secondary-border">Cancel</button>
+                  <button onClick={() => { setAskQuestionOpen(false); setOfficePostSession('Question submitted. Community discussion and expert answers coming soon.'); }} className="btn-primary-purple">Submit</button>
                 </div>
               </motion.div>
             </div>
@@ -313,22 +308,22 @@ export default function OfficeHoursPage() {
 
       {officeSubTab === 'coaching' && (
         <>
-          <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-4">Book 1:1 Coaching</h2>
-          <p style={{ fontSize: 14, color: 'var(--app-text-secondary)', marginBottom: 16 }}>Select a slot, choose your mentor, and describe your topic. We'll send a calendar invite and prep materials.</p>
+          <h2 className="section-title">Book 1:1 Coaching</h2>
+          <p className="section-subtitle">Select a slot, choose your mentor, and describe your topic. We'll send a calendar invite and prep materials.</p>
           <div className="space-y-4 mb-6">
             {officeHourSlots.map((slot) => (
-              <div key={slot.id} className="rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}>
+              <div key={slot.id} className="session-card flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>{slot.mentorName}{slot.mentorRole ? ` – ${slot.mentorRole}` : ''}</p>
-                  <p style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>{slot.date} at {slot.time}</p>
+                  <p className="text-base-semibold text-app-primary">{slot.mentorName}{slot.mentorRole ? ` – ${slot.mentorRole}` : ''}</p>
+                  <p className="text-sm-regular text-app-muted">{slot.date} at {slot.time}</p>
                 </div>
-                <button onClick={() => { setBookedSlotId(slot.id); setOfficePostSession('Calendar invite sent. Prep materials shared.'); }} disabled={bookedSlotId === slot.id} className="px-4 py-2 rounded-lg font-semibold cursor-pointer shrink-0 disabled:opacity-60" style={{ backgroundColor: '#5236ab', color: 'white' }}>{bookedSlotId === slot.id ? 'Booked' : 'Book slot'}</button>
+                <button onClick={() => { setBookedSlotId(slot.id); setOfficePostSession('Calendar invite sent. Prep materials shared.'); }} disabled={bookedSlotId === slot.id} className="btn-primary-purple shrink-0 disabled:opacity-60">{bookedSlotId === slot.id ? 'Booked' : 'Book slot'}</button>
               </div>
             ))}
           </div>
           <div>
-            <label style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)', display: 'block', marginBottom: 8 }}>Describe your topic (optional)</label>
-            <textarea value={bookingTopic} onChange={(e) => setBookingTopic(e.target.value)} placeholder="What would you like to focus on?" rows={3} className="w-full p-3 rounded-lg text-sm outline-none resize-y" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', color: 'var(--app-text-primary)' }} />
+            <label className="heading-sm block mb-2">Describe your topic (optional)</label>
+            <textarea value={bookingTopic} onChange={(e) => setBookingTopic(e.target.value)} placeholder="What would you like to focus on?" rows={3} className="textarea-field" />
           </div>
         </>
       )}

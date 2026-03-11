@@ -10,6 +10,7 @@ import {
   ArrowLeft, Play, Bookmark, Clock, GraduationCap, Target, FileText, Award,
   ChevronDown, ChevronUp, Video, ThumbsUp,
 } from 'lucide-react';
+import clsx from 'clsx';
 import {
   getTrainingById,
   isTrainingSaved,
@@ -27,9 +28,9 @@ export default function TrainingDetailPage() {
 
   if (!trainingId || !training) {
     return (
-      <div style={{ fontFamily: 'var(--font-primary)', padding: 24 }}>
-        <p style={{ color: 'var(--app-text-secondary)' }}>Training not found.</p>
-        <button onClick={() => navigate('/app/learn')} className="mt-4 px-4 py-2 rounded-lg cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>
+      <div className="p-6">
+        <p className="text-app-secondary">Training not found.</p>
+        <button onClick={() => navigate('/app/learn')} className="mt-4 px-4 py-2 rounded-lg cursor-pointer btn-primary">
           Back to Learn
         </button>
       </div>
@@ -48,99 +49,104 @@ export default function TrainingDetailPage() {
   };
 
   return (
-    <div style={{ fontFamily: 'var(--font-primary)', maxWidth: 800, margin: '0 auto' }}>
+    <div className="max-w-[800px] mx-auto">
       <button
         onClick={() => navigate('/app/learn')}
-        className="flex items-center gap-2 mb-6 text-sm font-medium cursor-pointer"
-        style={{ color: 'var(--app-text-secondary)' }}
+        className="flex items-center gap-2 mb-6 text-sm font-medium cursor-pointer text-app-secondary"
       >
         <ArrowLeft size={16} /> Back to Learn
       </button>
 
-      <div className="rounded-xl p-6 mb-8" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--app-text-primary)', marginBottom: 8 }}>{training.title}</h1>
+      <div className="card-base rounded-xl p-6 mb-8 bg-app-surface border-app shadow-[var(--app-shadow)]">
+        <h1 className="text-2xl font-bold text-app-primary mb-2">{training.title}</h1>
         <div className="flex flex-wrap gap-2 mb-4">
-          {training.format && <span className="px-2 py-0.5 rounded text-xs font-semibold" style={{ backgroundColor: '#f2f1f9', color: '#5236ab' }}>{training.format}</span>}
-          {training.difficulty && <span className="px-2 py-0.5 rounded text-xs font-semibold" style={{ backgroundColor: 'var(--app-tab-bg)', color: 'var(--app-text-secondary)' }}>{training.difficulty}</span>}
-          <span className="px-2 py-0.5 rounded text-xs" style={{ backgroundColor: 'var(--app-tab-bg)', color: 'var(--app-text-muted)' }}>{training.category}</span>
+          {training.format && <span className="badge-base badge-purple">{training.format}</span>}
+          {training.difficulty && <span className="badge-base badge-gray">{training.difficulty}</span>}
+          <span className="badge-base badge-gray text-app-muted">{training.category}</span>
         </div>
 
-        <p style={{ fontSize: 15, lineHeight: '22px', color: 'var(--app-text-secondary)', marginBottom: 20 }}>{training.description}</p>
+        <p className="text-[15px] leading-[22px] text-app-secondary mb-5">{training.description}</p>
 
         {/* 8 items: objectives, duration, prerequisites, progress, auto-tracking, certificate, syllabus, intro video, reviews */}
         <div className="grid gap-4 mb-6">
           <div className="flex items-start gap-2">
-            <Clock size={18} style={{ color: 'var(--app-text-muted)', marginTop: 2 }} />
+            <Clock size={18} className="text-app-muted mt-0.5" />
             <div>
-              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', textTransform: 'uppercase' }}>Duration</span>
-              <p style={{ fontSize: 14, color: 'var(--app-text-primary)' }}>{training.duration} · {training.lessons} lessons</p>
+              <span className="text-xs font-semibold text-app-muted uppercase">Duration</span>
+              <p className="text-sm text-app-primary">{training.duration} · {training.lessons} lessons</p>
             </div>
           </div>
           {training.progress != null && (
             <div className="flex items-start gap-2">
-              <Target size={18} style={{ color: 'var(--app-text-muted)', marginTop: 2 }} />
+              <Target size={18} className="text-app-muted mt-0.5" />
               <div>
-                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', textTransform: 'uppercase' }}>Progress</span>
-                <p style={{ fontSize: 14, color: 'var(--app-text-primary)' }}>{training.progress}% complete · Auto-tracking enabled</p>
+                <span className="text-xs font-semibold text-app-muted uppercase">Progress</span>
+                <p className="text-sm text-app-primary">{training.progress}% complete · Auto-tracking enabled</p>
               </div>
             </div>
           )}
           {training.objectives && training.objectives.length > 0 && (
             <div>
-              <h3 style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Learning objectives</h3>
-              <ul className="list-disc list-inside space-y-1 text-sm" style={{ color: 'var(--app-text-secondary)' }}>
+              <h3 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-1.5">Learning objectives</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm text-app-secondary">
                 {training.objectives.map((obj, i) => <li key={i}>{obj}</li>)}
               </ul>
             </div>
           )}
           {training.prerequisites && training.prerequisites.length > 0 && (
             <div>
-              <h3 style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Prerequisites</h3>
-              <ul className="list-disc list-inside space-y-1 text-sm" style={{ color: 'var(--app-text-secondary)' }}>
+              <h3 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-1.5">Prerequisites</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm text-app-secondary">
                 {training.prerequisites.map((p, i) => <li key={i}>{p}</li>)}
               </ul>
             </div>
           )}
           {training.certificateInfo && (
             <div className="flex items-start gap-2">
-              <Award size={18} style={{ color: 'var(--app-text-muted)', marginTop: 2 }} />
+              <Award size={18} className="text-app-muted mt-0.5" />
               <div>
-                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', textTransform: 'uppercase' }}>Certificate</span>
-                <p style={{ fontSize: 14, color: 'var(--app-text-primary)' }}>{training.certificateInfo}</p>
+                <span className="text-xs font-semibold text-app-muted uppercase">Certificate</span>
+                <p className="text-sm text-app-primary">{training.certificateInfo}</p>
               </div>
             </div>
           )}
         </div>
 
         {/* Decision: Enroll / Preview / Bookmark */}
-        <div className="flex flex-wrap gap-3 pt-4 border-t" style={{ borderColor: 'var(--app-border)' }}>
-          <button onClick={handleEnroll} className="inline-flex items-center gap-2 px-5 py-3 rounded-lg font-semibold cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>
+        <div className="flex flex-wrap gap-3 pt-4 border-t border-app">
+          <button onClick={handleEnroll} className="btn-primary inline-flex items-center gap-2 px-5 py-3 rounded-lg font-semibold cursor-pointer">
             <Play size={18} /> Enroll & Start Training
           </button>
-          <button onClick={() => setShowPreview(!showPreview)} className="inline-flex items-center gap-2 px-5 py-3 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-primary)' }}>
+          <button onClick={() => setShowPreview(!showPreview)} className="inline-flex items-center gap-2 px-5 py-3 rounded-lg font-semibold cursor-pointer border border-app-strong text-app-primary">
             <FileText size={18} /> Preview Content
           </button>
-          <button onClick={handleBookmark} className="inline-flex items-center gap-2 px-5 py-3 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: saved ? '#5236ab' : 'var(--app-border-strong)', color: saved ? '#5236ab' : 'var(--app-text-secondary)' }}>
+          <button 
+            onClick={handleBookmark} 
+            className={clsx(
+              "inline-flex items-center gap-2 px-5 py-3 rounded-lg font-semibold cursor-pointer border",
+              saved ? "border-[#5236ab] text-[#5236ab]" : "border-app-strong text-app-secondary"
+            )}
+          >
             <Bookmark size={18} fill={saved ? '#5236ab' : 'none'} /> {saved ? 'Saved' : 'Save for Later'}
           </button>
         </div>
 
         {/* Preview: syllabus, intro video, reviews */}
         {showPreview && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-6 pt-6 border-t space-y-4" style={{ borderColor: 'var(--app-border)' }}>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-6 pt-6 border-t border-app space-y-4">
             {training.syllabus && training.syllabus.length > 0 && (
               <div>
-                <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)', marginBottom: 8 }}>Syllabus</h3>
-                <ol className="list-decimal list-inside space-y-1 text-sm" style={{ color: 'var(--app-text-secondary)' }}>
+                <h3 className="text-sm font-semibold text-app-primary mb-2">Syllabus</h3>
+                <ol className="list-decimal list-inside space-y-1 text-sm text-app-secondary">
                   {training.syllabus.map((s, i) => <li key={i}>{s}</li>)}
                 </ol>
               </div>
             )}
             {training.introVideoUrl && (
               <div>
-                <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)', marginBottom: 8 }}>Intro video</h3>
+                <h3 className="text-sm font-semibold text-app-primary mb-2">Intro video</h3>
                 <div className="rounded-lg overflow-hidden aspect-video max-w-md bg-black/10 flex items-center justify-center">
-                  <a href={training.introVideoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-medium" style={{ color: '#5236ab' }}>
+                  <a href={training.introVideoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-medium text-[#5236ab]">
                     <Video size={18} /> Watch intro
                   </a>
                 </div>
@@ -148,11 +154,11 @@ export default function TrainingDetailPage() {
             )}
             {training.reviews && training.reviews.length > 0 && (
               <div>
-                <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)', marginBottom: 8 }}>Reviews</h3>
+                <h3 className="text-sm font-semibold text-app-primary mb-2">Reviews</h3>
                 <ul className="space-y-2">
                   {training.reviews.map((r, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm" style={{ color: 'var(--app-text-secondary)' }}>
-                      <ThumbsUp size={14} style={{ color: '#f59e0b', marginTop: 2 }} />
+                    <li key={i} className="flex items-start gap-2 text-sm text-app-secondary">
+                      <ThumbsUp size={14} className="text-[#f59e0b] mt-0.5" />
                       <span>{r.rating}/5 — {r.text}</span>
                     </li>
                   ))}
@@ -164,7 +170,7 @@ export default function TrainingDetailPage() {
       </div>
 
       {toast && (
-        <div className="fixed bottom-6 right-6 px-4 py-2 rounded-lg text-sm font-medium" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+        <div className="card-base fixed bottom-6 right-6 px-4 py-2 rounded-lg text-sm font-medium bg-app-surface border-app shadow-[var(--app-shadow)]">
           {toast}
         </div>
       )}

@@ -10,6 +10,7 @@ import {
   Bell, X, CheckCheck, BookOpen, Award, Users, MessageSquare,
   Zap, Heart, Calendar, ChevronRight, ThumbsUp, Play,
 } from 'lucide-react';
+import clsx from 'clsx';
 
 // --- Notification Interface ---
 export interface Notification {
@@ -84,12 +85,11 @@ export function NotificationsPanel({ onNavigate }: { onNavigate?: (path: string)
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative w-10 h-10 rounded-xl flex items-center justify-center cursor-pointer transition-all"
-        style={{ border: '1px solid var(--app-border)', backgroundColor: 'var(--app-surface)' }}
+        className="notifications-bell"
       >
-        <Bell size={18} style={{ color: isOpen ? '#5236ab' : 'var(--app-text-muted)' }} />
+        <Bell size={18} className={clsx(isOpen ? 'text-[#5236ab]' : 'text-app-muted')} />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-red-600 text-white text-[10px] font-bold flex items-center justify-center px-1">
+          <span className="notifications-badge">
             {unreadCount}
           </span>
         )}
@@ -103,34 +103,24 @@ export function NotificationsPanel({ onNavigate }: { onNavigate?: (path: string)
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="absolute right-0 top-full mt-2 rounded-2xl shadow-2xl z-[100] overflow-hidden"
-            style={{
-              backgroundColor: 'var(--app-surface)',
-              border: '1px solid var(--app-border)',
-              width: 400,
-              maxWidth: 'calc(100vw - 32px)',
-            }}
+            className="notifications-panel"
           >
             {/* ---- Header ---- */}
-            <div className="px-5 pt-5 pb-3">
+            <div className="notifications-header">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2.5">
-                  <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--app-text-primary)', margin: 0 }}>
+                  <h3 className="notifications-title">
                     Notifications
                   </h3>
                   {unreadCount > 0 && (
-                    <span
-                      className="px-2 py-0.5 rounded-full text-white font-bold"
-                      style={{ fontSize: 11, backgroundColor: '#5236ab' }}
-                    >
+                    <span className="notifications-count-badge">
                       {unreadCount} new
                     </span>
                   )}
                 </div>
                 <button
                   onClick={markAllRead}
-                  className="flex items-center gap-1 cursor-pointer transition-opacity hover:opacity-80"
-                  style={{ fontSize: 13, fontWeight: 600, color: 'var(--app-brand)' }}
+                  className="notifications-mark-all hover:opacity-80"
                 >
                   <CheckCheck size={14} /> Mark all read
                 </button>
@@ -140,25 +130,19 @@ export function NotificationsPanel({ onNavigate }: { onNavigate?: (path: string)
               <div className="flex gap-2">
                 <button
                   onClick={() => setFilter('all')}
-                  className="px-4 py-1.5 rounded-full cursor-pointer transition-all"
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    backgroundColor: filter === 'all' ? '#5236ab' : 'var(--app-tab-bg)',
-                    color: filter === 'all' ? 'white' : 'var(--app-text-muted)',
-                  }}
+                  className={clsx(
+                    'notifications-filter-tab',
+                    filter === 'all' ? 'notifications-filter-active' : 'notifications-filter-inactive'
+                  )}
                 >
                   All
                 </button>
                 <button
                   onClick={() => setFilter('unread')}
-                  className="px-4 py-1.5 rounded-full cursor-pointer transition-all"
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    backgroundColor: filter === 'unread' ? '#5236ab' : 'var(--app-tab-bg)',
-                    color: filter === 'unread' ? 'white' : 'var(--app-text-muted)',
-                  }}
+                  className={clsx(
+                    'notifications-filter-tab',
+                    filter === 'unread' ? 'notifications-filter-active' : 'notifications-filter-inactive'
+                  )}
                 >
                   Unread ({unreadCount})
                 </button>
@@ -166,12 +150,9 @@ export function NotificationsPanel({ onNavigate }: { onNavigate?: (path: string)
             </div>
 
             {/* ---- Scrollable Notification List ---- */}
-            <div
-              className="overflow-y-auto"
-              style={{ maxHeight: 420, borderTop: '1px solid var(--app-border)' }}
-            >
+            <div className="notifications-list">
               {filteredList.length === 0 ? (
-                <div className="p-10 text-center" style={{ color: 'var(--app-text-hint)' }}>
+                <div className="notifications-empty">
                   <Bell size={32} className="mx-auto mb-2 opacity-30" />
                   <p style={{ fontSize: 14 }}>No notifications</p>
                 </div>
@@ -181,18 +162,17 @@ export function NotificationsPanel({ onNavigate }: { onNavigate?: (path: string)
                   return (
                     <div
                       key={item.id}
-                      className="flex gap-3.5 px-5 py-4 transition-colors cursor-pointer"
-                      style={{
-                        borderBottom: '1px solid var(--app-border)',
-                        backgroundColor: !item.read ? 'var(--app-brand-light)' : 'transparent',
-                      }}
+                      className={clsx(
+                        'notification-item',
+                        !item.read && 'notification-item-unread'
+                      )}
                       onClick={() => {
                         setNotifications(prev => prev.map(n => n.id === item.id ? { ...n, read: true } : n));
                       }}
                     >
                       {/* Icon / Avatar */}
                       <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                        className="notification-icon"
                         style={{ backgroundColor: config.bg, color: config.color }}
                       >
                         {item.avatar ? (
@@ -205,42 +185,25 @@ export function NotificationsPanel({ onNavigate }: { onNavigate?: (path: string)
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
-                          <h4
-                            className="truncate"
-                            style={{
-                              fontSize: 14,
-                              fontWeight: !item.read ? 700 : 600,
-                              color: 'var(--app-text-primary)',
-                              margin: 0,
-                              lineHeight: '20px',
-                            }}
-                          >
+                          <h4 className={clsx(
+                            'notification-title truncate',
+                            !item.read ? 'notification-title-unread' : 'notification-title-read'
+                          )}>
                             {item.title}
                           </h4>
                           {/* Unread dot */}
                           {!item.read && (
-                            <span
-                              className="w-2.5 h-2.5 rounded-full shrink-0 mt-1.5"
-                              style={{ backgroundColor: '#5236ab' }}
-                            />
+                            <span className="notification-unread-dot" />
                           )}
                         </div>
 
-                        <p
-                          className="truncate"
-                          style={{
-                            fontSize: 13,
-                            color: 'var(--app-text-muted)',
-                            margin: '2px 0 0',
-                            lineHeight: '18px',
-                          }}
-                        >
+                        <p className="notification-description truncate">
                           {item.description}
                         </p>
 
                         {/* Time + Action */}
                         <div className="flex items-center gap-3 mt-1.5">
-                          <span style={{ fontSize: 12, color: 'var(--app-text-hint)' }}>
+                          <span className="notification-time">
                             {item.time}
                           </span>
                           {item.actionLabel && (
@@ -249,8 +212,7 @@ export function NotificationsPanel({ onNavigate }: { onNavigate?: (path: string)
                                 e.stopPropagation();
                                 handleAction(item);
                               }}
-                              className="cursor-pointer hover:underline"
-                              style={{ fontSize: 12, fontWeight: 700, color: 'var(--app-brand)' }}
+                              className="notification-action hover:underline"
                             >
                               {item.actionLabel}
                             </button>

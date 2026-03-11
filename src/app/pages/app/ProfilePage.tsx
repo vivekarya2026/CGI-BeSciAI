@@ -29,6 +29,7 @@ import {
 import { useUser } from '../../context/UserContext';
 import { useTheme, ThemeOption } from '../../context/ThemeContext';
 import { archetypes } from '../../data/archetypes';
+import clsx from 'clsx';
 
 // Define the valid tab IDs for our sub-menu
 type SubTab = 'info' | 'archetype' | 'goals' | 'progress' | 'workflows' | 'settings';
@@ -97,7 +98,7 @@ export default function ProfilePage() {
   // RENDER
   // ============================================
   return (
-    <div style={{ fontFamily: 'var(--font-primary)' }}>
+    <div className="font-primary">
       {/* Top Banner Area with Avatar and Name */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -108,30 +109,26 @@ export default function ProfilePage() {
         <div className="relative">
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="w-20 h-20 rounded-2xl overflow-hidden flex items-center justify-center"
-            style={{ backgroundColor: 'var(--app-brand-light)' }}
+            className="profile-avatar-container"
           >
             {user?.avatar ? (
               <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
             ) : (
-              <User size={32} style={{ color: 'var(--app-brand)' }} />
+              <User size={32} className="text-[var(--app-brand)]" />
             )}
           </motion.div>
-          <button
-            className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer transition-colors"
-            style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border-strong)' }}
-          >
-            <Camera size={12} style={{ color: 'var(--app-text-muted)' }} />
+          <button className="profile-camera-btn">
+            <Camera size={12} className="text-app-muted" />
           </button>
         </div>
 
         <div>
-          <h1 style={{ fontSize: 28, fontWeight: 600, color: 'var(--app-text-primary)' }}>{user?.name || 'Alex Chen'}</h1>
-          <p style={{ fontSize: 14, color: 'var(--app-text-muted)' }}>{user?.email || 'alex@example.com'}</p>
+          <h1 className="profile-name">{user?.name || 'Alex Chen'}</h1>
+          <p className="profile-email">{user?.email || 'alex@example.com'}</p>
           <div className="flex items-center gap-3 mt-2">
             <motion.span
               whileHover={{ scale: 1.05 }}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full cursor-default"
+              className="archetype-badge"
               style={{ backgroundColor: `${arch?.color}15`, border: `1px solid ${arch?.color}30` }}
             >
               {ArchIcon && <ArchIcon size={14} style={{ color: arch?.color }} />}
@@ -139,10 +136,10 @@ export default function ProfilePage() {
             </motion.span>
             <motion.span
               whileHover={{ scale: 1.05 }}
-              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-50 border border-orange-100 cursor-default"
+              className="streak-badge"
             >
               <Flame size={12} className="text-orange-500" />
-              <span style={{ fontSize: 12, fontWeight: 600, color: '#ea580c' }}>{progress.streak} day streak</span>
+              <span className="streak-badge-text">{progress.streak} day streak</span>
             </motion.span>
           </div>
         </div>
@@ -151,17 +148,15 @@ export default function ProfilePage() {
       {/* ============================================ */}
       {/* SUB-TAB NAVIGATION BAR                      */}
       {/* ============================================ */}
-      <div className="flex gap-1 rounded-xl p-1 mb-8 overflow-x-auto" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
+      <div className="tab-nav-container">
         {tabs.map(tab => (
           <button
-            key={tab.id} onClick={() => setActiveTab(tab.id)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg whitespace-nowrap transition-all cursor-pointer"
-            style={{
-              fontSize: 14, fontWeight: activeTab === tab.id ? 600 : 400,
-              backgroundColor: activeTab === tab.id ? 'var(--app-tab-active-bg)' : 'transparent',
-              color: activeTab === tab.id ? 'var(--app-brand)' : 'var(--app-text-secondary)',
-              boxShadow: activeTab === tab.id ? 'var(--app-shadow)' : 'none',
-            }}
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={clsx('tab-nav-item', {
+              'tab-nav-active': activeTab === tab.id,
+              'tab-nav-inactive': activeTab !== tab.id,
+            })}
           >
             {tab.icon}
             <span className="hidden md:inline">{tab.label}</span>
@@ -180,13 +175,12 @@ export default function ProfilePage() {
         {activeTab === 'info' && (
           <motion.div key="info" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
             {/* Edit Profile Form */}
-            <div className="rounded-xl p-6 mb-6 transition-colors" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+            <div className="card-surface-shadow rounded-xl p-6 mb-6 transition-colors">
               <div className="flex items-center justify-between mb-6">
-                <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }}>Edit Profile</h2>
+                <h2 className="section-title">Edit Profile</h2>
                 <button
                   onClick={() => setIsEditing(!isEditing)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer transition-colors"
-                  style={{ fontSize: 14, color: 'var(--app-text-secondary)', border: '1px solid var(--app-border-strong)' }}
+                  className="btn-secondary-border"
                 >
                   <Edit3 size={14} /> Edit
                 </button>
@@ -194,56 +188,56 @@ export default function ProfilePage() {
 
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block mb-1.5" style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)' }}>Full Name</label>
+                  <label className="form-label">Full Name</label>
                   <input
-                    type="text" defaultValue={user?.name || 'Alex Chen'}
-                    className="w-full px-4 py-3 rounded-lg outline-none transition-colors"
-                    style={{ fontSize: 16, backgroundColor: 'var(--app-input-bg)', border: '1px solid var(--app-border-strong)', color: 'var(--app-text-primary)' }}
+                    type="text"
+                    defaultValue={user?.name || 'Alex Chen'}
+                    className="input-editable"
                   />
                 </div>
                 <div>
-                  <label className="block mb-1.5" style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)' }}>Email</label>
+                  <label className="form-label">Email</label>
                   <input
-                    type="text" defaultValue={user?.email || 'alex@example.com'} readOnly
-                    className="w-full px-4 py-3 rounded-lg outline-none"
-                    style={{ fontSize: 16, backgroundColor: 'var(--app-input-readonly-bg)', border: '1px solid var(--app-border-strong)', color: 'var(--app-text-muted)' }}
+                    type="text"
+                    defaultValue={user?.email || 'alex@example.com'}
+                    readOnly
+                    className="input-readonly"
                   />
                 </div>
                 <div>
-                  <label className="block mb-1.5" style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)' }}>Job Title</label>
+                  <label className="form-label">Job Title</label>
                   <input
-                    type="text" defaultValue="Product Manager"
-                    className="w-full px-4 py-3 rounded-lg outline-none transition-colors"
-                    style={{ fontSize: 16, backgroundColor: 'var(--app-input-bg)', border: '1px solid var(--app-border-strong)', color: 'var(--app-text-primary)' }}
+                    type="text"
+                    defaultValue="Product Manager"
+                    className="input-editable"
                   />
                 </div>
                 <div>
-                  <label className="block mb-1.5" style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)' }}>Department</label>
+                  <label className="form-label">Department</label>
                   <input
-                    type="text" defaultValue="Product & Innovation"
-                    className="w-full px-4 py-3 rounded-lg outline-none transition-colors"
-                    style={{ fontSize: 16, backgroundColor: 'var(--app-input-bg)', border: '1px solid var(--app-border-strong)', color: 'var(--app-text-primary)' }}
+                    type="text"
+                    defaultValue="Product & Innovation"
+                    className="input-editable"
                   />
                 </div>
               </div>
 
               {/* Company field */}
               <div className="mt-6">
-                <label className="block mb-1.5" style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)' }}>Company</label>
+                <label className="form-label">Company</label>
                 <input
-                  type="text" defaultValue="Acme Corp"
-                  className="w-full sm:w-1/2 px-4 py-3 rounded-lg outline-none transition-colors"
-                  style={{ fontSize: 16, backgroundColor: 'var(--app-input-bg)', border: '1px solid var(--app-border-strong)', color: 'var(--app-text-primary)' }}
+                  type="text"
+                  defaultValue="Acme Corp"
+                  className="input-editable w-full sm:w-1/2"
                 />
               </div>
 
               {/* Bio textarea */}
               <div className="mt-6">
-                <label className="block mb-1.5" style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)' }}>Bio</label>
+                <label className="form-label">Bio</label>
                 <textarea
                   placeholder="Tell us about yourself..."
-                  className="w-full px-4 py-3 rounded-lg outline-none transition-colors resize-none"
-                  style={{ fontSize: 16, minHeight: 100, backgroundColor: 'var(--app-input-bg)', border: '1px solid var(--app-border-strong)', color: 'var(--app-text-primary)' }}
+                  className="textarea-editable"
                 />
               </div>
 
@@ -252,23 +246,19 @@ export default function ProfilePage() {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-6 py-3 rounded-lg text-white font-semibold cursor-pointer"
-                  style={{ backgroundColor: 'var(--app-brand)', fontSize: 14 }}
+                  className="btn-save-primary"
                 >
                   Save Changes
                 </motion.button>
-                <button
-                  className="px-6 py-3 rounded-lg font-semibold cursor-pointer transition-colors"
-                  style={{ fontSize: 14, color: 'var(--app-text-secondary)', border: '1px solid var(--app-border-strong)' }}
-                >
+                <button className="btn-cancel-secondary">
                   Cancel
                 </button>
               </div>
             </div>
 
             {/* Notification Preferences */}
-            <div className="rounded-xl p-6 transition-colors" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-6">Notification Preferences</h2>
+            <div className="card-surface-shadow rounded-xl p-6 transition-colors">
+              <h2 className="section-title mb-6">Notification Preferences</h2>
               <div className="space-y-1">
                 {([
                   { key: 'learningReminders' as const, label: 'Learning reminders', desc: 'Daily prompts to continue learning' },
@@ -276,19 +266,21 @@ export default function ProfilePage() {
                   { key: 'achievementAlerts' as const, label: 'Achievement alerts', desc: 'Badge unlocks and milestone completions' },
                   { key: 'weeklyDigest' as const, label: 'Weekly digest', desc: 'Summary of your weekly progress' },
                 ]).map((item) => (
-                  <div key={item.key} className="flex items-center justify-between py-4" style={{ borderBottom: '1px solid var(--app-border)' }}>
+                  <div key={item.key} className="notification-item">
                     <div>
-                      <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>{item.label}</span>
-                      <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 2 }}>{item.desc}</p>
+                      <span className="notification-label">{item.label}</span>
+                      <p className="notification-desc">{item.desc}</p>
                     </div>
                     <motion.button
                       whileTap={{ scale: 0.9 }}
                       onClick={() => toggleNotification(item.key)}
-                      className="relative w-12 h-7 rounded-full cursor-pointer transition-colors duration-300"
-                      style={{ backgroundColor: notifications[item.key] ? 'var(--app-brand)' : '#d1d5db' }}
+                      className={clsx('toggle-switch', {
+                        'toggle-switch-on': notifications[item.key],
+                        'toggle-switch-off': !notifications[item.key],
+                      })}
                     >
                       <motion.div
-                        className="absolute top-1 w-5 h-5 rounded-full bg-white shadow-sm"
+                        className="toggle-switch-knob"
                         animate={{ left: notifications[item.key] ? 24 : 4 }}
                         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                       />
@@ -305,14 +297,14 @@ export default function ProfilePage() {
         {/* ========================================== */}
         {activeTab === 'archetype' && arch && (
           <motion.div key="archetype" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
-            <div className="rounded-xl overflow-hidden mb-6 transition-colors" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+            <div className="card-surface-shadow rounded-xl overflow-hidden mb-6 transition-colors">
               {/* Color Banner */}
               <motion.div
-                className="h-3"
+                className="archetype-color-bar"
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 0.6, ease: 'easeOut' }}
-                style={{ backgroundColor: arch.color, transformOrigin: 'left' }}
+                style={{ backgroundColor: arch.color }}
               />
 
               <div className="p-6">
@@ -321,17 +313,17 @@ export default function ProfilePage() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                    style={{ backgroundColor: arch.color, color: 'white' }}
+                    className="archetype-icon-container"
+                    style={{ backgroundColor: arch.color }}
                   >
                     {ArchIcon && <ArchIcon size={28} />}
                   </motion.div>
                   <div>
-                    <h2 style={{ fontSize: 24, fontWeight: 700, color: 'var(--app-text-primary)' }}>{arch.name}</h2>
-                    <p style={{ color: arch.color, fontWeight: 600, fontSize: 16, fontStyle: 'italic' }}>"{arch.tagline}"</p>
+                    <h2 className="archetype-name">{arch.name}</h2>
+                    <p className="archetype-tagline" style={{ color: arch.color }}>"{arch.tagline}"</p>
                     <span
-                      className="inline-block mt-1 px-3 py-0.5 rounded-full"
-                      style={{ backgroundColor: `${arch.color}15`, color: arch.color, fontSize: 12, fontWeight: 600 }}
+                      className="archetype-badge-small"
+                      style={{ backgroundColor: `${arch.color}15`, color: arch.color }}
                     >
                       Self-Directed Learner
                     </span>
@@ -342,8 +334,7 @@ export default function ProfilePage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
-                  style={{ fontSize: 16, lineHeight: '28px', color: 'var(--app-text-secondary)' }}
-                  className="mb-6"
+                  className="archetype-description mb-6"
                 >
                   {arch.description}
                 </motion.p>
@@ -355,8 +346,7 @@ export default function ProfilePage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 + i * 0.1 }}
-                      className="p-3 rounded-xl text-center font-semibold"
-                      style={{ fontSize: 14, color: 'var(--app-text-primary)', backgroundColor: 'var(--app-surface-hover)', border: '1px solid var(--app-border)' }}
+                      className="trait-badge"
                     >
                       {trait}
                     </motion.div>
@@ -367,27 +357,25 @@ export default function ProfilePage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 }}
-                  className="rounded-xl p-4"
-                  style={{ backgroundColor: '#fef6e9', border: '1px solid #fde68a' }}
+                  className="learning-style-box"
                 >
-                  <h4 style={{ fontSize: 15, fontWeight: 700, color: 'var(--app-text-primary)' }} className="mb-1">Learning Style</h4>
-                  <p style={{ fontSize: 14, color: 'var(--app-text-secondary)' }}>Structured, self-paced learning with clear metrics</p>
+                  <h4 className="learning-style-title">Learning Style</h4>
+                  <p className="learning-style-desc">Structured, self-paced learning with clear metrics</p>
                 </motion.div>
               </div>
             </div>
 
             {/* Retake Assessment */}
-            <div className="rounded-xl p-6 transition-colors" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
-              <h3 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-2">Retake Assessment</h3>
-              <p style={{ fontSize: 14, color: 'var(--app-text-muted)', lineHeight: '22px' }} className="mb-4">
+            <div className="card-surface-shadow rounded-xl p-6 transition-colors">
+              <h3 className="section-title mb-2">Retake Assessment</h3>
+              <p className="section-subtitle mb-4">
                 Your archetype may change over time as you grow. Retaking the assessment will update your profile and learning path.
               </p>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigate('/survey')}
-                className="px-5 py-2.5 rounded-lg border-2 font-semibold cursor-pointer"
-                style={{ borderColor: 'var(--app-brand)', color: 'var(--app-brand)', fontSize: 14 }}
+                className="retake-button"
               >
                 Retake Assessment
               </motion.button>
@@ -400,13 +388,10 @@ export default function ProfilePage() {
         {/* ========================================== */}
         {activeTab === 'goals' && (
           <motion.div key="goals" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
-            <div className="rounded-xl p-6 transition-colors" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+            <div className="card-surface-shadow rounded-xl p-6 transition-colors">
               <div className="flex items-center justify-between mb-6">
-                <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }}>Current Goals</h2>
-                <button
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer transition-colors"
-                  style={{ fontSize: 14, color: 'var(--app-text-secondary)', border: '1px solid var(--app-border-strong)' }}
-                >
+                <h2 className="section-title">Current Goals</h2>
+                <button className="btn-secondary-border">
                   Edit Goals
                 </button>
               </div>
@@ -415,29 +400,28 @@ export default function ProfilePage() {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 }}
-                className="rounded-xl p-5 mb-6"
-                style={{ backgroundColor: 'var(--app-brand-light)', border: '2px dashed var(--app-brand)40' }}
+                className="goal-primary-box"
+                style={{ borderColor: 'var(--app-brand)40' }}
               >
-                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--app-brand)', letterSpacing: '0.5px' }}>PRIMARY GOAL</span>
-                <h3 style={{ fontSize: 22, fontWeight: 700, color: 'var(--app-text-primary)' }} className="mt-2 mb-1">Increase Productivity</h3>
-                <p style={{ fontSize: 14, color: 'var(--app-text-secondary)', lineHeight: '22px' }} className="mb-4">
+                <span className="goal-label">PRIMARY GOAL</span>
+                <h3 className="goal-title">Increase Productivity</h3>
+                <p className="goal-description">
                   Automate tasks and save hours every week with AI tools.
                 </p>
 
-                <div className="h-3 rounded-full overflow-hidden mb-2" style={{ backgroundColor: 'var(--app-surface)' }}>
+                <div className="progress-bar-container">
                   <motion.div
-                    className="h-full rounded-full"
-                    style={{ backgroundColor: 'var(--app-brand)' }}
+                    className="progress-bar-fill-brand"
                     initial={{ width: 0 }}
                     animate={{ width: '45%' }}
                     transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
                   />
                 </div>
-                <span style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>45% toward goal</span>
+                <span className="progress-text">45% toward goal</span>
               </motion.div>
 
               <div className="mb-6">
-                <h4 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-3">Focus Areas</h4>
+                <h4 className="focus-area-heading">Focus Areas</h4>
                 <div className="flex flex-wrap gap-2">
                   {['Writing & Communication', 'Data Analysis', 'Project Management'].map((area, i) => (
                     <motion.span
@@ -445,8 +429,8 @@ export default function ProfilePage() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.3 + i * 0.1 }}
-                      className="px-4 py-2 rounded-full"
-                      style={{ fontSize: 13, fontWeight: 500, color: 'var(--app-brand)', backgroundColor: 'var(--app-brand-light)', border: '1px solid var(--app-brand)30' }}
+                      className="focus-area-tag"
+                      style={{ border: '1px solid var(--app-brand)30' }}
                     >
                       {area}
                     </motion.span>
@@ -456,12 +440,12 @@ export default function ProfilePage() {
 
               <div className="flex gap-8">
                 <div>
-                  <span style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>Timeline</span>
-                  <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>8 weeks (4 remaining)</p>
+                  <span className="timeline-label">Timeline</span>
+                  <p className="timeline-value">8 weeks (4 remaining)</p>
                 </div>
                 <div>
-                  <span style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>Commitment</span>
-                  <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>Moderate (20 min/day)</p>
+                  <span className="timeline-label">Commitment</span>
+                  <p className="timeline-value">Moderate (20 min/day)</p>
                 </div>
               </div>
             </div>
@@ -486,28 +470,27 @@ export default function ProfilePage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1, duration: 0.3 }}
                   whileHover={{ y: -3 }}
-                  className="rounded-xl p-5 cursor-default transition-colors"
-                  style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
+                  className="stat-card-progress"
                 >
-                  <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style={{ backgroundColor: stat.bg, color: stat.color }}>
+                  <div className="stat-icon-container" style={{ backgroundColor: stat.bg, color: stat.color }}>
                     {stat.icon}
                   </div>
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: i * 0.1 + 0.2 }}
-                    style={{ fontSize: 28, fontWeight: 700, color: 'var(--app-text-primary)' }}
+                    className="stat-value"
                   >
                     {stat.value}
                   </motion.div>
-                  <span style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>{stat.label}</span>
+                  <span className="stat-label">{stat.label}</span>
                 </motion.div>
               ))}
             </div>
 
             {/* Badges & Achievements */}
-            <div className="rounded-xl p-6 transition-colors" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-6">Badges & Achievements</h2>
+            <div className="card-surface-shadow rounded-xl p-6 transition-colors">
+              <h2 className="section-title mb-6">Badges & Achievements</h2>
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
                 {[
                   { name: 'Early Adopter', desc: 'Joined the platform in the first month', emoji: '🎯', earned: true },
@@ -523,18 +506,20 @@ export default function ProfilePage() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: i * 0.08, type: 'spring', stiffness: 200 }}
                     whileHover={{ y: -4 }}
-                    className="p-4 rounded-xl text-center cursor-default"
-                    style={{
-                      opacity: badge.earned ? 1 : 0.5,
-                      backgroundColor: badge.earned ? 'var(--app-brand-light)' : 'var(--app-surface-hover)',
-                      border: `1px solid ${badge.earned ? 'var(--app-brand)20' : 'var(--app-border)'}`,
-                    }}
+                    className={clsx({
+                      'badge-earned': badge.earned,
+                      'badge-locked': !badge.earned,
+                    })}
+                    style={{ border: `1px solid ${badge.earned ? 'var(--app-brand)20' : 'var(--app-border)'}` }}
                   >
-                    <span className="text-3xl block mb-2">{badge.emoji}</span>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: badge.earned ? 'var(--app-brand)' : 'var(--app-text-hint)' }} className="block leading-tight">
+                    <span className="badge-emoji">{badge.emoji}</span>
+                    <span className={clsx('block leading-tight', {
+                      'badge-name-earned': badge.earned,
+                      'badge-name-locked': !badge.earned,
+                    })}>
                       {badge.name}
                     </span>
-                    <span style={{ fontSize: 10, color: 'var(--app-text-hint)', lineHeight: '14px' }} className="block mt-1">
+                    <span className="badge-desc">
                       {badge.desc}
                     </span>
                   </motion.div>
@@ -549,8 +534,8 @@ export default function ProfilePage() {
         {/* ========================================== */}
         {activeTab === 'workflows' && (
           <motion.div key="workflows" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
-            <div className="rounded-xl p-6 mb-6 transition-colors" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--app-text-primary)' }} className="mb-6">Bookmarked Resources</h2>
+            <div className="card-surface-shadow rounded-xl p-6 mb-6 transition-colors">
+              <h2 className="section-title mb-6">Bookmarked Resources</h2>
               <div className="space-y-1">
                 {[
                   { title: 'Email Writing Prompt Template', type: 'Template', date: 'Saved Feb 20', icon: <FolderOpen size={18} /> },
@@ -562,17 +547,16 @@ export default function ProfilePage() {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 }}
-                    className="flex items-center gap-4 py-4 px-3 rounded-lg cursor-pointer"
-                    style={{ borderBottom: '1px solid var(--app-border)' }}
+                    className="flex items-center gap-4 py-4 px-3 rounded-lg cursor-pointer border-bottom-app"
                   >
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--app-brand-light)', color: 'var(--app-brand)' }}>
+                    <div className="resource-icon-container">
                       {resource.icon}
                     </div>
                     <div className="flex-1">
-                      <h4 style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>{resource.title}</h4>
-                      <span style={{ fontSize: 13, color: 'var(--app-text-hint)' }}>{resource.type}  ·  {resource.date}</span>
+                      <h4 className="resource-title">{resource.title}</h4>
+                      <span className="resource-meta">{resource.type}  ·  {resource.date}</span>
                     </div>
-                    <ChevronRight size={18} style={{ color: 'var(--app-text-hint)' }} />
+                    <ChevronRight size={18} className="text-app-hint" />
                   </motion.div>
                 ))}
               </div>
@@ -583,22 +567,20 @@ export default function ProfilePage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="rounded-xl p-8 text-center transition-colors"
-              style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
+              className="empty-state-container"
             >
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: 'var(--app-brand-light)' }}>
-                <Zap size={28} style={{ color: 'var(--app-brand)' }} />
+              <div className="empty-state-icon-container">
+                <Zap size={28} className="text-[var(--app-brand)]" />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--app-text-primary)' }} className="mb-2">No Custom Prompts Yet</h3>
-              <p style={{ fontSize: 14, color: 'var(--app-text-muted)', lineHeight: '22px', maxWidth: 360 }} className="mx-auto mb-5">
+              <h3 className="empty-state-title">No Custom Prompts Yet</h3>
+              <p className="empty-state-desc">
                 Start creating custom prompts from the Quick Wins section and they'll appear here.
               </p>
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => navigate('/app/learn')}
-                className="px-6 py-3 rounded-lg text-white font-semibold cursor-pointer"
-                style={{ backgroundColor: 'var(--app-brand)', fontSize: 14 }}
+                className="btn-save-primary"
               >
                 Explore Quick Wins
               </motion.button>
@@ -614,40 +596,39 @@ export default function ProfilePage() {
             <div className="space-y-6">
 
               {/* Privacy Controls */}
-              <div className="rounded-xl p-6 transition-colors" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
-                <div className="flex items-center gap-3 mb-5">
-                  <Eye size={20} style={{ color: 'var(--app-text-secondary)' }} />
-                  <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--app-text-primary)' }}>Privacy Controls</h3>
+              <div className="card-surface-shadow rounded-xl p-6 transition-colors">
+                <div className="support-icon-container">
+                  <Eye size={20} className="text-app-secondary" />
+                  <h3 className="support-title">Privacy Controls</h3>
                 </div>
 
                 {/* Profile Visibility */}
-                <div className="flex items-center justify-between py-4" style={{ borderBottom: '1px solid var(--app-border)' }}>
+                <div className="privacy-item">
                   <div>
-                    <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>Profile Visibility</span>
-                    <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 2 }}>Who can see your profile</p>
+                    <span className="privacy-label">Profile Visibility</span>
+                    <p className="privacy-desc">Who can see your profile</p>
                   </div>
-                  <span
-                    className="px-4 py-1.5 rounded-lg"
-                    style={{ fontSize: 13, fontWeight: 600, color: 'var(--app-text-secondary)', backgroundColor: 'var(--app-surface-hover)', border: '1px solid var(--app-border-strong)' }}
-                  >
+                  <span className="privacy-value">
                     {privacy.profileVisibility}
                   </span>
                 </div>
 
                 {/* Show Activity */}
-                <div className="flex items-center justify-between py-4" style={{ borderBottom: '1px solid var(--app-border)' }}>
+                <div className="privacy-item">
                   <div>
-                    <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>Show Activity</span>
-                    <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 2 }}>Display your learning activity to peers</p>
+                    <span className="privacy-label">Show Activity</span>
+                    <p className="privacy-desc">Display your learning activity to peers</p>
                   </div>
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     onClick={() => togglePrivacy('showActivity')}
-                    className="relative w-12 h-7 rounded-full cursor-pointer transition-colors duration-300"
-                    style={{ backgroundColor: privacy.showActivity ? 'var(--app-brand)' : '#d1d5db' }}
+                    className={clsx('toggle-switch', {
+                      'toggle-switch-on': privacy.showActivity,
+                      'toggle-switch-off': !privacy.showActivity,
+                    })}
                   >
                     <motion.div
-                      className="absolute top-1 w-5 h-5 rounded-full bg-white shadow-sm"
+                      className="toggle-switch-knob"
                       animate={{ left: privacy.showActivity ? 24 : 4 }}
                       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                     />
@@ -655,19 +636,21 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Show on Leaderboard */}
-                <div className="flex items-center justify-between py-4">
+                <div className="privacy-item" style={{ borderBottom: 'none' }}>
                   <div>
-                    <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>Show on Leaderboard</span>
-                    <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 2 }}>Include your rank in community leaderboards</p>
+                    <span className="privacy-label">Show on Leaderboard</span>
+                    <p className="privacy-desc">Include your rank in community leaderboards</p>
                   </div>
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     onClick={() => togglePrivacy('showLeaderboard')}
-                    className="relative w-12 h-7 rounded-full cursor-pointer transition-colors duration-300"
-                    style={{ backgroundColor: privacy.showLeaderboard ? 'var(--app-brand)' : '#d1d5db' }}
+                    className={clsx('toggle-switch', {
+                      'toggle-switch-on': privacy.showLeaderboard,
+                      'toggle-switch-off': !privacy.showLeaderboard,
+                    })}
                   >
                     <motion.div
-                      className="absolute top-1 w-5 h-5 rounded-full bg-white shadow-sm"
+                      className="toggle-switch-knob"
                       animate={{ left: privacy.showLeaderboard ? 24 : 4 }}
                       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                     />
@@ -676,9 +659,9 @@ export default function ProfilePage() {
               </div>
 
               {/* Appearance */}
-              <div className="rounded-xl p-6 transition-colors" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
-                <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--app-text-primary)' }} className="mb-2">Appearance</h3>
-                <p style={{ fontSize: 14, color: 'var(--app-text-muted)' }} className="mb-5">Customize the look and feel of the application.</p>
+              <div className="card-surface-shadow rounded-xl p-6 transition-colors">
+                <h3 className="appearance-title">Appearance</h3>
+                <p className="appearance-desc">Customize the look and feel of the application.</p>
                 <div className="flex gap-3">
                   {themeOptions.map(opt => (
                     <motion.button
@@ -686,13 +669,10 @@ export default function ProfilePage() {
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setTheme(opt.value)}
-                      className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold cursor-pointer transition-all duration-200"
-                      style={{
-                        fontSize: 14,
-                        backgroundColor: theme === opt.value ? 'var(--app-brand)' : 'transparent',
-                        color: theme === opt.value ? '#ffffff' : 'var(--app-text-secondary)',
-                        border: theme === opt.value ? '2px solid var(--app-brand)' : '2px solid var(--app-border-strong)',
-                      }}
+                      className={clsx('theme-button', {
+                        'theme-button-active': theme === opt.value,
+                        'theme-button-inactive': theme !== opt.value,
+                      })}
                     >
                       {opt.icon}
                       {opt.label}
@@ -702,10 +682,10 @@ export default function ProfilePage() {
               </div>
 
               {/* Feedback & Support */}
-              <div className="rounded-xl p-6 transition-colors" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
-                <div className="flex items-center gap-3 mb-5">
-                  <HelpCircle size={20} style={{ color: 'var(--app-text-secondary)' }} />
-                  <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--app-text-primary)' }}>Feedback & Support</h3>
+              <div className="card-surface-shadow rounded-xl p-6 transition-colors">
+                <div className="support-icon-container">
+                  <HelpCircle size={20} className="text-app-secondary" />
+                  <h3 className="support-title">Feedback & Support</h3>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
@@ -720,45 +700,40 @@ export default function ProfilePage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.05 }}
                       whileHover={{ y: -2 }}
-                      className="flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-colors text-left"
-                      style={{ border: '1px solid var(--app-border-strong)', color: 'var(--app-text-primary)' }}
+                      className="support-button"
                     >
-                      <span style={{ color: 'var(--app-brand)' }}>{item.icon}</span>
-                      <span style={{ fontSize: 14, fontWeight: 600 }}>{item.label}</span>
+                      <span className="text-[var(--app-brand)]">{item.icon}</span>
+                      <span className="support-button-label">{item.label}</span>
                     </motion.button>
                   ))}
                 </div>
               </div>
 
               {/* Danger Zone */}
-              <div className="rounded-xl p-6 transition-colors" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid #fecaca', boxShadow: 'var(--app-shadow)' }}>
-                <h3 style={{ fontSize: 20, fontWeight: 700, color: '#dc2626' }} className="mb-5">Danger Zone</h3>
+              <div className="danger-zone-container">
+                <h3 className="danger-zone-title">Danger Zone</h3>
 
                 {/* Export Data */}
-                <div className="flex items-center justify-between py-4" style={{ borderBottom: '1px solid var(--app-border)' }}>
+                <div className="danger-item">
                   <div>
-                    <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>Export Data</span>
-                    <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 2 }}>Download all your data</p>
+                    <span className="danger-label">Export Data</span>
+                    <p className="danger-desc">Download all your data</p>
                   </div>
-                  <button
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer transition-colors"
-                    style={{ fontSize: 13, fontWeight: 600, color: 'var(--app-text-secondary)', border: '1px solid var(--app-border-strong)' }}
-                  >
+                  <button className="danger-button-export">
                     <Download size={14} /> Export
                   </button>
                 </div>
 
                 {/* Delete Account */}
-                <div className="flex items-center justify-between py-4">
+                <div className="danger-item">
                   <div>
-                    <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--app-text-primary)' }}>Delete Account</span>
-                    <p style={{ fontSize: 13, color: 'var(--app-text-muted)', marginTop: 2 }}>Permanently remove your account and all data</p>
+                    <span className="danger-label">Delete Account</span>
+                    <p className="danger-desc">Permanently remove your account and all data</p>
                   </div>
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    className="px-4 py-2 rounded-lg cursor-pointer font-semibold"
-                    style={{ fontSize: 13, backgroundColor: '#fee2e2', color: '#dc2626', border: '1px solid #fecaca' }}
+                    className="danger-button-delete"
                   >
                     Delete Account
                   </motion.button>

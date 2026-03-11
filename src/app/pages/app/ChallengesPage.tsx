@@ -11,13 +11,13 @@ import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import {
   Target, Trophy, Flame, Star, Clock, Users, Search,
-  ChevronRight, ChevronDown, CheckCircle2, Play, Calendar, TrendingUp,
+  ChevronRight, ChevronDown, CheckCircle2, Play, Sparkles, TrendingUp,
 } from 'lucide-react';
 import {
   challenges,
-  type ChallengeType,
 } from '../../data/learnData';
 import { useUser } from '../../context/UserContext';
+import clsx from 'clsx';
 import {
   cardHoverMotion,
   primaryButtonMotion,
@@ -34,20 +34,21 @@ export default function ChallengesPage() {
 
   // Mock daily progress data (points earned each day)
   const dailyProgress = [
-    { day: 'Sun', points: 50, completed: true },
-    { day: 'Mon', points: 75, completed: true },
-    { day: 'Tue', points: 100, completed: true },
-    { day: 'Wed', points: 50, completed: true },
-    { day: 'Thu', points: 0, completed: false },
-    { day: 'Fri', points: 0, completed: false },
-    { day: 'Sat', points: 0, completed: false },
+    { day: 'Sun', points: 50, completed: true, isActive: false },
+    { day: 'Mon', points: 75, completed: true, isActive: false },
+    { day: 'Tue', points: 10, completed: true, isActive: true },
+    { day: 'Wed', points: 11, completed: false, isActive: false },
+    { day: 'Thu', points: 12, completed: false, isActive: false },
+    { day: 'Fri', points: 13, completed: false, isActive: false },
+    { day: 'Sat', points: 14, completed: false, isActive: false },
   ];
 
   // Mock leaderboard data
   const leaderboard = [
-    { rank: 1, name: 'Sarah Chen', xp: 2450, isYou: false },
-    { rank: 2, name: 'You', xp: 1820, isYou: true },
-    { rank: 3, name: 'Alex Kim', xp: 1650, isYou: false },
+    { rank: 1, name: 'Sarah Chen', xp: 2450, isYou: false, medal: '🥇' },
+    { rank: 2, name: 'Alex Kumar', xp: 2280, isYou: false, medal: '🥈' },
+    { rank: 3, name: 'Jamie Lee', xp: 2150, isYou: false, medal: '🥉' },
+    { rank: 4, name: 'You', xp: 1890, isYou: true, medal: '' },
   ];
 
   // Filter challenges
@@ -58,85 +59,65 @@ export default function ChallengesPage() {
     return typeMatch && searchMatch;
   });
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty.toLowerCase()) {
-      case 'easy':
-      case 'beginner':
-        return { bg: '#dcfce7', text: '#166534' };
-      case 'medium':
-      case 'intermediate':
-        return { bg: '#fef3c7', text: '#92400e' };
-      case 'hard':
-      case 'advanced':
-        return { bg: '#fee2e2', text: '#991b1b' };
-      default:
-        return { bg: '#f3f4f6', text: '#374151' };
-    }
+  const getDifficultyClass = (difficulty: string) => {
+    const lower = difficulty.toLowerCase();
+    if (lower === 'easy' || lower === 'beginner') return 'difficulty-beginner';
+    if (lower === 'medium' || lower === 'intermediate') return 'difficulty-intermediate';
+    if (lower === 'hard' || lower === 'advanced') return 'difficulty-advanced';
+    return 'badge-gray';
   };
 
-  const getTypeBadgeColor = (frequency: string) => {
-    switch (frequency) {
-      case 'daily':
-        return { bg: '#fef3c7', text: '#92400e' };
-      case 'weekly':
-        return { bg: '#ede9fe', text: '#6d28d9' };
-      case 'track':
-        return { bg: '#dbeafe', text: '#1e40af' };
-      default:
-        return { bg: '#f3f4f6', text: '#374151' };
-    }
+  const getTypeBadgeClass = (frequency: string) => {
+    if (frequency === 'daily') return 'frequency-daily';
+    if (frequency === 'weekly') return 'frequency-weekly';
+    if (frequency === 'track') return 'frequency-track';
+    return 'badge-gray';
   };
 
   const getProgressColor = (points: number) => {
-    if (points >= 100) return '#8b5cf6';
-    if (points >= 75) return '#3b82f6';
-    if (points >= 50) return '#22c55e';
-    return '#e5e7eb';
+    if (points >= 100) return 'bg-[#8b5cf6]';
+    if (points >= 75) return 'bg-[#3b82f6]';
+    if (points >= 50) return 'bg-[#22c55e]';
+    return 'bg-gray-200';
   };
 
   return (
-    <div style={{ fontFamily: 'var(--font-primary)', backgroundColor: 'var(--app-bg)', minHeight: '100vh' }}>
-      {/* ============================================ */}
+    <div className="font-primary bg-app-bg min-h-screen">
       {/* HEADER */}
-      {/* ============================================ */}
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: 'var(--app-text-primary)' }}>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-app-primary">
           Daily Challenges
         </h1>
-        <p className="text-sm sm:text-base mb-6" style={{ color: 'var(--app-text-secondary)' }}>
+        <p className="text-sm sm:text-base mb-6 text-app-secondary">
           Level up your skills with hands-on challenges
         </p>
       </div>
 
-      {/* ============================================ */}
-      {/* MAIN LAYOUT: Daily Progress + Leaderboard */}
-      {/* ============================================ */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        {/* Daily Progress Widget */}
+      {/* MAIN LAYOUT: Daily Progress + Leaderboard - COMPACT FIGMA DESIGN */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        {/* Daily Progress Widget - Compact */}
         <motion.div
           {...cardHoverMotion()}
-          className="lg:col-span-2 rounded-xl p-6"
-          style={{
-            backgroundColor: '#ffffff',
-            border: '1px solid #e5e7eb',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-          }}
+          className="compact-daily-progress-card"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold" style={{ color: 'var(--app-text-primary)' }}>
-              Daily Progress
-            </h2>
-            <div className="flex gap-2">
+          {/* Header */}
+          <div className="compact-daily-progress-header">
+            <div className="compact-daily-progress-title-container">
+              <h2 className="compact-daily-progress-title">Daily Progress</h2>
+              <span className="compact-daily-progress-subtitle">Keep your streak! 🔥</span>
+            </div>
+            
+            {/* Week/Month Toggle */}
+            <div className="compact-daily-progress-tabs">
               {['week', 'month'].map(view => (
                 <motion.button
                   key={view}
                   {...chipToggleMotion()}
                   onClick={() => setCalendarView(view as 'week' | 'month')}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold capitalize cursor-pointer"
-                  style={{
-                    backgroundColor: calendarView === view ? '#8b5cf6' : '#f3f4f6',
-                    color: calendarView === view ? '#ffffff' : 'var(--app-text-secondary)',
-                  }}
+                  className={clsx(
+                    "compact-daily-progress-tab capitalize",
+                    calendarView === view ? "compact-daily-progress-tab-active" : "compact-daily-progress-tab-inactive"
+                  )}
                 >
                   {view}
                 </motion.button>
@@ -144,137 +125,113 @@ export default function ChallengesPage() {
             </div>
           </div>
 
-          {/* Calendar Grid */}
-          <div className="grid grid-cols-7 gap-3 mb-4">
+          {/* Compact Calendar Grid */}
+          <div className="compact-daily-progress-grid">
             {dailyProgress.map((day, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: idx * 0.05 }}
-                className="flex flex-col items-center"
-              >
-                <span className="text-xs font-medium mb-2" style={{ color: 'var(--app-text-muted)' }}>
-                  {day.day}
-                </span>
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold"
-                  style={{
-                    backgroundColor: day.completed ? getProgressColor(day.points) : '#f3f4f6',
-                    color: day.completed ? '#ffffff' : 'var(--app-text-muted)',
-                  }}
-                >
-                  {day.completed ? day.points : '—'}
+              <div key={idx} className="calendar-day-compact">
+                {/* Day Label */}
+                <span className="calendar-day-label">{day.day}</span>
+                
+                {/* Day Cell */}
+                <div className={clsx(
+                  "calendar-day-cell",
+                  day.isActive && "calendar-day-cell-active",
+                  !day.isActive && day.completed && "calendar-day-cell-completed",
+                  !day.isActive && !day.completed && "calendar-day-cell-empty"
+                )}>
+                  {/* Sparkle Icon for completed days */}
+                  {day.completed && !day.isActive && (
+                    <Sparkles className="calendar-day-icon text-[#8200db]" />
+                  )}
+                  
+                  {/* Points */}
+                  <span className={clsx(
+                    "calendar-day-points",
+                    day.isActive && "calendar-day-points-active",
+                    !day.isActive && day.completed && "calendar-day-points-completed",
+                    !day.isActive && !day.completed && "calendar-day-points-empty"
+                  )}>
+                    {day.points}
+                  </span>
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </div>
-
-          {/* Streak Message */}
-          <div className="flex items-center justify-center gap-2 p-3 rounded-lg" style={{ backgroundColor: '#fef3c7' }}>
-            <Flame size={20} style={{ color: '#f59e0b' }} />
-            <span className="text-sm font-semibold" style={{ color: '#92400e' }}>
-              Keep your streak! Complete today's challenge
-            </span>
           </div>
         </motion.div>
 
-        {/* Leaderboard Sidebar */}
+        {/* Leaderboard Widget - Compact Horizontal */}
         <motion.div
           {...cardHoverMotion()}
-          className="rounded-xl p-6"
-          style={{
-            backgroundColor: '#ffffff',
-            border: '1px solid #e5e7eb',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-          }}
+          className="leaderboard-compact-wrapper"
         >
-          <div className="flex items-center gap-2 mb-4">
-            <Trophy size={20} style={{ color: '#eab308' }} />
-            <h2 className="text-lg font-bold" style={{ color: 'var(--app-text-primary)' }}>
-              Leaderboard
-            </h2>
+          {/* Header */}
+          <div className="leaderboard-compact-header">
+            <div className="leaderboard-compact-header-left">
+              <Trophy size={14} className="text-[#eab308]" />
+              <h2 className="leaderboard-compact-header-title">Leaderboard</h2>
+            </div>
+            <span className="leaderboard-compact-header-subtitle">This Week</span>
           </div>
 
-          {/* Top 3 Users */}
-          <div className="space-y-3 mb-4">
-            {leaderboard.map((user, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                className="flex items-center gap-3 p-3 rounded-lg"
-                style={{
-                  backgroundColor: user.isYou ? '#ede9fe' : '#f9fafb',
-                  border: user.isYou ? '2px solid #8b5cf6' : '1px solid #e5e7eb',
-                }}
-              >
-                {/* Rank Badge */}
+          {/* Horizontal Leaderboard Cards */}
+          <div className="leaderboard-compact-container">
+            {leaderboard.map((user, idx) => {
+              const getMedalClass = () => {
+                if (idx === 0) return 'leaderboard-compact-medal-gold';
+                if (idx === 1) return 'leaderboard-compact-medal-silver';
+                if (idx === 2) return 'leaderboard-compact-medal-bronze';
+                return 'leaderboard-compact-medal-other';
+              };
+
+              return (
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0"
-                  style={{
-                    backgroundColor: idx === 0 ? '#fef3c7' : '#f3f4f6',
-                    color: idx === 0 ? '#92400e' : 'var(--app-text-secondary)',
-                  }}
+                  key={idx}
+                  className={clsx(
+                    "leaderboard-compact-card",
+                    user.isYou && "leaderboard-compact-card-you"
+                  )}
                 >
-                  {user.rank}
-                </div>
+                  {/* Medal/Rank */}
+                  <div className={clsx("leaderboard-compact-medal", getMedalClass())}>
+                    {user.medal || user.rank}
+                  </div>
 
-                {/* User Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold truncate" style={{ color: 'var(--app-text-primary)' }}>
+                  {/* User Info */}
+                  <div className="leaderboard-compact-info">
+                    <p className={clsx(
+                      "leaderboard-compact-name",
+                      user.isYou && "leaderboard-compact-name-you"
+                    )}>
                       {user.name}
-                    </span>
-                    {user.isYou && (
-                      <span className="px-2 py-0.5 rounded text-xs font-bold" style={{ backgroundColor: '#8b5cf6', color: 'white' }}>
-                        YOU
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-xs font-medium" style={{ color: 'var(--app-text-muted)' }}>
-                    {user.xp.toLocaleString()} XP
+                    </p>
+                    <div className="leaderboard-compact-xp">
+                      <TrendingUp size={10} />
+                      <span>{user.xp.toLocaleString()} XP</span>
+                    </div>
                   </div>
                 </div>
-
-                {/* Trophy Icon for #1 */}
-                {idx === 0 && <Trophy size={18} style={{ color: '#eab308' }} />}
-              </motion.div>
-            ))}
+              );
+            })}
           </div>
 
           {/* View Full Leaderboard Link */}
-          <motion.button
-            {...primaryButtonMotion()}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold cursor-pointer"
-            style={{ backgroundColor: '#f3f4f6', color: '#8b5cf6' }}
-          >
+          <button className="leaderboard-compact-link">
             View Full Leaderboard
-            <ChevronRight size={16} />
-          </motion.button>
+          </button>
         </motion.div>
       </div>
 
-      {/* ============================================ */}
       {/* SEARCH & FILTER */}
-      {/* ============================================ */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         {/* Search */}
         <div className="relative flex-1">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--app-text-hint)' }} />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-app-hint" />
           <input
             type="text"
             placeholder="Search challenges..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-lg outline-none"
-            style={{
-              fontSize: 14,
-              backgroundColor: '#ffffff',
-              border: '1px solid #e5e7eb',
-              color: 'var(--app-text-primary)',
-            }}
+            className="search-input"
           />
         </div>
 
@@ -283,12 +240,7 @@ export default function ChallengesPage() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="appearance-none pl-4 pr-10 py-3 rounded-lg text-sm font-medium cursor-pointer outline-none"
-            style={{
-              backgroundColor: '#ffffff',
-              border: '1px solid #e5e7eb',
-              color: 'var(--app-text-primary)',
-            }}
+            className="dropdown-base"
           >
             <option value="all">Filter by type - All</option>
             <option value="daily">Daily</option>
@@ -296,17 +248,13 @@ export default function ChallengesPage() {
             <option value="skill">Track</option>
             <option value="community">Assigned</option>
           </select>
-          <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+          <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
         </div>
       </div>
 
-      {/* ============================================ */}
       {/* CHALLENGES GRID */}
-      {/* ============================================ */}
       <motion.div {...staggerContainer} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredChallenges.slice(0, 9).map((challenge, idx) => {
-          const diffColors = getDifficultyColor(challenge.difficulty);
-          const typeBadge = getTypeBadgeColor(challenge.frequency || 'daily');
           const isCompleted = challenge.completed;
 
           return (
@@ -316,54 +264,40 @@ export default function ChallengesPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
-              className="rounded-xl p-5 cursor-pointer"
-              style={{
-                backgroundColor: '#ffffff',
-                border: '1px solid #e5e7eb',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-              }}
+              className="card-base p-5 cursor-pointer"
               onClick={() => navigate(`/app/learn/challenges/${challenge.id}/workspace`)}
             >
               {/* Badges Row */}
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 {/* Type Badge */}
-                <span
-                  className="px-2.5 py-1 rounded text-xs font-semibold capitalize"
-                  style={{ backgroundColor: typeBadge.bg, color: typeBadge.text }}
-                >
+                <span className={clsx("badge-base", getTypeBadgeClass(challenge.frequency || 'daily'))}>
                   {challenge.frequency || 'weekly'}
                 </span>
 
                 {/* Difficulty Badge */}
-                <span
-                  className="px-2.5 py-1 rounded text-xs font-semibold"
-                  style={{ backgroundColor: diffColors.bg, color: diffColors.text }}
-                >
+                <span className={clsx("badge-base", getDifficultyClass(challenge.difficulty))}>
                   {challenge.difficulty}
                 </span>
 
                 {/* Completion Status */}
                 {isCompleted && (
-                  <span
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
-                    style={{ backgroundColor: '#dcfce7', color: '#166534' }}
-                  >
+                  <span className="badge-base badge-green inline-flex items-center gap-1">
                     <CheckCircle2 size={12} />
                     Done
                   </span>
                 )}
               </div>
 
-              <h3 className="text-base font-bold mb-2" style={{ color: 'var(--app-text-primary)' }}>
+              <h3 className="text-base font-bold mb-2 text-app-primary">
                 {challenge.title}
               </h3>
 
-              <p className="text-sm mb-4" style={{ color: 'var(--app-text-secondary)', lineHeight: 1.5 }}>
+              <p className="text-sm mb-4 text-app-secondary leading-relaxed">
                 {challenge.description.substring(0, 100)}...
               </p>
 
               {/* Meta Info */}
-              <div className="flex items-center gap-3 mb-4 text-xs" style={{ color: 'var(--app-text-muted)' }}>
+              <div className="flex items-center gap-3 mb-4 text-xs text-app-muted">
                 <span className="inline-flex items-center gap-1">
                   <Clock size={14} />
                   {challenge.timeEstimateMinutes || 20} min
@@ -372,7 +306,7 @@ export default function ChallengesPage() {
                   <Users size={14} />
                   {challenge.participants || 0}
                 </span>
-                <span className="inline-flex items-center gap-1" style={{ color: '#8b5cf6', fontWeight: 600 }}>
+                <span className="inline-flex items-center gap-1 text-[#8b5cf6] font-semibold">
                   <Star size={14} />
                   {challenge.points || 50} pts
                 </span>
@@ -380,7 +314,7 @@ export default function ChallengesPage() {
 
               {/* Category Label */}
               <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-medium" style={{ color: 'var(--app-text-muted)' }}>
+                <span className="text-xs font-medium text-app-muted">
                   {challenge.category}
                 </span>
               </div>
@@ -392,11 +326,10 @@ export default function ChallengesPage() {
                   e.stopPropagation();
                   navigate(`/app/learn/challenges/${challenge.id}/workspace`);
                 }}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer"
-                style={{
-                  backgroundColor: isCompleted ? '#f3f4f6' : '#8b5cf6',
-                  color: isCompleted ? 'var(--app-text-secondary)' : 'white',
-                }}
+                className={clsx(
+                  "w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer",
+                  isCompleted ? "btn-secondary" : "btn-primary"
+                )}
               >
                 {isCompleted ? 'Review' : 'View'}
                 <ChevronRight size={16} />
@@ -413,11 +346,11 @@ export default function ChallengesPage() {
           animate={{ opacity: 1 }}
           className="text-center py-12"
         >
-          <Target size={48} className="mx-auto mb-4" style={{ color: 'var(--app-text-hint)' }} />
-          <p className="text-lg font-medium mb-2" style={{ color: 'var(--app-text-secondary)' }}>
+          <Target size={48} className="mx-auto mb-4 text-app-hint" />
+          <p className="text-lg font-medium mb-2 text-app-secondary">
             No challenges found
           </p>
-          <p className="text-sm" style={{ color: 'var(--app-text-muted)' }}>
+          <p className="text-sm text-app-muted">
             Try adjusting your filters or search query
           </p>
         </motion.div>

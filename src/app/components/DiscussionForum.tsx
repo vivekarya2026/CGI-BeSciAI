@@ -20,6 +20,7 @@ import {
   Pin, Eye, Reply, MoreHorizontal, Bookmark, Flag, Share2,
   MessageCircle,
 } from 'lucide-react';
+import clsx from 'clsx';
 
 // --- Data Interfaces ---
 interface ThreadReply {
@@ -159,9 +160,9 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
     return (
       <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, ease: 'easeOut' }}>
         {/* Navigation Head */}
-        <button onClick={() => setSelectedThread(null)} className="flex items-center gap-2 mb-5 font-semibold cursor-pointer transition-colors" style={{ color: 'var(--app-text-secondary)', fontSize: 14 }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#5236ab')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--app-text-secondary)')}
+        <button 
+          onClick={() => setSelectedThread(null)} 
+          className="forum-back-button hover:text-[#5236ab]"
         >
           <ArrowLeft size={16} /> Back to Discussions
         </button>
@@ -176,53 +177,46 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
         >
           {/* Category + Pinned badges */}
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-bold px-2.5 py-1 rounded-md" style={{ backgroundColor: `${selectedThread.categoryColor || '#5236ab'}15`, color: selectedThread.categoryColor || '#5236ab' }}>
+            <span className="forum-category-badge" style={{ backgroundColor: `${selectedThread.categoryColor || '#5236ab'}15`, color: selectedThread.categoryColor || '#5236ab' }}>
               {selectedThread.categoryIcon} {selectedThread.category}
             </span>
             {selectedThread.pinned && (
-              <span className="text-xs font-bold px-2.5 py-1 rounded-md flex items-center gap-1" style={{ backgroundColor: '#fef3c7', color: '#d97706' }}>
+              <span className="forum-pinned-badge">
                 📌 Pinned
               </span>
             )}
           </div>
 
-          <h2 className="text-xl font-bold mb-5" style={{ color: 'var(--app-text-primary)', lineHeight: 1.4 }}>{selectedThread.title}</h2>
+          <h2 className="forum-thread-title">{selectedThread.title}</h2>
 
           {/* Author info with Chat action */}
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-3">
-              <span className="text-2xl">{selectedThread.author.avatar}</span>
+              <span className="forum-author-avatar">{selectedThread.author.avatar}</span>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm" style={{ color: 'var(--app-text-primary)' }}>{selectedThread.author.name}</span>
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: archetypeColors[selectedThread.author.archetype] || '#5236ab' }} />
-                  <span style={{ fontSize: 11, color: 'var(--app-text-muted)' }}>{selectedThread.author.archetype}</span>
+                  <span className="forum-author-name">{selectedThread.author.name}</span>
+                  <span className="forum-archetype-dot" style={{ backgroundColor: archetypeColors[selectedThread.author.archetype] || '#5236ab' }} />
+                  <span className="forum-archetype-label">{selectedThread.author.archetype}</span>
                 </div>
-                <div className="text-xs" style={{ color: 'var(--app-text-hint)' }}>{selectedThread.createdAt}</div>
+                <div className="forum-timestamp">{selectedThread.createdAt}</div>
               </div>
             </div>
             <button
               onClick={() => onSuggestChat?.(selectedThread.author.name)}
-              className="text-xs font-semibold cursor-pointer transition-colors px-3 py-1.5 rounded-lg"
-              style={{ color: '#5236ab', backgroundColor: 'transparent' }}
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--app-brand-light)')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+              className="forum-message-button hover:bg-[var(--app-brand-light)]"
             >
               Message
             </button>
           </div>
 
-          <p style={{ color: 'var(--app-text-secondary)', lineHeight: '1.75', fontSize: 14 }}>{selectedThread.content}</p>
+          <p className="forum-content">{selectedThread.content}</p>
 
           {/* Tags */}
           {selectedThread.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-5 pt-5" style={{ borderTop: '1px solid var(--app-border)' }}>
+            <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-app">
               {selectedThread.tags.map(tag => (
-                <span key={tag} className="px-3 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors"
-                  style={{ backgroundColor: 'var(--app-tab-bg)', color: 'var(--app-text-secondary)' }}
-                  onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--app-brand-light)'; e.currentTarget.style.color = '#5236ab'; }}
-                  onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'var(--app-tab-bg)'; e.currentTarget.style.color = 'var(--app-text-secondary)'; }}
-                >
+                <span key={tag} className="forum-tag hover:bg-[var(--app-brand-light)] hover:text-[#5236ab]">
                   {tag}
                 </span>
               ))}
@@ -230,23 +224,23 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
           )}
 
           {/* Stats bar */}
-          <div className="flex items-center gap-5 mt-5 pt-4" style={{ borderTop: '1px solid var(--app-border)' }}>
-            <span className="flex items-center gap-1.5" style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>
+          <div className="flex items-center gap-5 mt-5 pt-4 border-t border-app">
+            <span className="forum-stat">
               <ThumbsUp size={14} /> {selectedThread.likes}
             </span>
-            <span className="flex items-center gap-1.5" style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>
+            <span className="forum-stat">
               <Eye size={14} /> {selectedThread.views}
             </span>
-            <span className="flex items-center gap-1.5" style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>
+            <span className="forum-stat">
               <MessageSquare size={14} /> {allReplies.length} replies
             </span>
             <div className="flex-1" />
-            <Bookmark size={16} style={{ color: 'var(--app-text-hint)', cursor: 'pointer' }} />
+            <Bookmark size={16} className="text-app-hint cursor-pointer" />
           </div>
         </motion.div>
 
         {/* Discussion Feed (Replies) */}
-        <h3 className="font-bold mb-5" style={{ color: 'var(--app-text-primary)', fontSize: 16 }}>Replies ({allReplies.length})</h3>
+        <h3 className="font-bold mb-5 text-app-primary text-base">Replies ({allReplies.length})</h3>
         <div className="space-y-4 mb-6">
           {allReplies.map((reply, idx) => (
             <motion.div
@@ -254,37 +248,33 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, delay: idx * 0.06 }}
-              className="p-5 rounded-xl"
-              style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
+              className="forum-reply-card"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2.5">
                   <span className="text-xl">{reply.author.avatar}</span>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-sm" style={{ color: 'var(--app-text-primary)' }}>{reply.author.name}</span>
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: archetypeColors[reply.author.archetype] || '#5236ab' }} />
-                      <span style={{ fontSize: 11, color: 'var(--app-text-muted)' }}>{reply.author.archetype}</span>
+                      <span className="forum-reply-author">{reply.author.name}</span>
+                      <span className="forum-archetype-dot" style={{ backgroundColor: archetypeColors[reply.author.archetype] || '#5236ab' }} />
+                      <span className="forum-archetype-label">{reply.author.archetype}</span>
                     </div>
-                    <span className="text-xs" style={{ color: 'var(--app-text-hint)' }}>{reply.time}</span>
+                    <span className="forum-timestamp">{reply.time}</span>
                   </div>
                 </div>
                 <button
                   onClick={() => onSuggestChat?.(reply.author.name)}
-                  className="text-xs font-semibold cursor-pointer transition-colors px-3 py-1.5 rounded-lg"
-                  style={{ color: '#5236ab', backgroundColor: 'transparent' }}
-                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--app-brand-light)')}
-                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+                  className="forum-message-button hover:bg-[var(--app-brand-light)]"
                 >
                   Chat
                 </button>
               </div>
-              <p className="text-sm mb-3" style={{ color: 'var(--app-text-secondary)', lineHeight: 1.7 }}>{reply.content}</p>
+              <p className="forum-reply-content">{reply.content}</p>
               <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1.5 cursor-pointer" style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>
+                <span className="forum-reply-action">
                   <ThumbsUp size={12} /> {reply.likes}
                 </span>
-                <span className="flex items-center gap-1.5 cursor-pointer" style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>
+                <span className="forum-reply-action">
                   <Reply size={12} /> Reply
                 </span>
               </div>
@@ -297,26 +287,22 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
-          className="p-5 rounded-xl"
-          style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}
+          className="card-surface p-5"
         >
           <textarea
             value={replyText} onChange={e => setReplyText(e.target.value)}
             placeholder="Write a reply..."
-            className="w-full p-3 rounded-lg outline-none text-sm resize-none"
-            style={{ backgroundColor: 'var(--app-bg)', border: '1px solid var(--app-border)', color: 'var(--app-text-primary)', lineHeight: 1.6 }}
+            className="forum-reply-textarea"
             rows={3}
           />
           <div className="flex justify-end mt-3">
             <button
               onClick={handlePostReply}
               disabled={!replyText.trim()}
-              className="text-white px-5 py-2.5 rounded-lg font-semibold text-sm cursor-pointer flex items-center gap-2 transition-all"
-              style={{
-                backgroundColor: replyText.trim() ? '#5236ab' : 'var(--app-tab-bg)',
-                color: replyText.trim() ? 'white' : 'var(--app-text-hint)',
-                opacity: replyText.trim() ? 1 : 0.6,
-              }}
+              className={clsx(
+                'forum-reply-submit',
+                replyText.trim() ? 'forum-reply-submit-active' : 'forum-reply-submit-disabled'
+              )}
             >
               <Send size={14} /> Post Reply
             </button>
@@ -332,12 +318,11 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="font-bold text-lg" style={{ color: 'var(--app-text-primary)' }}>Recent Discussions</h2>
+        <h2 className="font-bold text-lg text-app-primary">Recent Discussions</h2>
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
-          className="text-white px-5 py-2.5 rounded-lg text-sm font-semibold cursor-pointer flex items-center gap-2"
-          style={{ backgroundColor: '#1a1a2e' }}
+          className="forum-new-discussion"
         >
           + New Discussion
         </motion.button>
@@ -352,59 +337,54 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: i * 0.06 }}
             whileHover={{ y: -2, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
-            className="p-5 rounded-xl cursor-pointer transition-all"
-            style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
+            className="forum-thread-card"
           >
             {/* Top row: avatar, category, pinned, arrow */}
             <div className="flex items-start gap-4">
-              <span className="text-2xl mt-1">{thread.author.avatar}</span>
+              <span className="forum-thread-avatar">{thread.author.avatar}</span>
               <div className="flex-1 min-w-0">
                 {/* Category & Pinned Badges */}
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-md"
+                  <span className="forum-category-badge"
                     style={{ backgroundColor: `${thread.categoryColor}15`, color: thread.categoryColor }}
                   >
                     {thread.categoryIcon} {thread.category}
                   </span>
                   {thread.pinned && (
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-md flex items-center gap-1"
-                      style={{ backgroundColor: '#fef3c7', color: '#d97706' }}
-                    >
+                    <span className="forum-pinned-badge">
                       📌 Pinned
                     </span>
                   )}
                 </div>
 
                 {/* Title */}
-                <h4 className="font-bold mb-1" style={{ color: 'var(--app-text-primary)', fontSize: 15, lineHeight: 1.4 }}>{thread.title}</h4>
+                <h4 className="forum-thread-card-title">{thread.title}</h4>
 
                 {/* Author & time */}
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs font-medium" style={{ color: 'var(--app-text-secondary)' }}>{thread.author.name}</span>
-                  <span style={{ color: 'var(--app-text-hint)', fontSize: 11 }}>·</span>
-                  <span className="text-xs" style={{ color: 'var(--app-text-hint)' }}>{thread.createdAt}</span>
+                  <span className="forum-thread-meta">{thread.author.name}</span>
+                  <span className="forum-thread-time">·</span>
+                  <span className="forum-thread-time">{thread.createdAt}</span>
                 </div>
 
                 {/* Stats + Tags + Last reply */}
                 <div className="flex items-center justify-between flex-wrap gap-y-2">
                   <div className="flex items-center gap-4">
                     {/* Engagement stats */}
-                    <span className="flex items-center gap-1" style={{ fontSize: 12, color: 'var(--app-text-hint)' }}>
+                    <span className="forum-stat">
                       <ThumbsUp size={12} /> {thread.likes}
                     </span>
-                    <span className="flex items-center gap-1" style={{ fontSize: 12, color: 'var(--app-text-hint)' }}>
+                    <span className="forum-stat">
                       <MessageSquare size={12} /> {thread.replies}
                     </span>
-                    <span className="flex items-center gap-1" style={{ fontSize: 12, color: 'var(--app-text-hint)' }}>
+                    <span className="forum-stat">
                       <Eye size={12} /> {thread.views}
                     </span>
 
                     {/* Tags */}
                     <div className="flex items-center gap-1.5 ml-2">
                       {thread.tags.map(tag => (
-                        <span key={tag} className="px-2 py-0.5 rounded-md text-xs"
-                          style={{ backgroundColor: 'var(--app-tab-bg)', color: 'var(--app-text-muted)', fontSize: 11 }}
-                        >
+                        <span key={tag} className="forum-thread-tag-small">
                           {tag}
                         </span>
                       ))}
@@ -413,9 +393,9 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
 
                   {/* Last reply info */}
                   {thread.lastReply && (
-                    <div className="flex items-center gap-1.5" style={{ fontSize: 11, color: 'var(--app-text-hint)' }}>
+                    <div className="forum-last-reply">
                       Last reply by <span className="text-sm">{thread.lastReply.avatar}</span>
-                      <span style={{ fontWeight: 500, color: 'var(--app-text-muted)' }}>{thread.lastReply.name}</span>
+                      <span className="forum-last-reply-name">{thread.lastReply.name}</span>
                       <span>· {thread.lastReply.time}</span>
                     </div>
                   )}
@@ -423,7 +403,7 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
               </div>
 
               {/* Arrow */}
-              <ChevronRight size={18} style={{ color: 'var(--app-text-hint)', marginTop: 4, flexShrink: 0 }} />
+              <ChevronRight size={18} className="text-app-hint mt-1 shrink-0" />
             </div>
           </motion.div>
         ))}

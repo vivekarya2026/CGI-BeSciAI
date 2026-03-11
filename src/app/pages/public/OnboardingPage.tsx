@@ -25,6 +25,7 @@ import {
   PenTool, BarChart3, Code, Search, Palette, FolderKanban,
   ArrowLeft, ArrowRight, Rocket, Check,
 } from 'lucide-react';
+import clsx from 'clsx';
 
 // ============================================
 // SECTION 1: STATIC DATA
@@ -171,18 +172,18 @@ export default function OnboardingPage() {
   // ============================================
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#f8f9fb', fontFamily: 'var(--font-primary)' }}>
+    <div className="onboarding-container">
       {/* ---- Progress Header ---- */}
-      <header className="bg-white border-b border-gray-100 px-6 py-4">
+      <header className="onboarding-header">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-3">
-            <h1 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }}>Set Your Goals</h1>
-            <span style={{ fontSize: 14, color: '#767676' }}>Step {step} of 3</span>
+            <h1 className="onboarding-header-title">Set Your Goals</h1>
+            <span className="onboarding-header-step">Step {step} of 3</span>
           </div>
           {/* Visual Step Indicator (3 blocks) */}
           <div className="flex gap-2">
             {[1, 2, 3].map(s => (
-              <div key={s} className="flex-1 h-1.5 rounded-full transition-all" style={{ backgroundColor: s <= step ? '#5236ab' : '#e6e3f3' }} />
+              <div key={s} className={clsx('onboarding-step-indicator', s <= step ? 'onboarding-step-active' : 'onboarding-step-inactive')} />
             ))}
           </div>
         </div>
@@ -199,24 +200,30 @@ export default function OnboardingPage() {
             {/* ------------------------------------- */}
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.3 }}>
-                <h2 style={{ fontSize: 24, fontWeight: 600, color: '#151515' }} className="mb-2 text-center">Select Your Primary Goal</h2>
-                <p style={{ fontSize: 16, color: '#5c5c5c', lineHeight: '24px' }} className="text-center mb-8">Choose the goal that matters most to you right now.</p>
+                <h2 className="onboarding-step-title">Select Your Primary Goal</h2>
+                <p className="onboarding-step-subtitle">Choose the goal that matters most to you right now.</p>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {goals.map((goal) => {
                     const isSelected = selectedGoal === goal.id;
                     return (
                       <motion.button
-                        key={goal.id} whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }} onClick={() => setSelectedGoal(goal.id)}
-                        className="text-left p-6 rounded-xl border-2 bg-white transition-all cursor-pointer"
-                        style={{ borderColor: isSelected ? goal.color : '#e5e7eb', boxShadow: isSelected ? `0 4px 16px ${goal.color}20` : '0 1px 3px rgba(0,0,0,0.04)' }}
+                        key={goal.id}
+                        whileHover={{ y: -3 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setSelectedGoal(goal.id)}
+                        className={clsx('onboarding-goal-card', isSelected ? 'onboarding-goal-card-selected' : 'onboarding-goal-card-unselected')}
+                        style={{
+                          borderColor: isSelected ? goal.color : undefined,
+                          boxShadow: isSelected ? `0 4px 16px ${goal.color}20` : undefined,
+                        }}
                       >
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: `${goal.color}12`, color: goal.color }}>
+                        <div className="onboarding-goal-icon" style={{ backgroundColor: `${goal.color}12`, color: goal.color }}>
                           {goal.icon}
                         </div>
-                        <h3 style={{ fontSize: 18, fontWeight: 600, color: '#151515' }} className="mb-1">{goal.title}</h3>
-                        <p style={{ fontSize: 14, lineHeight: '20px', color: '#767676' }}>{goal.desc}</p>
+                        <h3 className="onboarding-goal-title">{goal.title}</h3>
+                        <p className="onboarding-goal-desc">{goal.desc}</p>
                         {isSelected && (
-                          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: goal.color }}>
+                          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="onboarding-goal-checkmark" style={{ backgroundColor: goal.color }}>
                             <Check size={14} className="text-white" />
                           </motion.div>
                         )}
@@ -232,17 +239,19 @@ export default function OnboardingPage() {
             {/* ------------------------------------- */}
             {step === 2 && (
               <motion.div key="step2" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.3 }}>
-                <h2 style={{ fontSize: 24, fontWeight: 600, color: '#151515' }} className="mb-2 text-center">Choose Focus Areas</h2>
-                <p style={{ fontSize: 16, color: '#5c5c5c' }} className="text-center mb-8">Select 2-4 areas you want to improve with AI.</p>
+                <h2 className="onboarding-step-title">Choose Focus Areas</h2>
+                <p className="onboarding-step-subtitle">Select 2-4 areas you want to improve with AI.</p>
 
                 <div className="flex flex-wrap gap-3 justify-center">
                   {focusAreas.map((area) => {
                     const isSelected = selectedFocus.includes(area.id);
                     return (
                       <motion.button
-                        key={area.id} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={() => toggleFocus(area.id)}
-                        className="flex items-center gap-2 px-5 py-3 rounded-full border-2 transition-all cursor-pointer"
-                        style={{ backgroundColor: isSelected ? '#5236ab' : 'white', borderColor: isSelected ? '#5236ab' : '#e5e7eb', color: isSelected ? 'white' : '#333333', fontSize: 14, fontWeight: isSelected ? 600 : 400 }}
+                        key={area.id}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => toggleFocus(area.id)}
+                        className={clsx('onboarding-focus-chip', isSelected ? 'onboarding-focus-chip-selected' : 'onboarding-focus-chip-unselected')}
                       >
                         {area.icon} {area.label}
                       </motion.button>
@@ -250,7 +259,7 @@ export default function OnboardingPage() {
                   })}
                 </div>
                 {/* Visual feedback on selection count */}
-                <p className="text-center mt-4" style={{ fontSize: 12, color: '#a8a8a8' }}>
+                <p className="onboarding-focus-counter">
                   {selectedFocus.length}/4 selected (minimum 2)
                 </p>
               </motion.div>
@@ -261,9 +270,9 @@ export default function OnboardingPage() {
             {/* ------------------------------------- */}
             {step === 3 && (
               <motion.div key="step3" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.3 }}>
-                <h2 style={{ fontSize: 24, fontWeight: 600, color: '#151515' }} className="mb-2 text-center">Choose Your Learning Path</h2>
-                <p style={{ fontSize: 16, color: '#5c5c5c' }} className="text-center mb-2">Select the journey that fits your schedule and learning goals</p>
-                <p style={{ fontSize: 13, color: '#9ca3af' }} className="text-center mb-8">
+                <h2 className="onboarding-step-title">Choose Your Learning Path</h2>
+                <p className="onboarding-step-subtitle mb-2">Select the journey that fits your schedule and learning goals</p>
+                <p className="text-center mb-8 text-sm text-gray-400">
                   💡 Don't worry, you can update your goals and preferences anytime from your dashboard
                 </p>
 
@@ -278,24 +287,19 @@ export default function OnboardingPage() {
                         whileHover={{ y: -4, scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setSelectedPath(path.id)}
-                        className="p-5 rounded-xl border-2 text-left cursor-pointer transition-all relative"
-                        style={{
-                          backgroundColor: isRecommended && !isSelected ? '#fefce8' : 'white',
-                          borderColor: isSelected ? '#8b5cf6' : isRecommended ? '#eab308' : '#e5e7eb',
-                          boxShadow: isSelected ? '0 8px 24px rgba(139,92,246,0.2)' : isRecommended ? '0 4px 16px rgba(234,179,8,0.15)' : '0 1px 3px rgba(0,0,0,0.04)',
-                        }}
+                        className={clsx(
+                          'onboarding-path-card',
+                          isSelected && 'onboarding-path-card-selected',
+                          isRecommended && !isSelected && 'onboarding-path-card-recommended',
+                          !isSelected && !isRecommended && 'onboarding-path-card-standard'
+                        )}
                       >
                         {/* Recommended Badge */}
                         {isRecommended && (
                           <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
-                            style={{
-                              backgroundColor: '#eab308',
-                              color: 'white',
-                              boxShadow: '0 2px 8px rgba(234,179,8,0.3)',
-                            }}
+                            className="onboarding-path-badge-recommended"
                           >
                             ⭐ Recommended
                           </motion.div>
@@ -303,18 +307,14 @@ export default function OnboardingPage() {
 
                         {/* Header: Icon + Checkmark */}
                         <div className="flex items-center justify-between mb-3">
-                          <div
-                            className="w-12 h-12 rounded-xl flex items-center justify-center"
-                            style={{ backgroundColor: isSelected ? '#ede9fe' : '#f3f4f6', color: isSelected ? '#8b5cf6' : '#6b7280' }}
-                          >
+                          <div className={clsx('onboarding-path-icon-container', isSelected ? 'onboarding-path-icon-selected' : 'onboarding-path-icon-unselected')}>
                             {path.icon}
                           </div>
                           {isSelected && (
                             <motion.div
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
-                              className="w-6 h-6 rounded-full flex items-center justify-center"
-                              style={{ backgroundColor: '#8b5cf6' }}
+                              className="w-6 h-6 rounded-full flex items-center justify-center bg-[#8b5cf6]"
                             >
                               <Check size={14} className="text-white" />
                             </motion.div>
@@ -322,35 +322,28 @@ export default function OnboardingPage() {
                         </div>
 
                         {/* Title */}
-                        <h3 style={{ fontSize: 18, fontWeight: 600, color: '#151515', marginBottom: 6 }}>
+                        <h3 className="onboarding-path-title">
                           {path.title}
                         </h3>
 
                         {/* Timeline + Commitment Badge */}
                         <div className="flex items-center gap-2 mb-3">
-                          <span
-                            className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
-                            style={{
-                              backgroundColor: isSelected ? '#ede9fe' : '#f3f4f6',
-                              color: isSelected ? '#8b5cf6' : '#6b7280',
-                            }}
-                          >
+                          <span className={clsx('onboarding-path-timeline-badge', isSelected ? 'onboarding-path-timeline-selected' : 'onboarding-path-timeline-unselected')}>
                             {path.timeline} • {path.dailyTime}
                           </span>
                           <span className="text-lg">{path.emoji}</span>
                         </div>
 
                         {/* Description */}
-                        <p style={{ fontSize: 13, color: '#767676', marginBottom: 10, lineHeight: 1.5 }}>
+                        <p className="onboarding-path-desc">
                           {path.desc}
                         </p>
 
                         {/* Skill Growth Progress Bar */}
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#f3f4f6' }}>
+                          <div className="onboarding-path-progress-bar">
                             <motion.div
-                              className="h-full rounded-full"
-                              style={{ backgroundColor: isSelected ? '#8b5cf6' : '#d1d5db' }}
+                              className={clsx('onboarding-path-progress-fill', isSelected ? 'onboarding-path-progress-selected' : 'onboarding-path-progress-unselected')}
                               initial={{ width: 0 }}
                               animate={{ width: isSelected ? `${(path.skills / 6) * 100}%` : '0%' }}
                               transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -359,7 +352,7 @@ export default function OnboardingPage() {
                         </div>
 
                         {/* Footer: Skills + Duration */}
-                        <p style={{ fontSize: 11, color: '#9ca3af' }}>
+                        <p className="onboarding-path-footer">
                           Gain {path.skills} skills • {path.duration} weeks
                         </p>
                       </motion.button>
@@ -373,14 +366,12 @@ export default function OnboardingPage() {
       </div>
 
       {/* ---- Footer Navigation ---- */}
-      <footer className="bg-white border-t border-gray-100 px-6 py-4">
+      <footer className="onboarding-footer">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <button
-            // Go back down to step 1 minimum
             onClick={() => setStep(prev => Math.max(1, prev - 1))}
             disabled={step === 1}
-            className="flex items-center gap-2 px-5 py-3 rounded-lg border transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ fontSize: 16, color: '#5c5c5c', borderColor: '#e5e7eb', minHeight: 44 }}
+            className="onboarding-btn-back"
           >
             <ArrowLeft size={18} /> Back
           </button>
@@ -389,27 +380,17 @@ export default function OnboardingPage() {
             <button
               onClick={() => setStep(prev => prev + 1)}
               disabled={!canProceed()}
-              className="flex items-center gap-2 px-8 py-3 rounded-lg text-white transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{
-                backgroundColor: canProceed() ? '#5236ab' : '#cbc3e6',
-                fontSize: 16, fontWeight: 600, minHeight: 44,
-                boxShadow: canProceed() ? '0px 1px 5px rgba(0,0,0,0.12), 0px 2px 2px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.2)' : 'none',
-              }}
+              className={clsx('onboarding-btn-next', canProceed() ? 'onboarding-btn-next-enabled' : 'onboarding-btn-next-disabled')}
             >
               Next <ArrowRight size={18} />
             </button>
           ) : (
-            // Final Step Button
             <motion.button
-              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handleLaunch}
               disabled={!canProceed()}
-              className="flex items-center gap-2 px-8 py-3 rounded-lg text-white font-semibold cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{
-                background: canProceed() ? 'linear-gradient(90deg, #e31937, #a82465, #5236ab)' : '#cbc3e6',
-                fontSize: 16, minHeight: 44,
-                boxShadow: canProceed() ? '0 4px 16px rgba(82,54,171,0.3)' : 'none',
-              }}
+              className={clsx('onboarding-btn-launch', canProceed() ? 'onboarding-btn-launch-enabled' : 'onboarding-btn-launch-disabled')}
             >
               <Rocket size={18} /> Start Learning
             </motion.button>
@@ -424,8 +405,7 @@ export default function OnboardingPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 z-[200] flex items-center justify-center"
-          style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}
+          className="onboarding-celebration-overlay"
         >
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -461,8 +441,7 @@ export default function OnboardingPage() {
                   y: Math.sin((i * Math.PI) / 4) * 100,
                 }}
                 transition={{ duration: 1, delay: i * 0.1 }}
-                className="absolute w-2 h-2 rounded-full"
-                style={{ backgroundColor: '#8b5cf6' }}
+                className="onboarding-celebration-sparkle"
               />
             ))}
           </motion.div>

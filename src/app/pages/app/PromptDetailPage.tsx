@@ -9,6 +9,7 @@ import { motion } from 'motion/react';
 import {
   ArrowLeft, Copy, Bookmark, Star, MessageCircle, Target, Edit3, Check,
 } from 'lucide-react';
+import clsx from 'clsx';
 import {
   getPromptById,
   isPromptSaved,
@@ -35,9 +36,9 @@ export default function PromptDetailPage() {
 
   if (!promptId || !prompt) {
     return (
-      <div style={{ fontFamily: 'var(--font-primary)', padding: 24 }}>
-        <p style={{ color: 'var(--app-text-secondary)' }}>Prompt not found.</p>
-        <button onClick={() => navigate('/app/prompt-library')} className="mt-4 px-4 py-2 rounded-lg cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>
+      <div className="font-primary p-6">
+        <p className="text-app-secondary">Prompt not found.</p>
+        <button onClick={() => navigate('/app/prompt-library')} className="mt-4 px-4 py-2 rounded-lg cursor-pointer btn-brand-primary">
           Back to Prompt Library
         </button>
       </div>
@@ -94,41 +95,41 @@ export default function PromptDetailPage() {
   const similar = promptLibrary.filter(p => p.id !== prompt.id && p.category === prompt.category).slice(0, 3);
 
   return (
-    <div style={{ fontFamily: 'var(--font-primary)', maxWidth: 800, margin: '0 auto' }}>
-      <button onClick={() => navigate('/app/prompt-library')} className="flex items-center gap-2 mb-6 text-sm font-medium cursor-pointer" style={{ color: 'var(--app-text-secondary)' }}>
+    <div className="page-container-wide">
+      <button onClick={() => navigate('/app/prompt-library')} className="back-button">
         <ArrowLeft size={16} /> Back to Prompt Library
       </button>
 
-      <div className="rounded-xl p-6 mb-6" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--app-text-primary)', marginBottom: 8 }}>{prompt.title}</h1>
-        <p style={{ fontSize: 15, color: 'var(--app-text-secondary)', marginBottom: 16 }}>{prompt.description}</p>
+      <div className="card-surface-shadow rounded-xl p-6 mb-6">
+        <h1 className="heading-xl">{prompt.title}</h1>
+        <p className="text-body mb-4">{prompt.description}</p>
         <div className="flex flex-wrap gap-2 mb-4">
-          <span className="px-2 py-0.5 rounded text-xs font-semibold" style={{ backgroundColor: 'var(--app-tab-bg)', color: 'var(--app-text-secondary)' }}>{prompt.category}</span>
-          {prompt.tags.slice(0, 4).map(t => <span key={t} className="px-2 py-0.5 rounded text-xs" style={{ backgroundColor: 'var(--app-tab-bg)', color: 'var(--app-text-muted)' }}>{t}</span>)}
+          <span className="badge-base badge-tab-bg">{prompt.category}</span>
+          {prompt.tags.slice(0, 4).map(t => <span key={t} className="badge-base badge-tab-muted">{t}</span>)}
         </div>
-        <div className="flex items-center gap-4 text-sm mb-6" style={{ color: 'var(--app-text-muted)' }}>
+        <div className="flex items-center gap-4 text-sm mb-6 text-app-muted">
           <span>★ {displayRating} · {prompt.uses.toLocaleString()} uses</span>
           <span>by {prompt.author}</span>
         </div>
 
         {prompt.useCase && (
           <div className="mb-6">
-            <h3 style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Use case</h3>
-            <p style={{ fontSize: 14, color: 'var(--app-text-secondary)' }}>{prompt.useCase}</p>
+            <h3 className="text-caption mb-1.5">Use case</h3>
+            <p className="text-body-sm">{prompt.useCase}</p>
           </div>
         )}
 
         <div className="mb-6">
-          <h3 style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>Template</h3>
-          <pre className="p-4 rounded-lg overflow-x-auto text-sm whitespace-pre-wrap" style={{ backgroundColor: 'var(--app-tab-bg)', color: 'var(--app-text-primary)', border: '1px solid var(--app-border)' }}>
+          <h3 className="text-caption mb-2">Template</h3>
+          <pre className="code-block">
             {prompt.templateText}
           </pre>
         </div>
 
         {prompt.examples && prompt.examples.length > 0 && (
           <div className="mb-6">
-            <h3 style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>Success examples</h3>
-            <ul className="list-disc list-inside space-y-1 text-sm" style={{ color: 'var(--app-text-secondary)' }}>
+            <h3 className="text-caption mb-2">Success examples</h3>
+            <ul className="list-disc list-inside space-y-1 text-sm text-app-secondary">
               {prompt.examples.map((ex, i) => <li key={i}>{ex}</li>)}
             </ul>
           </div>
@@ -136,25 +137,31 @@ export default function PromptDetailPage() {
 
         {prompt.tools && prompt.tools.length > 0 && (
           <div className="mb-6">
-            <h3 style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>Tool compatibility</h3>
-            <p style={{ fontSize: 14, color: 'var(--app-text-secondary)' }}>{prompt.tools.join(', ')}</p>
+            <h3 className="text-caption mb-2">Tool compatibility</h3>
+            <p className="text-body-sm">{prompt.tools.join(', ')}</p>
           </div>
         )}
 
-        <div className="flex flex-wrap gap-3 pt-4 border-t" style={{ borderColor: 'var(--app-border)' }}>
-          <button onClick={handleCopy} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>
+        <div className="flex flex-wrap gap-3 pt-4 border-t border-app">
+          <button onClick={handleCopy} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer btn-brand-primary">
             {copied ? <Check size={18} /> : <Copy size={18} />} {copied ? 'Copied' : 'Copy to clipboard'}
           </button>
-          <button onClick={() => { setCustomModal(true); setCustomText(prompt.templateText); }} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-primary)' }}>
+          <button onClick={() => { setCustomModal(true); setCustomText(prompt.templateText); }} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer btn-brand-secondary">
             <Edit3 size={18} /> Customize & Save
           </button>
-          <button onClick={handleBookmark} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: saved ? '#5236ab' : 'var(--app-border-strong)', color: saved ? '#5236ab' : 'var(--app-text-secondary)' }}>
+          <button 
+            onClick={handleBookmark} 
+            className={clsx(
+              "inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer border",
+              saved ? "btn-border-brand" : "btn-border-strong"
+            )}
+          >
             <Bookmark size={18} fill={saved ? '#5236ab' : 'none'} /> {saved ? 'Saved' : 'Bookmark'}
           </button>
-          <button onClick={() => setRateModal(true)} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)' }}>
+          <button onClick={() => setRateModal(true)} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer btn-border-strong">
             <Star size={18} /> Rate & Comment
           </button>
-          <button onClick={() => navigate('/app/learn', { state: { tab: 'challenges', prefillPrompt: promptId } })} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)' }}>
+          <button onClick={() => navigate('/app/learn', { state: { tab: 'challenges', prefillPrompt: promptId } })} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer btn-border-strong">
             <Target size={18} /> Apply in Challenge
           </button>
         </div>
@@ -162,11 +169,11 @@ export default function PromptDetailPage() {
 
       {similar.length > 0 && (
         <div>
-          <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)', marginBottom: 12 }}>Similar prompts</h2>
+          <h2 className="heading-md">Similar prompts</h2>
           <ul className="space-y-2">
             {similar.map(p => (
               <li key={p.id}>
-                <button onClick={() => navigate('/app/learn/prompts/' + p.id)} className="text-sm font-medium cursor-pointer" style={{ color: '#5236ab' }}>
+                <button onClick={() => navigate('/app/learn/prompts/' + p.id)} className="text-sm font-medium cursor-pointer link-brand">
                   {p.title}
                 </button>
               </li>
@@ -176,40 +183,44 @@ export default function PromptDetailPage() {
       )}
 
       {customModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="rounded-xl p-6 w-full max-w-lg max-h-[80vh] overflow-auto" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}>
-            <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--app-text-primary)', marginBottom: 12 }}>Customize & Save</h3>
-            <textarea value={customText} onChange={e => setCustomText(e.target.value)} rows={8} className="w-full p-3 rounded-lg text-sm resize-y mb-4 outline-none" style={{ backgroundColor: 'var(--app-tab-bg)', border: '1px solid var(--app-border)', color: 'var(--app-text-primary)' }} />
+        <div className="modal-backdrop">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="modal-content modal-content-lg">
+            <h3 className="heading-md">Customize & Save</h3>
+            <textarea value={customText} onChange={e => setCustomText(e.target.value)} rows={8} className="textarea-field resize-y mb-4" />
             <div className="flex gap-3">
-              <button onClick={handleSaveCustom} className="px-4 py-2 rounded-lg font-semibold cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>Save as personal</button>
-              <button onClick={() => { setCustomModal(false); setCustomText(''); }} className="px-4 py-2 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)' }}>Cancel</button>
+              <button onClick={handleSaveCustom} className="px-4 py-2 rounded-lg font-semibold cursor-pointer btn-brand-primary">Save as personal</button>
+              <button onClick={() => { setCustomModal(false); setCustomText(''); }} className="px-4 py-2 rounded-lg font-semibold cursor-pointer btn-border-strong">Cancel</button>
             </div>
           </motion.div>
         </div>
       )}
 
       {rateModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="rounded-xl p-6 w-full max-w-md" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)' }}>
-            <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--app-text-primary)', marginBottom: 12 }}>Rate & Comment</h3>
+        <div className="modal-backdrop">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="modal-content">
+            <h3 className="heading-md">Rate & Comment</h3>
             <div className="flex gap-1 mb-4">
               {[1,2,3,4,5].map(s => (
-                <button key={s} onClick={() => setRating(s)} className="p-1 cursor-pointer" style={{ color: s <= rating ? '#f59e0b' : 'var(--app-text-hint)' }}>
+                <button 
+                  key={s} 
+                  onClick={() => setRating(s)} 
+                  className={clsx("p-1 cursor-pointer", s <= rating ? "star-rating-active" : "star-rating-inactive")}
+                >
                   <Star size={28} fill={s <= rating ? '#f59e0b' : 'none'} />
                 </button>
               ))}
             </div>
-            <textarea value={comment} onChange={e => setComment(e.target.value)} placeholder="Optional comment" rows={3} className="w-full p-3 rounded-lg text-sm mb-4 outline-none" style={{ backgroundColor: 'var(--app-tab-bg)', border: '1px solid var(--app-border)', color: 'var(--app-text-primary)' }} />
+            <textarea value={comment} onChange={e => setComment(e.target.value)} placeholder="Optional comment" rows={3} className="textarea-field mb-4" />
             <div className="flex gap-3">
-              <button onClick={handleSubmitRating} className="px-4 py-2 rounded-lg font-semibold cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>Submit</button>
-              <button onClick={() => { setRateModal(false); setRating(0); setComment(''); }} className="px-4 py-2 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)' }}>Cancel</button>
+              <button onClick={handleSubmitRating} className="px-4 py-2 rounded-lg font-semibold cursor-pointer btn-brand-primary">Submit</button>
+              <button onClick={() => { setRateModal(false); setRating(0); setComment(''); }} className="px-4 py-2 rounded-lg font-semibold cursor-pointer btn-border-strong">Cancel</button>
             </div>
           </motion.div>
         </div>
       )}
 
       {toast && (
-        <div className="fixed bottom-6 right-6 px-4 py-2 rounded-lg text-sm font-medium" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+        <div className="toast">
           {toast}
         </div>
       )}

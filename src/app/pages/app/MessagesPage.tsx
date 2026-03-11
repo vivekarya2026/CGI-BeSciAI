@@ -25,6 +25,7 @@ import {
   Sparkles, Circle,
 } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
+import clsx from 'clsx';
 
 // ============================================
 // SECTION 1: DATA INTERFACES (Types)
@@ -224,7 +225,7 @@ export default function MessagesPage() {
   // ============================================
 
   return (
-    <div style={{ fontFamily: 'var(--font-primary)' }}>
+    <div className="font-primary">
       {/* --- Page Header --- */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -233,8 +234,8 @@ export default function MessagesPage() {
         className="flex items-center justify-between mb-6"
       >
         <div>
-          <h1 style={{ fontSize: 28, fontWeight: 600, color: 'var(--app-text-primary)' }}>Messages</h1>
-          <p style={{ fontSize: 16, color: 'var(--app-text-secondary)', lineHeight: '24px' }}>
+          <h1 className="messages-header-title">Messages</h1>
+          <p className="messages-header-subtitle">
             Chat with your connected peers and grow together.
           </p>
         </div>
@@ -242,14 +243,7 @@ export default function MessagesPage() {
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.96 }}
           onClick={() => setShowSuggestions(!showSuggestions)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg border-none cursor-pointer transition-all"
-          style={{
-            backgroundColor: '#5236ab',
-            color: 'white',
-            fontSize: 14,
-            fontWeight: 600,
-            boxShadow: '0 2px 8px rgba(82,54,171,0.25)',
-          }}
+          className="find-peers-button"
         >
           <UserPlus size={16} /> <span className="hidden sm:inline">Find Peers</span>
         </motion.button>
@@ -265,20 +259,13 @@ export default function MessagesPage() {
             transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="overflow-hidden mb-6"
           >
-            <div
-              className="rounded-xl p-5"
-              style={{
-                backgroundColor: 'var(--app-surface)',
-                border: '1px solid var(--app-border)',
-                boxShadow: 'var(--app-shadow)',
-              }}
-            >
+            <div className="suggestions-panel">
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles size={18} style={{ color: '#5236ab' }} />
-                <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--app-text-primary)', margin: 0 }}>
+                <Sparkles size={18} className="text-[#5236ab]" />
+                <h3 className="suggestions-title">
                   Suggested Connections
                 </h3>
-                <span style={{ fontSize: 13, color: 'var(--app-text-hint)', marginLeft: 4 }}>
+                <span className="suggestions-subtitle">
                   Based on your archetype and interests
                 </span>
               </div>
@@ -289,33 +276,31 @@ export default function MessagesPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.1, duration: 0.3 }}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                    style={{ border: '1px solid var(--app-border)' }}
+                    className="peer-suggestion-card"
                   >
-                    <div className="relative shrink-0">
+                    <div className="peer-avatar">
                       <span className="text-2xl">{peer.avatar}</span>
                       <span
-                        className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full"
-                        style={{ backgroundColor: statusColors[peer.status], border: '2px solid var(--app-surface)' }}
+                        className="status-dot"
+                        style={{ backgroundColor: statusColors[peer.status] }}
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span className="block font-semibold truncate" style={{ fontSize: 14, color: 'var(--app-text-primary)' }}>
+                      <span className="peer-name">
                         {peer.name}
                       </span>
-                      <div className="flex items-center gap-1.5">
+                      <div className="archetype-indicator">
                         <span
-                          className="w-2 h-2 rounded-full inline-block shrink-0"
+                          className="archetype-dot"
                           style={{ backgroundColor: archetypeColors[peer.archetype] || '#8b5cf6' }}
                         />
-                        <span style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>{peer.archetype}</span>
+                        <span className="archetype-name-small">{peer.archetype}</span>
                       </div>
                     </div>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-4 py-1.5 rounded-lg text-white text-xs font-bold cursor-pointer border-none shrink-0"
-                      style={{ backgroundColor: '#5236ab', fontSize: 13 }}
+                      className="connect-button"
                     >
                       Connect
                     </motion.button>
@@ -332,36 +317,25 @@ export default function MessagesPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="rounded-xl overflow-hidden flex"
-        style={{
-          backgroundColor: 'var(--app-surface)',
-          border: '1px solid var(--app-border)',
-          height: 'calc(100vh - 280px)',
-          minHeight: 480,
-          boxShadow: 'var(--app-shadow)',
-        }}
+        className="chat-container"
       >
         {/* SIDEBAR: Conversation list */}
         <div
-          className={`shrink-0 flex flex-col w-full lg:w-80 ${mobileView === 'chat' ? 'hidden lg:flex' : 'flex'}`}
-          style={{ borderRight: '1px solid var(--app-border)' }}
+          className={clsx('conversation-sidebar lg:w-80', {
+            'hidden lg:flex': mobileView === 'chat',
+            'flex': mobileView === 'list',
+          })}
         >
           {/* Search */}
-          <div className="p-3" style={{ borderBottom: '1px solid var(--app-border)' }}>
+          <div className="conversation-search-container">
             <div className="relative">
-              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--app-text-hint)' }} />
+              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-app-hint" />
               <input
                 type="text"
                 placeholder="Search conversations..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 rounded-lg outline-none"
-                style={{
-                  fontSize: 14,
-                  backgroundColor: 'var(--app-bg)',
-                  border: '1px solid var(--app-border)',
-                  color: 'var(--app-text-primary)',
-                }}
+                className="conversation-search-input"
               />
             </div>
           </div>
@@ -380,50 +354,41 @@ export default function MessagesPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                   onClick={() => { setSelectedPeerId(convo.peerId); setMobileView('chat'); }}
-                  className="flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-colors"
-                  style={{
-                    backgroundColor: isSelected ? 'var(--app-brand-light)' : 'transparent',
-                    borderLeft: isSelected ? '3px solid #5236ab' : '3px solid transparent',
-                    borderBottom: '1px solid var(--app-border)',
-                  }}
+                  className={clsx('conversation-item', {
+                    'conversation-item-selected': isSelected,
+                    'conversation-item-unselected': !isSelected,
+                  })}
                   whileHover={{ backgroundColor: isSelected ? undefined : 'var(--app-surface-hover)' }}
                 >
                   {/* Avatar with status dot */}
-                  <div className="relative shrink-0">
+                  <div className="peer-avatar">
                     <span className="text-2xl">{peer.avatar}</span>
                     <span
-                      className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full"
-                      style={{ backgroundColor: statusColors[peer.status], border: '2px solid var(--app-surface)' }}
+                      className="status-dot"
+                      style={{ backgroundColor: statusColors[peer.status] }}
                     />
                   </div>
 
                   {/* Name + preview */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
-                      <span
-                        className="truncate font-semibold text-sm"
-                        style={{ color: 'var(--app-text-primary)' }}
-                      >
+                      <span className="conversation-name">
                         {peer.name}
                       </span>
                       <span
-                        style={{
-                          fontSize: 11,
-                          color: convo.unread > 0 ? '#14b8a6' : 'var(--app-text-hint)',
-                          fontWeight: convo.unread > 0 ? 600 : 400,
-                          whiteSpace: 'nowrap',
-                          marginLeft: 8,
-                        }}
+                        className={clsx('conversation-time', {
+                          'conversation-time-unread': convo.unread > 0,
+                          'conversation-time-read': convo.unread === 0,
+                        })}
                       >
                         {convo.lastActivity}
                       </span>
                     </div>
                     <p
-                      className="truncate text-xs m-0"
-                      style={{
-                        color: convo.unread > 0 ? 'var(--app-text-secondary)' : 'var(--app-text-hint)',
-                        fontWeight: convo.unread > 0 ? 500 : 400,
-                      }}
+                      className={clsx('conversation-preview', {
+                        'conversation-preview-unread': convo.unread > 0,
+                        'conversation-preview-read': convo.unread === 0,
+                      })}
                     >
                       {previewText}
                     </p>
@@ -435,8 +400,7 @@ export default function MessagesPage() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: 'spring', stiffness: 300 }}
-                      className="w-5 h-5 rounded-full flex items-center justify-center text-white shrink-0"
-                      style={{ backgroundColor: '#14b8a6', fontSize: 10, fontWeight: 700 }}
+                      className="unread-badge"
                     >
                       {convo.unread}
                     </motion.span>
@@ -447,64 +411,56 @@ export default function MessagesPage() {
           </div>
 
           {/* Online peers indicator */}
-          <div
-            className="px-4 py-3 flex items-center gap-2"
-            style={{ borderTop: '1px solid var(--app-border)' }}
-          >
-            <span
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: '#1ab977' }}
-            />
-            <span style={{ fontSize: 13, color: 'var(--app-text-muted)' }}>
+          <div className="online-indicator">
+            <span className="online-dot" />
+            <span className="online-text">
               {onlinePeersCount} peers online
             </span>
           </div>
         </div>
 
         {/* MAIN CHAT WINDOW */}
-        <div className={`flex-1 flex flex-col ${mobileView === 'list' ? 'hidden lg:flex' : 'flex'}`}>
+        <div className={clsx('flex-1 flex flex-col', {
+          'hidden lg:flex': mobileView === 'list',
+          'flex': mobileView === 'chat',
+        })}>
           {selectedPeer ? (
             <>
               {/* Chat Window Header */}
-              <div
-                className="flex items-center gap-3 px-5 py-3.5 shrink-0"
-                style={{ borderBottom: '1px solid var(--app-border)' }}
-              >
+              <div className="chat-header">
                 <button
                   onClick={() => setMobileView('list')}
-                  className="lg:hidden p-1 cursor-pointer bg-transparent border-none"
-                  style={{ color: 'var(--app-text-primary)' }}
+                  className="back-button-mobile lg:hidden"
                 >
                   <ArrowLeft size={18} />
                 </button>
 
                 {/* Avatar + name block */}
-                <div className="relative shrink-0">
+                <div className="peer-avatar">
                   <span className="text-xl">{selectedPeer.avatar}</span>
                   <span
-                    className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full"
-                    style={{ backgroundColor: statusColors[selectedPeer.status], border: '2px solid var(--app-surface)' }}
+                    className="status-dot"
+                    style={{ backgroundColor: statusColors[selectedPeer.status] }}
                   />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold" style={{ fontSize: 15, color: 'var(--app-text-primary)' }}>
+                    <span className="chat-peer-name">
                       {selectedPeer.name}
                     </span>
                     <span
-                      className="w-1.5 h-1.5 rounded-full"
+                      className="archetype-dot"
                       style={{ backgroundColor: archetypeColors[selectedPeer.archetype] }}
                     />
-                    <span style={{ fontSize: 12, color: 'var(--app-text-muted)' }}>
+                    <span className="archetype-name-small">
                       {selectedPeer.archetype}
                     </span>
                   </div>
                   <span
-                    style={{
-                      fontSize: 12,
-                      color: selectedPeer.status === 'online' ? '#1ab977' : 'var(--app-text-hint)',
-                      fontWeight: 500,
-                    }}
+                    className={clsx('chat-status-text', {
+                      'chat-status-online': selectedPeer.status === 'online',
+                      'chat-status-offline': selectedPeer.status !== 'online',
+                    })}
                   >
                     {selectedPeer.status === 'online'
                       ? 'Online'
@@ -518,17 +474,7 @@ export default function MessagesPage() {
                 {selectedPeer.expertise && (
                   <div className="hidden md:flex items-center gap-2">
                     {selectedPeer.expertise.map(tag => (
-                      <span
-                        key={tag}
-                        className="px-3 py-1 rounded-md"
-                        style={{
-                          fontSize: 11,
-                          fontWeight: 600,
-                          color: '#5236ab',
-                          backgroundColor: 'var(--app-brand-light)',
-                          border: '1px solid rgba(82,54,171,0.15)',
-                        }}
-                      >
+                      <span key={tag} className="expertise-tag">
                         {tag}
                       </span>
                     ))}
@@ -537,7 +483,7 @@ export default function MessagesPage() {
               </div>
 
               {/* Message History Container */}
-              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3" style={{ backgroundColor: 'var(--app-bg)' }}>
+              <div className="messages-area">
                 {selectedConvo?.messages.map((msg, i) => {
                   const isMe = msg.senderId === 'me';
                   const msgPeer = !isMe ? peers.find(p => p.id === msg.senderId) : null;
@@ -554,26 +500,17 @@ export default function MessagesPage() {
                         <span className="text-lg shrink-0 mb-1">{msgPeer.avatar}</span>
                       )}
                       <div
-                        className="max-w-[70%] px-4 py-3"
-                        style={{
-                          backgroundColor: isMe ? '#5236ab' : 'var(--app-surface)',
-                          color: isMe ? 'white' : 'var(--app-text-secondary)',
-                          fontSize: 14,
-                          lineHeight: '20px',
-                          borderRadius: isMe
-                            ? '18px 18px 4px 18px'
-                            : '18px 18px 18px 4px',
-                          boxShadow: isMe
-                            ? '0 2px 8px rgba(82,54,171,0.2)'
-                            : '0 1px 3px rgba(0,0,0,0.06)',
-                        }}
+                        className={clsx({
+                          'message-bubble-sent': isMe,
+                          'message-bubble-received': !isMe,
+                        })}
                       >
                         {msg.text}
                         <div
                           className="flex items-center gap-1 mt-1"
                           style={{ justifyContent: isMe ? 'flex-end' : 'flex-start' }}
                         >
-                          <span style={{ fontSize: 10, opacity: 0.6 }}>{msg.time}</span>
+                          <span className="message-time">{msg.time}</span>
                           {isMe && (
                             <CheckCheck
                               size={13}
@@ -592,21 +529,17 @@ export default function MessagesPage() {
               </div>
 
               {/* Chat Input Bar */}
-              <div
-                className="px-4 py-3 flex items-center gap-3"
-                style={{ borderTop: '1px solid var(--app-border)', backgroundColor: 'var(--app-surface)' }}
-              >
+              <div className="message-input-container">
                 {/* Paperclip */}
                 <button
-                  className="p-2 rounded-full cursor-pointer border-none bg-transparent transition-colors"
-                  style={{ color: 'var(--app-text-hint)' }}
+                  className="attach-button"
                   title="Attach file"
                 >
                   <Paperclip size={18} />
                 </button>
 
                 {/* Text input */}
-                <div className="flex-1 relative">
+                <div className="message-input-wrapper">
                   <input
                     ref={inputRef}
                     type="text"
@@ -614,19 +547,10 @@ export default function MessagesPage() {
                     onChange={e => setMessageInput(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && sendMessage()}
                     placeholder={`Message ${selectedPeer.name}...`}
-                    className="w-full px-4 py-2.5 pr-10 rounded-full outline-none transition-colors"
-                    style={{
-                      border: '1px solid var(--app-border-strong)',
-                      backgroundColor: 'var(--app-bg)',
-                      color: 'var(--app-text-primary)',
-                      fontSize: 14,
-                    }}
+                    className="message-input"
                   />
                   {/* Emoji button inside input */}
-                  <button
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-0 cursor-pointer border-none bg-transparent"
-                    style={{ color: 'var(--app-text-hint)' }}
-                  >
+                  <button className="emoji-button">
                     <Smile size={18} />
                   </button>
                 </div>
@@ -637,27 +561,24 @@ export default function MessagesPage() {
                   whileTap={{ scale: 0.92 }}
                   onClick={sendMessage}
                   disabled={!messageInput.trim()}
-                  className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed border-none"
-                  style={{
-                    backgroundColor: '#5236ab',
-                    color: 'white',
-                    boxShadow: messageInput.trim() ? '0 2px 8px rgba(82,54,171,0.25)' : 'none',
-                  }}
+                  className={clsx('send-button', {
+                    'send-button-active': messageInput.trim(),
+                  })}
                 >
                   <Send size={18} />
                 </motion.button>
               </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center" style={{ color: 'var(--app-text-hint)' }}>
+            <div className="empty-chat-state">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
                 className="text-center"
               >
-                <MessageSquare size={48} className="mb-4 mx-auto" style={{ opacity: 0.4 }} />
-                <p style={{ fontSize: 16 }}>Select a peer to start chatting</p>
+                <MessageSquare size={48} className="empty-chat-icon mx-auto" />
+                <p className="empty-chat-text">Select a peer to start chatting</p>
               </motion.div>
             </div>
           )}

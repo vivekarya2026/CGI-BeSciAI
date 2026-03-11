@@ -9,22 +9,20 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  GraduationCap, Zap, Play, Search, CheckCircle, Clock,
+  GraduationCap, Zap, Play, CheckCircle, Clock,
   Star, Sparkles, ChevronDown, ChevronRight,
 } from 'lucide-react';
 import {
   trainings,
   microLearnings,
-  type TrainingFormat,
   getCompletedMicroIds,
 } from '../../data/learnData';
 import { useUser } from '../../context/UserContext';
 import { useNavigate, useLocation } from 'react-router';
+import clsx from 'clsx';
 import {
   cardHoverMotion,
   primaryButtonMotion,
-  secondaryButtonMotion,
-  chipToggleMotion,
   staggerContainer,
 } from '../../components/ui/motionPresets';
 
@@ -50,11 +48,17 @@ export default function LearnPage() {
   // Find unfinished training
   const unfinishedTraining = trainings.find(t => t.progress && t.progress > 0 && t.progress < 100);
   
-  // Find unfinished micro-learning
+  // Find unfinished micro-learning or show most recent/recommended
   const completedMicroIds = getCompletedMicroIds();
   const unfinishedLesson = microLearnings.find(m => {
     const isCompleted = m.completed || completedMicroIds.has(m.id);
     return !isCompleted && m.progress && m.progress > 0;
+  });
+  
+  // If no unfinished lesson, show the first non-completed lesson as recommended
+  const recommendedLesson = unfinishedLesson || microLearnings.find(m => {
+    const isCompleted = m.completed || completedMicroIds.has(m.id);
+    return !isCompleted;
   });
 
   // Filter trainings
@@ -92,35 +96,31 @@ export default function LearnPage() {
   const topics = ['all', ...new Set(microLearnings.map(m => m.topic))];
   const tools = ['all', ...new Set(microLearnings.map(m => m.tool))];
 
-  const getTopicColor = (topic: string) => {
-    const colors: Record<string, { bg: string; text: string }> = {
-      'Writing': { bg: '#fce7f3', text: '#9f1239' },
-      'Productivity': { bg: '#dbeafe', text: '#1e40af' },
-      'Data': { bg: '#dcfce7', text: '#166534' },
-      'Communication': { bg: '#fef3c7', text: '#92400e' },
+  const getTopicClass = (topic: string) => {
+    const classes: Record<string, string> = {
+      'Writing': 'topic-writing',
+      'Productivity': 'topic-productivity',
+      'Data': 'topic-data',
+      'Communication': 'topic-communication',
     };
-    return colors[topic] || { bg: '#f3f4f6', text: '#374151' };
+    return classes[topic] || 'badge-gray';
   };
 
   return (
-    <div style={{ fontFamily: 'var(--font-primary)', backgroundColor: 'var(--app-bg)', minHeight: '100vh' }}>
-      {/* ============================================ */}
+    <div className="font-primary bg-app-bg min-h-screen">
       {/* HEADER */}
-      {/* ============================================ */}
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: 'var(--app-text-primary)' }}>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-app-primary">
           {activeTab === 'trainings' ? 'Trainings' : 'Micro-learnings'}
         </h1>
-        <p className="text-sm sm:text-base" style={{ color: 'var(--app-text-secondary)' }}>
+        <p className="text-sm sm:text-base text-app-secondary">
           {activeTab === 'trainings' 
             ? 'Build your AI skills with personalized training paths' 
             : 'Quick, focused lessons to master specific AI tools and techniques'}
         </p>
       </div>
 
-      {/* ============================================ */}
       {/* TAB CONTENT */}
-      {/* ============================================ */}
       <AnimatePresence mode="wait">
         {/* TRAINING TAB */}
         {activeTab === 'trainings' && (
@@ -134,72 +134,59 @@ export default function LearnPage() {
             {/* Continue Training Section */}
             {unfinishedTraining && (
               <section className="mb-6">
-                <h2 className="text-lg font-bold mb-4" style={{ color: 'var(--app-text-primary)' }}>
+                <h2 className="text-lg font-bold mb-4 text-app-primary">
                   Continue Training
                 </h2>
 
                 <motion.div
                   {...cardHoverMotion()}
-                  className="rounded-xl overflow-hidden cursor-pointer"
-                  style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-                  }}
+                  className="card-base overflow-hidden cursor-pointer"
                 >
                   <div className="flex flex-col sm:flex-row">
                     {/* Training Image */}
-                    <div
-                      className="w-full sm:w-48 h-48 sm:h-auto shrink-0"
+                    <div 
+                      className="w-full sm:w-48 h-48 sm:h-auto shrink-0 relative bg-cover bg-center"
                       style={{
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        position: 'relative',
+                        backgroundImage: `linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%), url('/assets/Frame_30-b2059e27-34a7-430f-aed1-416718844c14.png')`
                       }}
                     >
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <GraduationCap size={64} style={{ color: 'white', opacity: 0.9 }} />
+                        <GraduationCap size={64} className="text-white opacity-90" />
                       </div>
                     </div>
 
                     {/* Training Details */}
                     <div className="flex-1 p-6">
                       <div className="flex items-center gap-2 mb-3">
-                        <span
-                          className="px-2.5 py-1 rounded text-xs font-semibold"
-                          style={{ backgroundColor: '#fef3c7', color: '#92400e' }}
-                        >
+                        <span className="badge-base badge-yellow">
                           {unfinishedTraining.difficulty}
                         </span>
-                        <span
-                          className="px-2.5 py-1 rounded text-xs font-semibold"
-                          style={{ backgroundColor: '#f3f4f6', color: 'var(--app-text-secondary)' }}
-                        >
+                        <span className="badge-base badge-gray">
                           {unfinishedTraining.category}
                         </span>
                       </div>
 
-                      <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--app-text-primary)' }}>
+                      <h3 className="text-xl font-bold mb-2 text-app-primary">
                         {unfinishedTraining.title}
                       </h3>
 
-                      <p className="text-sm mb-4" style={{ color: 'var(--app-text-secondary)' }}>
+                      <p className="text-sm mb-4 text-app-secondary">
                         Step {Math.ceil((unfinishedTraining.progress || 0) / (100 / (unfinishedTraining.lessons || 8)))} of journey
                       </p>
 
                       {/* Progress Bar */}
                       <div className="mb-4">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-xs font-medium" style={{ color: 'var(--app-text-muted)' }}>
+                          <span className="text-xs font-medium text-app-muted">
                             {unfinishedTraining.progress}% complete
                           </span>
-                          <span className="text-xs font-medium" style={{ color: 'var(--app-text-muted)' }}>
+                          <span className="text-xs font-medium text-app-muted">
                             30 min
                           </span>
                         </div>
-                        <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#f3f4f6' }}>
+                        <div className="progress-bar-bg progress-bar-bg-thick">
                           <motion.div
-                            className="h-full rounded-full"
-                            style={{ backgroundColor: '#8b5cf6' }}
+                            className="progress-bar-fill"
                             initial={{ width: 0 }}
                             animate={{ width: `${unfinishedTraining.progress}%` }}
                             transition={{ duration: 1, ease: 'easeOut' }}
@@ -212,8 +199,7 @@ export default function LearnPage() {
                         <motion.button
                           {...primaryButtonMotion()}
                           onClick={() => navigate(`/app/learn/trainings/${unfinishedTraining.id}`)}
-                          className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm cursor-pointer"
-                          style={{ backgroundColor: '#8b5cf6', color: 'white' }}
+                          className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm cursor-pointer"
                         >
                           <Play size={16} />
                           Continue Learning
@@ -231,12 +217,7 @@ export default function LearnPage() {
                 <select
                   value={trainingSubjectFilter}
                   onChange={(e) => setTrainingSubjectFilter(e.target.value)}
-                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
-                  style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    color: 'var(--app-text-primary)',
-                  }}
+                  className="dropdown-base"
                 >
                   {subjects.map(subject => (
                     <option key={subject} value={subject}>
@@ -244,19 +225,14 @@ export default function LearnPage() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
               </div>
 
               <div className="relative">
                 <select
                   value={trainingFormatFilter}
                   onChange={(e) => setTrainingFormatFilter(e.target.value)}
-                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
-                  style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    color: 'var(--app-text-primary)',
-                  }}
+                  className="dropdown-base"
                 >
                   {formats.map(format => (
                     <option key={format} value={format}>
@@ -264,19 +240,14 @@ export default function LearnPage() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
               </div>
 
               <div className="relative">
                 <select
                   value={trainingLevelFilter}
                   onChange={(e) => setTrainingLevelFilter(e.target.value)}
-                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm cursor-pointer outline-none"
-                  style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    color: 'var(--app-text-primary)',
-                  }}
+                  className="dropdown-base"
                 >
                   {levels.map(level => (
                     <option key={level} value={level}>
@@ -284,7 +255,7 @@ export default function LearnPage() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
               </div>
             </div>
 
@@ -302,65 +273,48 @@ export default function LearnPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
                     onClick={() => navigate(`/app/learn/trainings/${training.id}`)}
-                    className="rounded-xl p-5 cursor-pointer"
-                    style={{
-                      backgroundColor: '#ffffff',
-                      border: '1px solid #e5e7eb',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-                    }}
+                    className="card-base p-5 cursor-pointer"
                   >
                     {/* Badges Row */}
                     <div className="flex flex-wrap items-center gap-2 mb-3">
                       {isCompleted && (
-                        <span
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
-                          style={{ backgroundColor: '#dcfce7', color: '#166534' }}
-                        >
+                        <span className="badge-base badge-green inline-flex items-center gap-1">
                           <CheckCircle size={12} />
                           Completed
                         </span>
                       )}
-                      <span
-                        className="px-2.5 py-1 rounded text-xs font-semibold"
-                        style={{ backgroundColor: '#f3f4f6', color: 'var(--app-text-secondary)' }}
-                      >
+                      <span className="badge-base badge-gray">
                         {training.category}
                       </span>
                       {idx === 0 && !isCompleted && (
-                        <span
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
-                          style={{ backgroundColor: '#fef3c7', color: '#92400e' }}
-                        >
+                        <span className="badge-base badge-popular inline-flex items-center gap-1">
                           <Star size={12} />
                           Popular
                         </span>
                       )}
                       {idx === 1 && !isCompleted && (
-                        <span
-                          className="px-2.5 py-1 rounded-full text-xs font-semibold"
-                          style={{ backgroundColor: '#fee2e2', color: '#991b1b' }}
-                        >
+                        <span className="badge-base badge-required">
                           Required
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-base font-bold mb-2" style={{ color: 'var(--app-text-primary)' }}>
+                    <h3 className="text-base font-bold mb-2 text-app-primary">
                       {training.title}
                     </h3>
 
-                    <p className="text-sm mb-4" style={{ color: 'var(--app-text-secondary)', lineHeight: 1.5 }}>
+                    <p className="text-sm mb-4 text-app-secondary leading-relaxed">
                       {training.description}
                     </p>
 
                     {/* Meta info */}
-                    <div className="flex items-center gap-3 mb-4 text-xs" style={{ color: 'var(--app-text-muted)' }}>
+                    <div className="flex items-center gap-3 mb-4 text-xs text-app-muted">
                       <span className="inline-flex items-center gap-1">
                         <Clock size={14} />
                         {training.duration}
                       </span>
                       <span>{training.lessons} lessons</span>
-                      <span className="inline-flex items-center gap-1" style={{ color: '#8b5cf6', fontWeight: 600 }}>
+                      <span className="inline-flex items-center gap-1 text-[#8b5cf6] font-semibold">
                         <Sparkles size={14} />
                         +250 XP
                       </span>
@@ -369,10 +323,10 @@ export default function LearnPage() {
                     {/* Progress Bar (for in-progress) */}
                     {isInProgress && (
                       <div className="mb-4">
-                        <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#f3f4f6' }}>
+                        <div className="progress-bar-bg progress-bar-bg-thin">
                           <div
-                            className="h-full rounded-full"
-                            style={{ backgroundColor: '#8b5cf6', width: `${training.progress}%` }}
+                            className="progress-bar-fill"
+                            style={{ width: `${training.progress}%` }}
                           />
                         </div>
                       </div>
@@ -385,11 +339,10 @@ export default function LearnPage() {
                         e.stopPropagation();
                         navigate(`/app/learn/trainings/${training.id}`);
                       }}
-                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer"
-                      style={{
-                        backgroundColor: isCompleted ? '#22c55e' : '#8b5cf6',
-                        color: 'white',
-                      }}
+                      className={clsx(
+                        "w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer text-white",
+                        isCompleted ? "btn-success" : "btn-primary"
+                      )}
                     >
                       {isCompleted ? (
                         <>
@@ -425,66 +378,63 @@ export default function LearnPage() {
             transition={{ duration: 0.2 }}
           >
             {/* Continue Learning Section */}
-            {unfinishedLesson && (
+            {recommendedLesson && (
               <section className="mb-6">
-                <h2 className="text-lg font-bold mb-4" style={{ color: 'var(--app-text-primary)' }}>
+                <h2 className="text-lg font-bold mb-4 text-app-primary">
                   Continue Learning
                 </h2>
 
                 <motion.div
                   {...cardHoverMotion()}
-                  className="rounded-xl p-6 cursor-pointer"
-                  style={{
-                    background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
-                    color: 'white',
-                  }}
-                  onClick={() => navigate(`/app/learn/micro/${unfinishedLesson.id}`)}
+                  className="micro-continue-card cursor-pointer"
+                  onClick={() => navigate(`/app/learn/micro/${recommendedLesson.id}`)}
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    {/* Play Icon */}
-                    <div className="w-16 h-16 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
-                      <Play size={32} />
+                  <div className="flex items-center gap-6">
+                    {/* Play Icon - Left */}
+                    <div className="micro-continue-play-icon">
+                      <Play size={40} className="text-white" />
                     </div>
 
-                    {/* Lesson Details */}
+                    {/* Lesson Details - Center */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="px-2.5 py-1 rounded text-xs font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
-                          {unfinishedLesson.topic}
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="micro-continue-badge-topic">
+                          {recommendedLesson.topic}
                         </span>
-                        <span className="px-2.5 py-1 rounded text-xs font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
-                          {unfinishedLesson.tool}
+                        <span className="micro-continue-badge-tool">
+                          {recommendedLesson.tool}
                         </span>
-                        <span className="px-2.5 py-1 rounded text-xs font-semibold" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
+                        <span className="micro-continue-badge-level">
                           Intermediate
                         </span>
                       </div>
 
-                      <h3 className="text-lg font-bold mb-2">{unfinishedLesson.title}</h3>
+                      <h3 className="micro-continue-title mb-2">
+                        {recommendedLesson.title}
+                      </h3>
 
-                      <div className="flex items-center gap-4 text-sm">
+                      <div className="micro-continue-meta">
                         <span className="inline-flex items-center gap-1">
-                          <Clock size={14} />
-                          {unfinishedLesson.duration}
+                          <Clock size={16} />
+                          {recommendedLesson.duration}
                         </span>
-                        <span className="inline-flex items-center gap-1">
-                          <Sparkles size={14} />
-                          +{unfinishedLesson.points} pts
+                        <span className="inline-flex items-center gap-1 micro-continue-meta-points">
+                          +{recommendedLesson.points} pts
                         </span>
                       </div>
                     </div>
 
-                    {/* Continue Button */}
+                    {/* Continue Button - Right */}
                     <motion.button
                       {...primaryButtonMotion()}
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate(`/app/learn/micro/${unfinishedLesson.id}`);
+                        navigate(`/app/learn/micro/${recommendedLesson.id}`);
                       }}
-                      className="px-6 py-3 rounded-lg font-semibold text-sm cursor-pointer shrink-0"
-                      style={{ backgroundColor: 'white', color: '#8b5cf6' }}
+                      className="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-semibold text-base cursor-pointer shrink-0"
                     >
-                      Continue
+                      <Play size={20} />
+                      {unfinishedLesson ? 'Continue' : 'Start Now'}
                     </motion.button>
                   </div>
                 </motion.div>
@@ -497,12 +447,7 @@ export default function LearnPage() {
                 <select
                   value={microTopicFilter}
                   onChange={(e) => setMicroTopicFilter(e.target.value)}
-                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm font-medium cursor-pointer outline-none"
-                  style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    color: 'var(--app-text-primary)',
-                  }}
+                  className="dropdown-base"
                 >
                   {topics.map(topic => (
                     <option key={topic} value={topic}>
@@ -510,19 +455,14 @@ export default function LearnPage() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
               </div>
 
               <div className="relative">
                 <select
                   value={microToolFilter}
                   onChange={(e) => setMicroToolFilter(e.target.value)}
-                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm font-medium cursor-pointer outline-none"
-                  style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    color: 'var(--app-text-primary)',
-                  }}
+                  className="dropdown-base"
                 >
                   {tools.map(tool => (
                     <option key={tool} value={tool}>
@@ -530,25 +470,20 @@ export default function LearnPage() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
               </div>
 
               <div className="relative">
                 <select
                   value={microSortFilter}
                   onChange={(e) => setMicroSortFilter(e.target.value)}
-                  className="appearance-none pl-4 pr-10 py-2.5 rounded-lg text-sm font-medium cursor-pointer outline-none"
-                  style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    color: 'var(--app-text-primary)',
-                  }}
+                  className="dropdown-base"
                 >
                   <option value="default">Default</option>
                   <option value="recent">Recent</option>
                   <option value="popular">Popular</option>
                 </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--app-text-muted)' }} />
+                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
               </div>
             </div>
 
@@ -556,7 +491,6 @@ export default function LearnPage() {
             <motion.div {...staggerContainer} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {filteredMicro.map((micro, idx) => {
                 const isCompleted = micro.completed || completedMicroIds.has(micro.id);
-                const topicColors = getTopicColor(micro.topic);
 
                 return (
                   <motion.div
@@ -565,66 +499,49 @@ export default function LearnPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="rounded-xl p-5 cursor-pointer relative"
-                    style={{
-                      backgroundColor: '#ffffff',
-                      border: '1px solid #e5e7eb',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-                    }}
+                    className="card-base p-5 cursor-pointer relative"
                     onClick={() => navigate(`/app/learn/micro/${micro.id}`)}
                   >
                     {/* Badges Row */}
                     <div className="flex flex-wrap items-center gap-2 mb-3">
-                      <span
-                        className="px-2.5 py-1 rounded text-xs font-semibold"
-                        style={{ backgroundColor: topicColors.bg, color: topicColors.text }}
-                      >
+                      <span className={clsx("badge-base", getTopicClass(micro.topic))}>
                         {micro.topic}
                       </span>
-                      <span
-                        className="px-2.5 py-1 rounded text-xs font-semibold"
-                        style={{ backgroundColor: '#dbeafe', color: '#1e40af' }}
-                      >
+                      <span className="badge-base badge-blue">
                         {micro.tool}
                       </span>
                       {isCompleted && (
-                        <CheckCircle size={16} style={{ color: '#22c55e' }} />
+                        <CheckCircle size={16} className="text-green-500" />
                       )}
                       {!isCompleted && micro.hot && (
-                        <span
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
-                          style={{ backgroundColor: '#fef3c7', color: '#92400e' }}
-                        >
+                        <span className="badge-base badge-trending inline-flex items-center gap-1">
                           <Star size={12} />
                           Trending
                         </span>
                       )}
                       {!isCompleted && !micro.hot && idx % 3 === 1 && (
-                        <span
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
-                          style={{ backgroundColor: '#fef3c7', color: '#92400e' }}
-                        >
+                        <span className="badge-base badge-popular inline-flex items-center gap-1">
                           <Star size={12} />
                           Popular
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-base font-bold mb-2" style={{ color: 'var(--app-text-primary)' }}>
+                    <h3 className="text-base font-bold mb-2 text-app-primary">
                       {micro.title}
                     </h3>
 
-                    <p className="text-sm mb-4" style={{ color: 'var(--app-text-secondary)', lineHeight: 1.5 }}>
+                    <p className="text-sm mb-4 text-app-secondary leading-relaxed">
                       {micro.description}
                     </p>
 
                     {/* Meta info */}
-                    <div className="flex items-center gap-3 mb-4 text-xs" style={{ color: 'var(--app-text-muted)' }}>
+                    <div className="flex items-center gap-3 mb-4 text-xs text-app-muted">
                       <span className="inline-flex items-center gap-1">
                         <Clock size={14} />
                         {micro.duration}
                       </span>
-                      <span className="inline-flex items-center gap-1" style={{ color: '#8b5cf6', fontWeight: 600 }}>
+                      <span className="inline-flex items-center gap-1 text-[#8b5cf6] font-semibold">
                         <Sparkles size={14} />
                         +{micro.points} XP
                       </span>
@@ -632,8 +549,8 @@ export default function LearnPage() {
 
                     {/* Completion Progress */}
                     {isCompleted && (
-                      <div className="flex items-center gap-2 text-xs mb-3" style={{ color: '#22c55e' }}>
-                        <div className="flex-1 h-1 rounded-full" style={{ backgroundColor: '#22c55e' }} />
+                      <div className="flex items-center gap-2 text-xs text-green-500 mb-3">
+                        <div className="flex-1 h-1 rounded-full bg-green-500" />
                         <span className="font-semibold">Review</span>
                       </div>
                     )}
@@ -646,12 +563,7 @@ export default function LearnPage() {
                           e.stopPropagation();
                           navigate(`/app/learn/micro/${micro.id}`);
                         }}
-                        className="absolute bottom-4 right-4 w-12 h-12 rounded-full flex items-center justify-center cursor-pointer"
-                        style={{
-                          backgroundColor: '#8b5cf6',
-                          color: 'white',
-                          boxShadow: '0 4px 12px rgba(139,92,246,0.3)',
-                        }}
+                        className="circular-action-btn absolute bottom-4 right-4"
                       >
                         <Play size={18} />
                       </motion.button>

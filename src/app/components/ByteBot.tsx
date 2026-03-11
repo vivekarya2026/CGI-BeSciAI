@@ -26,6 +26,7 @@ import {
   Zap, Sparkles,
 } from 'lucide-react';
 import { useUser } from '../context/UserContext';
+import clsx from 'clsx';
 
 // --- Types ---
 interface Message {
@@ -152,21 +153,17 @@ export function ByteBot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="fixed z-[9999] flex flex-col"
-            style={{ bottom: 88, right: 24, width: 380, height: 520, borderRadius: 20, boxShadow: '0 10px 40px rgba(0,0,0,0.15)', backgroundColor: 'var(--app-surface)' }}
+            className="bytebot-panel"
           >
             {/* ---- Header with Gradient ---- */}
-            <div
-              className="flex items-center justify-between px-5 py-4 text-white shrink-0"
-              style={{ background: 'linear-gradient(135deg, #5236ab 0%, #3a2679 100%)', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
-            >
+            <div className="bytebot-header">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                <div className="bytebot-avatar">
                   <Bot size={22} />
                 </div>
                 <div>
-                  <span className="font-bold block" style={{ fontSize: 16 }}>Byte</span>
-                  <span className="text-white/70 block" style={{ fontSize: 12 }}>AI Learning Companion</span>
+                  <span className="bytebot-title">Byte</span>
+                  <span className="bytebot-subtitle">AI Learning Companion</span>
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="text-white cursor-pointer opacity-70 hover:opacity-100 transition-opacity">
@@ -175,7 +172,7 @@ export function ByteBot() {
             </div>
 
             {/* ---- Scrollable Message List ---- */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4" style={{ backgroundColor: 'var(--app-bg)' }}>
+            <div className="bytebot-messages space-y-4">
               {messages.map(msg => (
                 <motion.div
                   key={msg.id}
@@ -186,29 +183,14 @@ export function ByteBot() {
                 >
                   {/* Bot Avatar */}
                   {msg.role === 'bot' && (
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-1" style={{ backgroundColor: 'var(--app-brand-light)' }}>
-                      <Bot size={16} style={{ color: '#5236ab' }} />
+                    <div className="bytebot-message-bot-avatar">
+                      <Bot size={16} className="text-[#5236ab]" />
                     </div>
                   )}
                   {/* Message Bubble */}
-                  <div
-                    className={`max-w-[80%] px-4 py-3 rounded-2xl ${msg.role === 'user'
-                      ? 'bg-[#5236ab] text-white'
-                      : ''
-                      }`}
-                    style={{
-                      ...(msg.role === 'bot' ? {
-                        backgroundColor: 'var(--app-surface)',
-                        color: 'var(--app-text-secondary)',
-                        border: '1px solid var(--app-border)',
-                        boxShadow: 'var(--app-shadow)',
-                      } : {}),
-                      borderBottomRightRadius: msg.role === 'user' ? 4 : 16,
-                      borderBottomLeftRadius: msg.role === 'bot' ? 4 : 16,
-                      fontSize: 14,
-                      lineHeight: '22px',
-                    }}
-                  >
+                  <div className={clsx(
+                    msg.role === 'user' ? 'bytebot-message-bubble-user' : 'bytebot-message-bubble-bot'
+                  )}>
                     {renderMarkdown(msg.content)}
                   </div>
                 </motion.div>
@@ -226,8 +208,7 @@ export function ByteBot() {
                     <button
                       key={action.id}
                       onClick={() => sendMessage(action.label)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all cursor-pointer"
-                      style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border-strong)', fontSize: 13, fontWeight: 500, color: 'var(--app-brand)' }}
+                      className="bytebot-quick-action"
                     >
                       {action.icon}
                       {action.label}
@@ -243,15 +224,14 @@ export function ByteBot() {
                   animate={{ opacity: 1 }}
                   className="flex items-center gap-2"
                 >
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--app-brand-light)' }}>
-                    <Bot size={16} style={{ color: '#5236ab' }} />
+                  <div className="bytebot-typing-avatar">
+                    <Bot size={16} className="text-[#5236ab]" />
                   </div>
-                  <div className="px-4 py-3 rounded-2xl flex items-center gap-1" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', borderBottomLeftRadius: 4, boxShadow: 'var(--app-shadow)' }}>
+                  <div className="bytebot-typing-bubble">
                     {[0, 1, 2].map(i => (
                       <motion.span
                         key={i}
-                        className="w-2 h-2 rounded-full"
-                        style={{ backgroundColor: '#5236ab' }}
+                        className="bytebot-typing-dot"
                         animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1, 0.8] }}
                         transition={{
                           duration: 1,
@@ -270,20 +250,20 @@ export function ByteBot() {
             {/* ---- Form Input ---- */}
             <form
               onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
-              className="p-3 flex gap-2 shrink-0"
-              style={{ borderTop: '1px solid var(--app-border)', backgroundColor: 'var(--app-surface)', borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}
+              className="bytebot-input-form"
             >
               <input
                 ref={inputRef}
                 type="text" value={input} onChange={e => setInput(e.target.value)}
                 placeholder="Ask Byte anything..."
-                className="flex-1 px-4 py-2.5 rounded-xl outline-none transition-colors"
-                style={{ fontSize: 14, border: '1px solid var(--app-border-strong)', backgroundColor: 'var(--app-bg)', color: 'var(--app-text-primary)' }}
+                className="bytebot-input"
               />
               <button
                 disabled={!input.trim()}
-                className="w-10 h-10 rounded-xl flex items-center justify-center cursor-pointer disabled:opacity-30 transition-all"
-                style={{ backgroundColor: input.trim() ? '#5236ab' : 'var(--app-tab-bg)', color: input.trim() ? 'white' : 'var(--app-text-hint)' }}
+                className={clsx(
+                  'bytebot-send-button',
+                  input.trim() ? 'bytebot-send-button-active' : 'bytebot-send-button-disabled'
+                )}
               >
                 <Send size={16} />
               </button>
@@ -297,8 +277,7 @@ export function ByteBot() {
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        className="fixed z-[9999] bottom-6 right-6 w-14 h-14 rounded-full text-white shadow-xl cursor-pointer flex items-center justify-center"
-        style={{ background: 'linear-gradient(135deg, #5236ab 0%, #3a2679 100%)', boxShadow: '0 4px 20px rgba(82,54,171,0.4)' }}
+        className="bytebot-fab"
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
@@ -315,7 +294,7 @@ export function ByteBot() {
         {/* Pulse ring when closed */}
         {!isOpen && (
           <motion.div
-            className="absolute inset-0 rounded-full border-2 border-[#5236ab]"
+            className="bytebot-fab-pulse"
             animate={{ scale: [1, 1.4], opacity: [0.5, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
           />

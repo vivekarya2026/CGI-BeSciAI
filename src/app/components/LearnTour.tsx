@@ -57,7 +57,7 @@ export default function LearnTour({ isOpen, onClose, onStepTabChange }: LearnTou
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[120] flex items-center justify-center px-4"
+        className="learn-tour-backdrop"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -69,32 +69,31 @@ export default function LearnTour({ isOpen, onClose, onStepTabChange }: LearnTou
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="relative max-w-md w-full rounded-2xl bg-white shadow-xl p-6 space-y-4"
-          style={{ fontFamily: 'var(--font-primary)' }}
+          className="learn-tour-modal space-y-4"
         >
           <button
             onClick={handleSkip}
-            className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-100 cursor-pointer"
+            className="learn-tour-close hover:bg-gray-100"
           >
             <X size={16} />
           </button>
 
-          <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          <div className="learn-tour-step-label">
             Learn tour · Step {stepIndex + 1} of {steps.length}
           </div>
 
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="learn-tour-title">
             {current.title}
           </h2>
 
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="learn-tour-body">
             {current.body}
           </p>
 
           <div className="flex items-center justify-between pt-2">
             <button
               onClick={handleSkip}
-              className="text-xs text-gray-500 hover:text-gray-700 cursor-pointer"
+              className="learn-tour-skip hover:text-gray-700"
             >
               Skip tour
             </button>
@@ -102,14 +101,13 @@ export default function LearnTour({ isOpen, onClose, onStepTabChange }: LearnTou
               <button
                 onClick={handlePrev}
                 disabled={isFirst}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                className="learn-tour-back disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <ArrowLeft size={12} /> Back
               </button>
               <button
                 onClick={handleNext}
-                className="inline-flex items-center gap-1 px-4 py-1.5 rounded-lg text-xs font-semibold text-white cursor-pointer"
-                style={{ backgroundColor: '#5236ab' }}
+                className="learn-tour-next"
               >
                 {isLast ? 'Finish' : 'Next'}
                 {!isLast && <ArrowRight size={12} />}

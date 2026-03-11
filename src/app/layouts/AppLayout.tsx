@@ -44,7 +44,7 @@ export default function AppLayout() {
 
   return (
     <ChallengeTourProvider>
-    <div className="min-h-screen transition-colors duration-300" style={{ backgroundColor: 'var(--app-bg)', fontFamily: "var(--font-primary)" }}>
+    <div className="min-h-screen transition-colors duration-300 bg-app-bg font-primary">
 
       {/* ============================================ */}
       {/* SECTION 1: SIDEBAR                          */}
@@ -67,11 +67,7 @@ export default function AppLayout() {
           animate={{ scaleX: 1, opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="fixed top-0 left-0 right-0 h-1 z-[100] origin-left"
-          style={{
-            background: 'linear-gradient(90deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%)',
-            boxShadow: '0 0 10px rgba(79,70,229,0.6)',
-          }}
+          className="loading-bar"
         />
       )}
 
@@ -80,17 +76,13 @@ export default function AppLayout() {
       {/* Only visible on screens smaller than 1024px */}
       {/* Contains hamburger menu + app logo          */}
       {/* ============================================ */}
-      <div
-        className="sticky top-0 z-40 flex lg:hidden items-center gap-3 px-4 py-3 transition-colors duration-300"
-        style={{ backgroundColor: 'var(--app-surface)', borderBottom: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
-      >
+      <div className="sticky top-0 z-40 flex lg:hidden items-center gap-3 px-4 py-3 transition-colors duration-300 bg-app-surface border-b border-app shadow-app">
         {/* Hamburger menu button */}
         <motion.button
           onClick={() => setMobileOpen(true)}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.92 }}
-          className="p-2 -ml-1 rounded-lg cursor-pointer"
-          style={{ color: 'var(--app-text-primary)' }}
+          className="p-2 -ml-1 rounded-lg cursor-pointer text-app-primary"
           aria-label="Open menu"
         >
           <Menu size={22} />
@@ -98,10 +90,10 @@ export default function AppLayout() {
 
         {/* App logo + name */}
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-[#5236ab] rounded-lg flex items-center justify-center">
+          <div className="sidebar-logo w-7 h-7">
             <span className="text-white font-bold text-sm">A</span>
           </div>
-          <span className="font-bold text-base" style={{ color: 'var(--app-text-primary)' }}>BeSciAI</span>
+          <span className="font-bold text-base text-app-primary">BeSciAI</span>
         </div>
       </div>
 
