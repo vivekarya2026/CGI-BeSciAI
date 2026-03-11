@@ -321,7 +321,7 @@ export default function MessagesPage() {
       >
         {/* SIDEBAR: Conversation list */}
         <div
-          className={clsx('conversation-sidebar lg:w-80', {
+          className={clsx('conversation-sidebar', {
             'hidden lg:flex': mobileView === 'chat',
             'flex': mobileView === 'list',
           })}

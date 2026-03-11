@@ -128,10 +128,10 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
 
       {/* ---- Header / Logo ---- */}
       <div className="sidebar-header">
-        <div className="flex items-center gap-3 overflow-hidden">
-          {/* Purple "A" logo */}
+        <div className="flex items-center gap-3">
+          {/* Logo — reuse landing page star icon styling */}
           <div className="sidebar-logo">
-            <span className="text-white font-bold text-lg">A</span>
+            <span className="landing2-logo-icon" aria-hidden="true">✦</span>
           </div>
           {/* App name (hidden when desktop sidebar is collapsed) */}
           {(isMobile || !collapsed) && (

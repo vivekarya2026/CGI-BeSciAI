@@ -23,7 +23,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Bot, X, Send, BookOpen, Trophy, HelpCircle,
-  Zap, Sparkles,
+  Zap, Sparkles, Star,
 } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import clsx from 'clsx';
@@ -39,7 +39,7 @@ interface Message {
 // --- Quick Action Definitions ---
 const quickActions = [
   { id: 'learn', label: 'What should I learn next?', icon: <BookOpen size={14} /> },
-  { id: 'xp', label: 'How do I earn more XP?', icon: <Zap size={14} /> },
+  { id: 'xp', label: 'How do I earn more XP?', icon: <Star size={14} /> },
   { id: 'archetype', label: 'Explain my archetype', icon: <Sparkles size={14} /> },
   { id: 'help', label: 'Help me get started', icon: <HelpCircle size={14} /> },
 ];

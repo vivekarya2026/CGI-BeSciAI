@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   GraduationCap, Zap, Play, CheckCircle, Clock,
-  Star, Sparkles, ChevronDown, ChevronRight,
+  Star, ChevronDown, ChevronRight, MessageSquare, Search,
 } from 'lucide-react';
 import {
   trainings,
@@ -23,8 +23,11 @@ import clsx from 'clsx';
 import {
   cardHoverMotion,
   primaryButtonMotion,
+  secondaryButtonMotion,
   staggerContainer,
 } from '../../components/ui/motionPresets';
+import { NotificationsPanel } from '../../components/NotificationsPanel';
+import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 export type LearnSubTab = 'trainings' | 'micro';
 
@@ -34,13 +37,16 @@ export default function LearnPage() {
   const location = useLocation();
 
   const [activeTab, setActiveTab] = useState<LearnSubTab>('trainings');
+  const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
   
   // Training filters
+  const [trainingSearchQuery, setTrainingSearchQuery] = useState('');
   const [trainingSubjectFilter, setTrainingSubjectFilter] = useState<string>('all');
   const [trainingFormatFilter, setTrainingFormatFilter] = useState<string>('all');
   const [trainingLevelFilter, setTrainingLevelFilter] = useState<string>('all');
   
   // Micro-learning filters
+  const [microSearchQuery, setMicroSearchQuery] = useState('');
   const [microTopicFilter, setMicroTopicFilter] = useState<string>('all');
   const [microToolFilter, setMicroToolFilter] = useState<string>('all');
   const [microSortFilter, setMicroSortFilter] = useState<string>('default');
@@ -66,14 +72,22 @@ export default function LearnPage() {
     const subjectOk = trainingSubjectFilter === 'all' || t.category === trainingSubjectFilter;
     const formatOk = trainingFormatFilter === 'all' || t.format === trainingFormatFilter;
     const levelOk = trainingLevelFilter === 'all' || t.difficulty === trainingLevelFilter;
-    return subjectOk && formatOk && levelOk;
+    const q = trainingSearchQuery.trim().toLowerCase();
+    const searchOk = !q || [t.title, t.description, t.category].some(
+      (v) => v && String(v).toLowerCase().includes(q)
+    );
+    return subjectOk && formatOk && levelOk && searchOk;
   });
 
   // Filter micro-learnings
   const filteredMicro = microLearnings.filter(m => {
     const topicOk = microTopicFilter === 'all' || m.topic === microTopicFilter;
     const toolOk = microToolFilter === 'all' || m.tool === microToolFilter;
-    return topicOk && toolOk;
+    const q = microSearchQuery.trim().toLowerCase();
+    const searchOk = !q || [m.title, m.description, m.topic, m.tool].some(
+      (v) => v && String(v).toLowerCase().includes(q)
+    );
+    return topicOk && toolOk && searchOk;
   }).sort((a, b) => {
     if (microSortFilter === 'recent') return (b.addedAt || '').localeCompare(a.addedAt || '');
     if (microSortFilter === 'popular') return (b.hot ? 1 : 0) - (a.hot ? 1 : 0);
@@ -109,15 +123,29 @@ export default function LearnPage() {
   return (
     <div className="font-primary bg-app-bg min-h-screen">
       {/* HEADER */}
-      <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-app-primary">
-          {activeTab === 'trainings' ? 'Trainings' : 'Micro-learnings'}
-        </h1>
-        <p className="text-sm sm:text-base text-app-secondary">
-          {activeTab === 'trainings' 
-            ? 'Build your AI skills with personalized training paths' 
-            : 'Quick, focused lessons to master specific AI tools and techniques'}
-        </p>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-app-primary">
+            {activeTab === 'trainings' ? 'Trainings' : 'Micro-learnings'}
+          </h1>
+          <p className="text-sm sm:text-base text-app-secondary">
+            {activeTab === 'trainings'
+              ? 'Build your AI skills with personalized training paths'
+              : 'Quick, focused lessons to master specific AI tools and techniques'}
+          </p>
+        </div>
+        <div className="flex gap-2 relative shrink-0">
+          <NotificationsPanel onNavigate={(path) => navigate(path)} />
+          <button
+            type="button"
+            className="notifications-bell"
+            onClick={() => setMiniMessagesOpen(prev => !prev)}
+            aria-label="Open messages"
+          >
+            <MessageSquare size={18} className="text-app-muted" />
+            <span className="notifications-badge">3</span>
+          </button>
+        </div>
       </div>
 
       {/* TAB CONTENT */}
@@ -166,7 +194,7 @@ export default function LearnPage() {
                         </span>
                       </div>
 
-                      <h3 className="text-xl font-bold mb-2 text-app-primary">
+                      <h3 className="text-xl font-bold text-app-primary">
                         {unfinishedTraining.title}
                       </h3>
 
@@ -174,32 +202,30 @@ export default function LearnPage() {
                         Step {Math.ceil((unfinishedTraining.progress || 0) / (100 / (unfinishedTraining.lessons || 8)))} of journey
                       </p>
 
-                      {/* Progress Bar */}
-                      <div className="mb-4">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-xs font-medium text-app-muted">
-                            {unfinishedTraining.progress}% complete
-                          </span>
-                          <span className="text-xs font-medium text-app-muted">
-                            30 min
-                          </span>
+                      {/* Progress Bar + Continue Button side by side */}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-8">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-xs font-medium text-app-muted">
+                              {unfinishedTraining.progress}% complete
+                            </span>
+                            <span className="text-xs font-medium text-app-muted">
+                              30 min
+                            </span>
+                          </div>
+                          <div className="progress-bar-bg progress-bar-bg-thick">
+                            <motion.div
+                              className="progress-bar-fill"
+                              initial={{ width: 0 }}
+                              animate={{ width: `${unfinishedTraining.progress}%` }}
+                              transition={{ duration: 1, ease: 'easeOut' }}
+                            />
+                          </div>
                         </div>
-                        <div className="progress-bar-bg progress-bar-bg-thick">
-                          <motion.div
-                            className="progress-bar-fill"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${unfinishedTraining.progress}%` }}
-                            transition={{ duration: 1, ease: 'easeOut' }}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Continue Button - Aligned Right */}
-                      <div className="flex justify-end">
                         <motion.button
                           {...primaryButtonMotion()}
                           onClick={() => navigate(`/app/learn/trainings/${unfinishedTraining.id}`)}
-                          className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm cursor-pointer"
+                          className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm cursor-pointer shrink-0"
                         >
                           <Play size={16} />
                           Continue Learning
@@ -211,51 +237,61 @@ export default function LearnPage() {
               </section>
             )}
 
-            {/* Filters */}
-            <div className="flex flex-wrap gap-3 mb-6">
-              <div className="relative">
-                <select
-                  value={trainingSubjectFilter}
-                  onChange={(e) => setTrainingSubjectFilter(e.target.value)}
-                  className="dropdown-base"
-                >
-                  {subjects.map(subject => (
-                    <option key={subject} value={subject}>
-                      {subject === 'all' ? 'All Subject' : subject}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+            {/* Filters: Search on one end, dropdowns on the other */}
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-6 w-full">
+              <div className="relative search-filter-width">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+                <input
+                  type="text"
+                  placeholder="Search trainings..."
+                  value={trainingSearchQuery}
+                  onChange={(e) => setTrainingSearchQuery(e.target.value)}
+                  className="input-base input-with-icon w-full pl-9 text-app-primary placeholder:text-app-muted"
+                />
               </div>
-
-              <div className="relative">
-                <select
-                  value={trainingFormatFilter}
-                  onChange={(e) => setTrainingFormatFilter(e.target.value)}
-                  className="dropdown-base"
-                >
-                  {formats.map(format => (
-                    <option key={format} value={format}>
-                      {format === 'all' ? 'All Format' : format}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
-              </div>
-
-              <div className="relative">
-                <select
-                  value={trainingLevelFilter}
-                  onChange={(e) => setTrainingLevelFilter(e.target.value)}
-                  className="dropdown-base"
-                >
-                  {levels.map(level => (
-                    <option key={level} value={level}>
-                      {level === 'all' ? 'All Level' : level}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+              <div className="flex flex-wrap gap-3">
+                <div className="relative">
+                  <select
+                    value={trainingSubjectFilter}
+                    onChange={(e) => setTrainingSubjectFilter(e.target.value)}
+                    className="dropdown-base"
+                  >
+                    {subjects.map(subject => (
+                      <option key={subject} value={subject}>
+                        {subject === 'all' ? 'All Subject' : subject}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+                </div>
+                <div className="relative">
+                  <select
+                    value={trainingFormatFilter}
+                    onChange={(e) => setTrainingFormatFilter(e.target.value)}
+                    className="dropdown-base"
+                  >
+                    {formats.map(format => (
+                      <option key={format} value={format}>
+                        {format === 'all' ? 'All Format' : format}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+                </div>
+                <div className="relative">
+                  <select
+                    value={trainingLevelFilter}
+                    onChange={(e) => setTrainingLevelFilter(e.target.value)}
+                    className="dropdown-base"
+                  >
+                    {levels.map(level => (
+                      <option key={level} value={level}>
+                        {level === 'all' ? 'All Level' : level}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+                </div>
               </div>
             </div>
 
@@ -273,94 +309,98 @@ export default function LearnPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
                     onClick={() => navigate(`/app/learn/trainings/${training.id}`)}
-                    className="card-base p-5 cursor-pointer"
+                    className="card-base p-5 cursor-pointer flex flex-col h-full"
                   >
-                    {/* Badges Row */}
-                    <div className="flex flex-wrap items-center gap-2 mb-3">
-                      {isCompleted && (
-                        <span className="badge-base badge-green inline-flex items-center gap-1">
-                          <CheckCircle size={12} />
-                          Completed
+                    {/* Top: details */}
+                    <div className="flex-1 min-h-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        {isCompleted && (
+                          <span className="badge-base badge-green inline-flex items-center gap-1">
+                            <CheckCircle size={12} />
+                            Completed
+                          </span>
+                        )}
+                        <span className="badge-base badge-gray">
+                          {training.category}
                         </span>
-                      )}
-                      <span className="badge-base badge-gray">
-                        {training.category}
-                      </span>
-                      {idx === 0 && !isCompleted && (
-                        <span className="badge-base badge-popular inline-flex items-center gap-1">
-                          <Star size={12} />
-                          Popular
-                        </span>
-                      )}
-                      {idx === 1 && !isCompleted && (
-                        <span className="badge-base badge-required">
-                          Required
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="text-base font-bold mb-2 text-app-primary">
-                      {training.title}
-                    </h3>
-
-                    <p className="text-sm mb-4 text-app-secondary leading-relaxed">
-                      {training.description}
-                    </p>
-
-                    {/* Meta info */}
-                    <div className="flex items-center gap-3 mb-4 text-xs text-app-muted">
-                      <span className="inline-flex items-center gap-1">
-                        <Clock size={14} />
-                        {training.duration}
-                      </span>
-                      <span>{training.lessons} lessons</span>
-                      <span className="inline-flex items-center gap-1 text-[#8b5cf6] font-semibold">
-                        <Sparkles size={14} />
-                        +250 XP
-                      </span>
-                    </div>
-
-                    {/* Progress Bar (for in-progress) */}
-                    {isInProgress && (
-                      <div className="mb-4">
-                        <div className="progress-bar-bg progress-bar-bg-thin">
-                          <div
-                            className="progress-bar-fill"
-                            style={{ width: `${training.progress}%` }}
-                          />
-                        </div>
+                        {idx === 0 && !isCompleted && (
+                          <span className="badge-base badge-popular inline-flex items-center gap-1">
+                            <Star size={12} />
+                            Popular
+                          </span>
+                        )}
+                        {idx === 1 && !isCompleted && (
+                          <span className="badge-base badge-required">
+                            Required
+                          </span>
+                        )}
                       </div>
-                    )}
 
-                    {/* Action Button */}
-                    <motion.button
-                      {...primaryButtonMotion()}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/app/learn/trainings/${training.id}`);
-                      }}
-                      className={clsx(
-                        "w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer text-white",
-                        isCompleted ? "btn-success" : "btn-primary"
+                      <h3 className="text-base font-bold mb-2 text-app-primary">
+                        {training.title}
+                      </h3>
+
+                      <p className="text-sm mb-4 text-app-secondary leading-relaxed">
+                        {training.description}
+                      </p>
+
+                      <div className="flex items-center gap-3 mb-4 text-xs text-app-muted">
+                        <span className="inline-flex items-center gap-1">
+                          <Clock size={14} />
+                          {training.duration}
+                        </span>
+                        <span>{training.lessons} lessons</span>
+                        <span className="inline-flex items-center gap-1 text-[#db2777] font-semibold">
+                          <Star size={14} />
+                          +250 XP
+                        </span>
+                      </div>
+
+                      {isInProgress && (
+                        <div className="mb-4">
+                          <div className="progress-bar-bg progress-bar-bg-thin">
+                            <div
+                              className="progress-bar-fill"
+                              style={{ width: `${training.progress}%` }}
+                            />
+                          </div>
+                        </div>
                       )}
-                    >
-                      {isCompleted ? (
-                        <>
-                          Review
-                          <ChevronRight size={16} />
-                        </>
-                      ) : isInProgress ? (
-                        <>
-                          <Play size={16} />
-                          Continue
-                        </>
-                      ) : (
-                        <>
-                          <Play size={16} />
-                          Start
-                        </>
-                      )}
-                    </motion.button>
+                    </div>
+
+                    {/* Bottom: action button */}
+                    <div className="mt-auto pt-4">
+                      <motion.button
+                        {...(isInProgress ? primaryButtonMotion() : secondaryButtonMotion())}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/app/learn/trainings/${training.id}`);
+                        }}
+                        className={clsx(
+                          "w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer",
+                          isCompleted && "btn-success-stroked",
+                          isInProgress && "btn-primary text-white",
+                          !isCompleted && !isInProgress && "btn-primary-stroked"
+                        )}
+                      >
+                        {isCompleted ? (
+                          <>
+                            Review
+                            <ChevronRight size={16} />
+                          </>
+                        ) : isInProgress ? (
+                          <>
+                            <Play size={16} />
+                            Continue
+                          </>
+                        ) : (
+                          <>
+                            <Play size={16} />
+                            Start
+                          </>
+                        )}
+                      </motion.button>
+                    </div>
                   </motion.div>
                 );
               })}
@@ -397,7 +437,7 @@ export default function LearnPage() {
 
                     {/* Lesson Details - Center */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-2">
                         <span className="micro-continue-badge-topic">
                           {recommendedLesson.topic}
                         </span>
@@ -441,49 +481,59 @@ export default function LearnPage() {
               </section>
             )}
 
-            {/* Filters */}
-            <div className="flex flex-wrap gap-3 mb-6">
-              <div className="relative">
-                <select
-                  value={microTopicFilter}
-                  onChange={(e) => setMicroTopicFilter(e.target.value)}
-                  className="dropdown-base"
-                >
-                  {topics.map(topic => (
-                    <option key={topic} value={topic}>
-                      {topic === 'all' ? 'All Topic' : topic}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+            {/* Filters: Search on one end, dropdowns on the other */}
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-6 w-full">
+              <div className="relative search-filter-width">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+                <input
+                  type="text"
+                  placeholder="Search micro-learnings..."
+                  value={microSearchQuery}
+                  onChange={(e) => setMicroSearchQuery(e.target.value)}
+                  className="input-base input-with-icon w-full pl-9 text-app-primary placeholder:text-app-muted"
+                />
               </div>
-
-              <div className="relative">
-                <select
-                  value={microToolFilter}
-                  onChange={(e) => setMicroToolFilter(e.target.value)}
-                  className="dropdown-base"
-                >
-                  {tools.map(tool => (
-                    <option key={tool} value={tool}>
-                      {tool === 'all' ? 'All Tool' : tool}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
-              </div>
-
-              <div className="relative">
-                <select
-                  value={microSortFilter}
-                  onChange={(e) => setMicroSortFilter(e.target.value)}
-                  className="dropdown-base"
-                >
-                  <option value="default">Default</option>
-                  <option value="recent">Recent</option>
-                  <option value="popular">Popular</option>
-                </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+              <div className="flex flex-wrap gap-3">
+                <div className="relative">
+                  <select
+                    value={microTopicFilter}
+                    onChange={(e) => setMicroTopicFilter(e.target.value)}
+                    className="dropdown-base"
+                  >
+                    {topics.map(topic => (
+                      <option key={topic} value={topic}>
+                        {topic === 'all' ? 'All Topic' : topic}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+                </div>
+                <div className="relative">
+                  <select
+                    value={microToolFilter}
+                    onChange={(e) => setMicroToolFilter(e.target.value)}
+                    className="dropdown-base"
+                  >
+                    {tools.map(tool => (
+                      <option key={tool} value={tool}>
+                        {tool === 'all' ? 'All Tool' : tool}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+                </div>
+                <div className="relative">
+                  <select
+                    value={microSortFilter}
+                    onChange={(e) => setMicroSortFilter(e.target.value)}
+                    className="dropdown-base"
+                  >
+                    <option value="default">Default</option>
+                    <option value="recent">Recent</option>
+                    <option value="popular">Popular</option>
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+                </div>
               </div>
             </div>
 
@@ -499,75 +549,91 @@ export default function LearnPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="card-base p-5 cursor-pointer relative"
                     onClick={() => navigate(`/app/learn/micro/${micro.id}`)}
+                    className="card-base p-5 cursor-pointer flex flex-col h-full"
                   >
-                    {/* Badges Row */}
-                    <div className="flex flex-wrap items-center gap-2 mb-3">
-                      <span className={clsx("badge-base", getTopicClass(micro.topic))}>
-                        {micro.topic}
-                      </span>
-                      <span className="badge-base badge-blue">
-                        {micro.tool}
-                      </span>
-                      {isCompleted && (
-                        <CheckCircle size={16} className="text-green-500" />
-                      )}
-                      {!isCompleted && micro.hot && (
-                        <span className="badge-base badge-trending inline-flex items-center gap-1">
-                          <Star size={12} />
-                          Trending
+                    {/* Top: details */}
+                    <div className="flex-1 min-h-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <span className={clsx("badge-base", getTopicClass(micro.topic))}>
+                          {micro.topic}
                         </span>
-                      )}
-                      {!isCompleted && !micro.hot && idx % 3 === 1 && (
-                        <span className="badge-base badge-popular inline-flex items-center gap-1">
-                          <Star size={12} />
-                          Popular
+                        <span className="badge-base badge-blue">
+                          {micro.tool}
                         </span>
-                      )}
-                    </div>
-
-                    <h3 className="text-base font-bold mb-2 text-app-primary">
-                      {micro.title}
-                    </h3>
-
-                    <p className="text-sm mb-4 text-app-secondary leading-relaxed">
-                      {micro.description}
-                    </p>
-
-                    {/* Meta info */}
-                    <div className="flex items-center gap-3 mb-4 text-xs text-app-muted">
-                      <span className="inline-flex items-center gap-1">
-                        <Clock size={14} />
-                        {micro.duration}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[#8b5cf6] font-semibold">
-                        <Sparkles size={14} />
-                        +{micro.points} XP
-                      </span>
-                    </div>
-
-                    {/* Completion Progress */}
-                    {isCompleted && (
-                      <div className="flex items-center gap-2 text-xs text-green-500 mb-3">
-                        <div className="flex-1 h-1 rounded-full bg-green-500" />
-                        <span className="font-semibold">Review</span>
+                        {isCompleted && (
+                          <span className="badge-base badge-green inline-flex items-center gap-1">
+                            <CheckCircle size={12} />
+                            Completed
+                          </span>
+                        )}
+                        {!isCompleted && micro.hot && (
+                          <span className="badge-base badge-trending inline-flex items-center gap-1">
+                            <Star size={12} />
+                            Trending
+                          </span>
+                        )}
+                        {!isCompleted && !micro.hot && idx % 3 === 1 && (
+                          <span className="badge-base badge-popular inline-flex items-center gap-1">
+                            <Star size={12} />
+                            Popular
+                          </span>
+                        )}
                       </div>
-                    )}
 
-                    {/* Circular Start Now Button */}
-                    {!isCompleted && (
+                      <h3 className="text-base font-bold mb-2 text-app-primary">
+                        {micro.title}
+                      </h3>
+
+                      <p className="text-sm mb-4 text-app-secondary leading-relaxed">
+                        {micro.description}
+                      </p>
+
+                      <div className="flex items-center gap-3 mb-4 text-xs text-app-muted">
+                        <span className="inline-flex items-center gap-1">
+                          <Clock size={14} />
+                          {micro.duration}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[#db2777] font-semibold">
+                          <Star size={14} />
+                          +{micro.points} XP
+                        </span>
+                      </div>
+
+                      {isCompleted && (
+                        <div className="flex items-center gap-2 text-xs text-green-600">
+                          <div className="flex-1 h-1 rounded-full bg-green-500 max-w-[80px]" />
+                          <span className="font-semibold">Completed</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Bottom: action button — same pattern as Training (Review/Start stroked) */}
+                    <div className="mt-auto pt-4">
                       <motion.button
-                        {...primaryButtonMotion()}
+                        {...secondaryButtonMotion()}
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/app/learn/micro/${micro.id}`);
                         }}
-                        className="circular-action-btn absolute bottom-4 right-4"
+                        className={clsx(
+                          "w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer",
+                          isCompleted ? "btn-success-stroked" : "btn-primary-stroked"
+                        )}
                       >
-                        <Play size={18} />
+                        {isCompleted ? (
+                          <>
+                            Review
+                            <ChevronRight size={16} />
+                          </>
+                        ) : (
+                          <>
+                            <Play size={16} />
+                            Start
+                          </>
+                        )}
                       </motion.button>
-                    )}
+                    </div>
                   </motion.div>
                 );
               })}
@@ -575,6 +641,12 @@ export default function LearnPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <DashboardMiniMessages
+        isOpen={miniMessagesOpen}
+        onClose={() => setMiniMessagesOpen(false)}
+        onOpenFullMessages={() => navigate('/app/messages')}
+      />
     </div>
   );
 }

@@ -6,7 +6,7 @@
 import React, { useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { ArrowLeft, CheckCircle, Target, Play, Clock, Zap } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Target, Play, Clock, Zap, MessageSquare } from 'lucide-react';
 import clsx from 'clsx';
 import {
   getMicroById,
@@ -15,6 +15,8 @@ import {
   microLearnings,
 } from '../../data/learnData';
 import { useUser } from '../../context/UserContext';
+import { NotificationsPanel } from '../../components/NotificationsPanel';
+import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 export default function MicroLearningViewerPage() {
   const { microId } = useParams<{ microId: string }>();
@@ -22,6 +24,7 @@ export default function MicroLearningViewerPage() {
   const { addXp } = useUser();
   const [completed, setCompleted] = useState(() => (microId ? isMicroCompleted(microId) : false));
   const [justCompleted, setJustCompleted] = useState(false);
+  const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
 
   const micro = useMemo(() => (microId ? getMicroById(microId) : undefined), [microId]);
 
@@ -54,12 +57,26 @@ export default function MicroLearningViewerPage() {
 
   return (
     <div className="page-container-wide">
-      <button
-        onClick={() => navigate('/app/learn')}
-        className="back-button"
-      >
-        <ArrowLeft size={16} /> Back to Learn
-      </button>
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <button
+          onClick={() => navigate('/app/learn')}
+          className="back-button"
+        >
+          <ArrowLeft size={16} /> Back to Learn
+        </button>
+        <div className="flex gap-2 relative shrink-0">
+          <NotificationsPanel onNavigate={(path) => navigate(path)} />
+          <button
+            type="button"
+            className="notifications-bell"
+            onClick={() => setMiniMessagesOpen(prev => !prev)}
+            aria-label="Open messages"
+          >
+            <MessageSquare size={18} className="text-app-muted" />
+            <span className="notifications-badge">3</span>
+          </button>
+        </div>
+      </div>
 
       <div className="card-surface-shadow rounded-xl overflow-hidden mb-6">
         <div className="p-6">
@@ -124,6 +141,12 @@ export default function MicroLearningViewerPage() {
           </ul>
         </div>
       )}
+
+      <DashboardMiniMessages
+        isOpen={miniMessagesOpen}
+        onClose={() => setMiniMessagesOpen(false)}
+        onOpenFullMessages={() => navigate('/app/messages')}
+      />
     </div>
   );
 }

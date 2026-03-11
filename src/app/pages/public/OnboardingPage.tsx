@@ -290,7 +290,7 @@ export default function OnboardingPage() {
                         className={clsx(
                           'onboarding-path-card',
                           isSelected && 'onboarding-path-card-selected',
-                          isRecommended && !isSelected && 'onboarding-path-card-recommended',
+                          isRecommended && !isSelected && 'onboarding-path-card-standard',
                           !isSelected && !isRecommended && 'onboarding-path-card-standard'
                         )}
                       >
@@ -314,7 +314,7 @@ export default function OnboardingPage() {
                             <motion.div
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
-                              className="w-6 h-6 rounded-full flex items-center justify-center bg-[#8b5cf6]"
+                              className="w-6 h-6 rounded-full flex items-center justify-center bg-[#5236ab]"
                             >
                               <Check size={14} className="text-white" />
                             </motion.div>

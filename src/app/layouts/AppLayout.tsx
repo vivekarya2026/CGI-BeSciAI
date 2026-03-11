@@ -128,9 +128,9 @@ export default function AppLayout() {
 
       {/* ============================================ */}
       {/* SECTION 4: BYTEBOT (AI CHAT ASSISTANT)      */}
-      {/* Floating action button in the bottom-right  */}
+      {/* Temporarily hidden via feature flag          */}
       {/* ============================================ */}
-      <ByteBot />
+      {false && <ByteBot />}
 
       {/* Challenge walkthrough — start from "Show me around", skip anytime */}
       <ChallengeGuidedTour />

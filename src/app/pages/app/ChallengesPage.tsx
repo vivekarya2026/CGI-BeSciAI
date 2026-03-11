@@ -221,21 +221,18 @@ export default function ChallengesPage() {
         </motion.div>
       </div>
 
-      {/* SEARCH & FILTER */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        {/* Search */}
-        <div className="relative flex-1">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-app-hint" />
+      {/* SEARCH & FILTER: Search on one end, filter on the other (same width as Learn/Micro-learning) */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6 w-full">
+        <div className="relative search-filter-width">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
           <input
             type="text"
             placeholder="Search challenges..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
+            className="input-base input-with-icon w-full pl-9 text-app-primary placeholder:text-app-muted"
           />
         </div>
-
-        {/* Filter by Type Dropdown */}
         <div className="relative">
           <select
             value={typeFilter}

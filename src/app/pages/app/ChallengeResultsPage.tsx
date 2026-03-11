@@ -6,14 +6,14 @@
 import React, { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { CheckCircle, Sparkles, BarChart3, Bell, Share2, Target, LayoutDashboard, MessageSquare } from 'lucide-react';
+import { CheckCircle, Star, BarChart3, Bell, Share2, Target, LayoutDashboard, MessageSquare } from 'lucide-react';
 import clsx from 'clsx';
 import { getChallengeById } from '../../data/learnData';
 import { useUser } from '../../context/UserContext';
 
 const FEEDBACK_ITEMS = [
   { id: 'confirm', icon: CheckCircle, label: 'Submission received', color: '#1ab977' },
-  { id: 'points', icon: Sparkles, label: 'Points awarded', color: '#5236ab' },
+  { id: 'points', icon: Star, label: 'Points awarded', color: '#db2777' },
   { id: 'score', icon: BarChart3, label: 'Auto-score', sub: 'Your submission is being reviewed', color: '#f59e0b' },
   { id: 'notify', icon: Bell, label: 'Notifications', sub: "We'll notify you when feedback is ready", color: '#0ea5e9' },
 ];
@@ -93,7 +93,7 @@ export default function ChallengeResultsPage() {
             <li className="flex items-center gap-2"><CheckCircle size={16} className="text-[#1ab977]" /> Points awarded: {challenge.points} XP</li>
             <li className="flex items-center gap-2"><CheckCircle size={16} className="text-[#1ab977]" /> Auto-score in progress</li>
             <li className="flex items-center gap-2"><CheckCircle size={16} className="text-[#1ab977]" /> Notifications sent</li>
-            {streakBonus > 0 && <li className="flex items-center gap-2"><Sparkles size={16} className="text-[#f59e0b]" /> Streak bonus: +{streakBonus} XP (total {totalPoints} XP)</li>}
+            {streakBonus > 0 && <li className="flex items-center gap-2"><Star size={16} className="text-[#db2777]" /> Streak bonus: +{streakBonus} XP (total {totalPoints} XP)</li>}
             <li className="flex items-center gap-2"><CheckCircle size={16} className="text-[#1ab977]" /> Badge: Challenge completed</li>
           </ul>
         </div>

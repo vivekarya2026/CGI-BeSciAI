@@ -1,7 +1,21 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { Sparkles, Clock, ArrowRight } from 'lucide-react';
+import {
+  Sparkles,
+  Clock,
+  ArrowRight,
+  Compass,
+  Target,
+  BookOpen,
+  Trophy,
+  Brain,
+  BarChart3,
+  Zap,
+  FlaskConical,
+  Users,
+  Building2,
+} from 'lucide-react';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -74,19 +88,19 @@ export default function LandingPage() {
                 ✦ Start your Journey <span aria-hidden="true">→</span>
               </motion.button>
 
-              <motion.button
+              {/* <motion.button
                 whileHover={{ borderColor: 'rgba(255,255,255,0.2)', color: 'rgba(240,236,249,1)' }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleScrollToPlatform}
                 className="landing2-btn-ghost"
               >
                 See how it works
-              </motion.button>
+              </motion.button> */}
             </div>
 
-            <p className="landing2-hero-note">
+            {/* <p className="landing2-hero-note">
               <Clock size={13} aria-hidden="true" /> 8–10 minutes to complete your profile
-            </p>
+            </p> */}
           </motion.div>
 
           <motion.div
@@ -115,7 +129,7 @@ export default function LandingPage() {
 
       <hr className="landing2-divider" />
 
-      <section id="platform" className="landing2-section landing2-platform">
+      <section id="platform" className="landing2-section">
         <div className="landing2-platform-grid">
           <div>
             <div className="landing2-section-label">The Platform</div>
@@ -182,32 +196,32 @@ export default function LandingPage() {
         <div className="landing2-features-grid">
           {[
             {
-              icon: '🧭',
+              icon: <Compass size={20} />,
               title: 'Unified Start Here Hub',
               desc: 'One clear entry point that guides every user through tools, training, and next steps—no confusion, no scattered resources.',
             },
             {
-              icon: '🎯',
+              icon: <Target size={20} />,
               title: 'Role-Specific Journeys',
               desc: 'Tailored learning paths for functional, technical, and hybrid roles. Prompt examples mapped to your actual job, not generic theory.',
             },
             {
-              icon: '📚',
+              icon: <BookOpen size={20} />,
               title: 'Searchable Prompt Library',
               desc: 'Real-world, AI-confirmed prompt examples ready for immediate use in your daily workflows—approved and accessible.',
             },
             {
-              icon: '🏆',
+              icon: <Trophy size={20} />,
               title: 'Peer Recognition System',
               desc: 'Badges, shout-outs, and mentor matching to celebrate progress and build social momentum within your team.',
             },
             {
-              icon: '🧠',
+              icon: <Brain size={20} />,
               title: 'Behavioral Nudges',
               desc: 'Science-backed micro-interventions that build lasting AI habits through rewarding, low-friction daily interactions.',
             },
             {
-              icon: '📊',
+              icon: <BarChart3 size={20} />,
               title: 'Progress & Analytics',
               desc: 'Self-tracking of AI usage, milestones, and skill maturity—so you and your org always know where you stand.',
             },
@@ -229,13 +243,15 @@ export default function LandingPage() {
           <h2 className="landing2-section-title">Built Different, by Design</h2>
           <div className="landing2-pillars-grid">
             {[
-              { icon: '⚡', title: 'Frictionless by Default', desc: 'Every interaction is designed to remove barriers, not add steps.' },
-              { icon: '🔬', title: 'Behavioral Science Core', desc: 'Habit formation and nudge theory baked into every feature.' },
-              { icon: '🤝', title: 'Community-Powered', desc: 'Peer learning, examples, and mentorship amplify individual progress.' },
-              { icon: '🏢', title: 'Enterprise-Ready', desc: 'Compliance-aware, scalable, and designed for org-wide rollout.' },
+              { icon: <Zap size={22} />, title: 'Frictionless by Default', desc: 'Every interaction is designed to remove barriers, not add steps.' },
+              { icon: <FlaskConical size={22} />, title: 'Behavioral Science Core', desc: 'Habit formation and nudge theory baked into every feature.' },
+              { icon: <Users size={22} />, title: 'Community-Powered', desc: 'Peer learning, examples, and mentorship amplify individual progress.' },
+              { icon: <Building2 size={22} />, title: 'Enterprise-Ready', desc: 'Compliance-aware, scalable, and designed for org-wide rollout.' },
             ].map((p) => (
               <div key={p.title} className="landing2-pillar">
-                <span className="landing2-pillar-icon" aria-hidden="true">{p.icon}</span>
+                <span className="landing2-pillar-icon" aria-hidden="true">
+                  {p.icon}
+                </span>
                 <div className="landing2-pillar-title">{p.title}</div>
                 <div className="landing2-pillar-desc">{p.desc}</div>
               </div>
