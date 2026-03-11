@@ -22,7 +22,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import { Sparkles, Clock, Target, Users, ArrowRight, Zap, Brain, TrendingUp, CheckCircle } from 'lucide-react';
-import clsx from 'clsx';
 
 export default function LandingPage() {
   // `useNavigate` lets us change pages programmatically when buttons are clicked
@@ -40,19 +39,28 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen font-primary">
+    <div className="min-h-screen" style={{ fontFamily: "var(--font-primary)" }}>
 
       {/* ============================================ */}
       {/* NAVIGATION BAR (Sticky/Fixed)              */}
       {/* ============================================ */}
-      <nav className={clsx('landing-nav', isScrolled ? 'landing-nav-scrolled' : 'landing-nav-transparent')}>
+      <nav
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 px-6 ${isScrolled
+          ? 'bg-white/90 backdrop-blur-md py-3 shadow-md border-b border-gray-100'
+          : 'bg-transparent py-6'
+          }`}
+      >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo Section */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="landing-logo-container">
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #a82465 0%, #e31937 100%)' }}
+            >
               <Sparkles size={22} className="text-white" />
             </div>
-            <span className={clsx('landing-logo-text hidden sm:block', isScrolled ? 'landing-logo-text-dark' : 'landing-logo-text-light')}>
+            <span className={`font-bold text-xl tracking-tight hidden sm:block transition-colors ${isScrolled ? 'text-[#151515]' : 'text-white'
+              }`}>
               BeSciAI
             </span>
           </div>
@@ -63,7 +71,11 @@ export default function LandingPage() {
               whileHover={{ scale: 1.05, boxShadow: '0 8px 24px rgba(139,92,246,0.4)' }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/app/dashboard')}
-              className="landing-btn-signin"
+              className="px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all cursor-pointer"
+              style={{
+                backgroundColor: '#8b5cf6',
+                color: 'white',
+              }}
             >
               Sign In
             </motion.button>
@@ -74,7 +86,10 @@ export default function LandingPage() {
       {/* ============================================ */}
       {/* SECTION 1: HERO (The big top section)      */}
       {/* ============================================ */}
-      <section className="landing-hero-gradient relative min-h-[75vh] flex items-center justify-center overflow-hidden">
+      <section
+        className="relative min-h-[75vh] flex items-center justify-center overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #200a58 0%, #5236ab 40%, #a82465 70%, #e31937 100%)' }}
+      >
         {/* ---- Animated Background Particles ---- */}
         {/* We create an array of 20 elements and map over them to create random circles */}
         <div className="absolute inset-0 overflow-hidden">
@@ -89,6 +104,7 @@ export default function LandingPage() {
                 top: `${Math.random() * 100}%`,
                 background: 'rgba(255,255,255,0.1)',
               }}
+              // Make them slowly float up and down
               animate={{
                 y: [0, -30, 0],
                 scale: [1, 1.1, 1],
@@ -110,20 +126,20 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
           >
             {/* Small badge at the top */}
-            <div className="landing-hero-badge">
+            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md rounded-full px-5 py-2 mb-8">
               <Sparkles size={16} className="text-yellow-300" />
-              <span className="landing-hero-badge-text">
+              <span className="text-white/90 text-sm font-medium" style={{ fontSize: 14, lineHeight: '17px' }}>
                 Personalized BeSciAI Journey
               </span>
             </div>
 
             {/* Main Headline */}
-            <h1 className="landing-hero-title text-3xl sm:text-4xl md:text-[38px]">
+            <h1 className="text-white mb-6 leading-tight text-3xl sm:text-4xl md:text-[38px]" style={{ fontWeight: 700, lineHeight: '1.2', color: 'white' }}>
               Discover Your AI Superpower
             </h1>
 
             {/* Subheadline (Description) */}
-            <p className="landing-hero-subtitle text-base sm:text-lg">
+            <p className="text-white/85 max-w-2xl mx-auto mb-10 text-base sm:text-lg" style={{ lineHeight: '28px', fontWeight: 400 }}>
               Set your AI goals and unlock a personalized learning path.
               Connect with like-minded peers, and accelerate your AI journey.
             </p>
@@ -134,7 +150,14 @@ export default function LandingPage() {
                 whileHover={{ scale: 1.05, y: -3, boxShadow: '0 12px 32px rgba(139,92,246,0.5)' }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigate('/onboarding')}
-                className="landing-cta-button"
+                className="inline-flex items-center justify-center gap-2 text-white px-10 py-4 rounded-xl font-bold transition-all cursor-pointer"
+                style={{
+                  background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+                  fontSize: 18,
+                  lineHeight: '24px',
+                  minHeight: 52,
+                  boxShadow: '0 8px 24px rgba(139,92,246,0.4)',
+                }}
               >
                 <Sparkles size={20} />
                 Start your Journey
@@ -142,9 +165,9 @@ export default function LandingPage() {
               </motion.button>
             </div>
 
-            <div className="landing-time-badge justify-center">
+            <div className="flex items-center justify-center gap-2 mt-6 text-white/70">
               <Clock size={14} />
-              <span className="landing-time-badge-text ">8-10 minutes to complete</span>
+              <span style={{ fontSize: 14, lineHeight: '17px' }}>8-10 minutes to complete</span>
             </div>
           </motion.div>
         </div>
@@ -153,7 +176,12 @@ export default function LandingPage() {
       {/* ============================================ */}
       {/* SECTION 2: START WITH THE GOALS - FUTURISTIC */}
       {/* ============================================ */}
-      <section className="landing-section-futuristic">
+      <section
+        className="relative py-24 px-6 overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%)',
+        }}
+      >
         {/* Animated background particles */}
         <div className="absolute inset-0 overflow-hidden opacity-30">
           {[...Array(15)].map((_, i) => (
@@ -191,7 +219,7 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: 'white' }}>
               Start with the Goals
             </h2>
             <p className="text-lg text-white/80 max-w-2xl mx-auto">
@@ -206,16 +234,19 @@ export default function LandingPage() {
                 icon: <Brain size={32} />,
                 title: 'AI-Powered Insights',
                 desc: 'Machine learning algorithms analyze your progress and adapt your learning path in real-time.',
+                gradient: 'linear-gradient(135deg, rgba(139,92,246,0.2) 0%, rgba(109,40,217,0.2) 100%)',
               },
               {
                 icon: <TrendingUp size={32} />,
                 title: 'Dynamic Growth Tracking',
                 desc: 'Visualize your skill development with interactive timelines and predictive analytics.',
+                gradient: 'linear-gradient(135deg, rgba(168,85,247,0.2) 0%, rgba(139,92,246,0.2) 100%)',
               },
               {
                 icon: <Sparkles size={32} />,
                 title: 'Gamified Milestones',
                 desc: 'Unlock achievements, earn XP, and compete on leaderboards as you master AI capabilities.',
+                gradient: 'linear-gradient(135deg, rgba(217,70,239,0.2) 0%, rgba(168,85,247,0.2) 100%)',
               },
             ].map((item, i) => (
               <motion.div
@@ -225,13 +256,33 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.15 }}
                 whileHover={{ y: -6, scale: 1.02 }}
-                className="landing-glass-card"
+                className="rounded-2xl p-8 border cursor-pointer relative overflow-hidden"
+                style={{
+                  background: item.gradient,
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  borderColor: 'rgba(255,255,255,0.2)',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                }}
               >
                 {/* Neon glow effect on hover */}
-                <div className="landing-glass-card-hover-glow" />
+                <motion.div
+                  className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity"
+                  style={{
+                    background: 'radial-gradient(circle at 50% 50%, rgba(139,92,246,0.3) 0%, transparent 70%)',
+                    pointerEvents: 'none',
+                  }}
+                />
 
                 <div className="relative z-10">
-                  <div className="landing-glass-icon-container">
+                  <div
+                    className="w-16 h-16 rounded-xl flex items-center justify-center mb-5"
+                    style={{
+                      backgroundColor: 'rgba(255,255,255,0.15)',
+                      color: 'white',
+                      backdropFilter: 'blur(10px)',
+                    }}
+                  >
                     {item.icon}
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-white">
@@ -280,7 +331,12 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="landing-timeline-container"
+            className="mt-12 rounded-2xl p-8 border"
+            style={{
+              background: 'linear-gradient(135deg, rgba(139,92,246,0.15) 0%, rgba(109,40,217,0.15) 100%)',
+              backdropFilter: 'blur(20px)',
+              borderColor: 'rgba(255,255,255,0.2)',
+            }}
           >
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold text-white mb-2">Your AI Journey Timeline</h3>
@@ -290,9 +346,10 @@ export default function LandingPage() {
             {/* Timeline visualization */}
             <div className="flex items-center justify-between relative">
               {/* Progress line */}
-              <div className="landing-timeline-line">
+              <div className="absolute top-6 left-0 right-0 h-1 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
                 <motion.div
-                  className="landing-timeline-progress"
+                  className="h-full rounded-full"
+                  style={{ background: 'linear-gradient(90deg, #8b5cf6 0%, #a855f7 100%)' }}
                   initial={{ width: 0 }}
                   whileInView={{ width: '60%' }}
                   viewport={{ once: true }}
@@ -310,7 +367,15 @@ export default function LandingPage() {
                   transition={{ duration: 0.4, delay: 0.8 + idx * 0.1 }}
                   className="flex flex-col items-center relative z-10"
                 >
-                  <div className={clsx('landing-timeline-milestone', idx <= 2 ? 'landing-timeline-milestone-active' : 'landing-timeline-milestone-inactive')}>
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center mb-2"
+                    style={{
+                      backgroundColor: idx <= 2 ? '#8b5cf6' : 'rgba(255,255,255,0.2)',
+                      border: '2px solid rgba(255,255,255,0.3)',
+                      color: 'white',
+                      fontWeight: 600,
+                    }}
+                  >
                     {idx <= 2 ? <CheckCircle size={20} /> : idx + 1}
                   </div>
                   <span className="text-xs text-white/70 text-center whitespace-nowrap">
@@ -326,7 +391,7 @@ export default function LandingPage() {
       {/* ============================================ */}
       {/* SECTION 3: ARCHETYPES PREVIEW              */}
       {/* ============================================ */}
-      <section className="landing-section-light">
+      <section className="py-20 px-6" style={{ backgroundColor: '#f2f1f9' }}>
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -334,10 +399,10 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="landing-section-title mb-3">
+            <h2 style={{ fontSize: 28, fontWeight: 600, color: '#151515' }} className="mb-3">
               What You'll Discover
             </h2>
-            <p className="landing-section-subtitle">
+            <p style={{ fontSize: 18, lineHeight: '28px', color: '#5c5c5c' }} className="max-w-2xl mx-auto">
               Your archetype reveals how you learn, collaborate, and adopt new technologies.
             </p>
           </motion.div>
@@ -358,12 +423,15 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: i * 0.05 }}
                 whileHover={{ y: -4, boxShadow: '0 8px 16px rgba(0,0,0,0.1)' }}
-                className="landing-archetype-card"
-                style={{ borderLeftColor: arch.color }}
+                className="bg-white rounded-xl p-6 border-l-4 cursor-pointer"
+                style={{
+                  borderLeftColor: arch.color,
+                  boxShadow: '0px 1px 4px rgba(0,0,0,0.08)',
+                }}
               >
                 <div className="text-3xl mb-3">{arch.icon}</div>
-                <h4 className="landing-archetype-title">{arch.name}</h4>
-                <p className="landing-archetype-tagline">{arch.tagline}</p>
+                <h4 style={{ fontSize: 18, fontWeight: 600, color: '#151515' }}>{arch.name}</h4>
+                <p style={{ fontSize: 14, lineHeight: '20px', color: '#767676' }}>{arch.tagline}</p>
               </motion.div>
             ))}
           </div>
@@ -380,10 +448,10 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="landing-section-title mb-3">
+            <h2 style={{ fontSize: 28, fontWeight: 600, color: '#151515' }} className="mb-3">
               Choose Your Starting Flow
             </h2>
-              <p className="landing-section-subtitle mb-12">
+              <p style={{ fontSize: 18, lineHeight: '28px', color: '#5c5c5c' }} className="mb-12">
                 Select how you’d like to kick off your AI adoption journey.
             </p>
           </motion.div>
@@ -393,17 +461,23 @@ export default function LandingPage() {
             <motion.div
               whileHover={{ y: -4 }}
               onClick={() => navigate('/onboarding')}
-              className="landing-survey-option-card landing-survey-option-card-recommended"
+              className="bg-white rounded-xl p-8 cursor-pointer border-2 border-[#5236ab] relative"
+              style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.12)' }}
             >
-              <div className="landing-survey-badge-recommended">
-                RECOMMENDED
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <span
+                  className="text-white px-3 py-1 rounded-full text-xs font-bold"
+                  style={{ backgroundColor: '#5236ab', fontSize: 12, lineHeight: '18px' }}
+                >
+                  RECOMMENDED
+                </span>
               </div>
-              <Brain size={36} className="landing-survey-icon-recommended mx-auto mb-4" />
-              <h3 className="landing-survey-title">Quick Goal Setup</h3>
-              <p className="landing-survey-description">
+              <Brain size={36} className="mx-auto mb-4" style={{ color: '#5236ab' }} />
+              <h3 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-2">Quick Goal Setup</h3>
+              <p style={{ fontSize: 14, color: '#767676', lineHeight: '20px' }} className="mb-4">
                 A focused set of questions to quickly define your AI goals and priority outcomes.
               </p>
-              <div className="landing-survey-time">
+              <div className="flex items-center justify-center gap-2" style={{ color: '#5c5c5c', fontSize: 14 }}>
                 <Clock size={14} />
                 <span>5-8 minutes</span>
               </div>
@@ -413,17 +487,23 @@ export default function LandingPage() {
             <motion.div
               whileHover={{ y: -4 }}
               onClick={() => navigate('/onboarding')}
-              className="landing-survey-option-card landing-survey-option-card-standard"
+              className="bg-white rounded-xl p-8 cursor-pointer border border-gray-200"
+              style={{ boxShadow: '0px 1px 4px rgba(0,0,0,0.08)' }}
             >
-              <div className="landing-survey-badge-accurate">
-                MOST ACCURATE
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 relative">
+                <span
+                  className="text-white px-3 py-1 rounded-full text-xs font-bold absolute -top-6 left-1/2 -translate-x-1/2"
+                  style={{ backgroundColor: '#f59e0b', fontSize: 12, lineHeight: '18px' }}
+                >
+                  MOST ACCURATE
+                </span>
               </div>
-              <TrendingUp size={36} className="landing-survey-icon-accurate mx-auto mb-4 mt-2" />
-              <h3 className="landing-survey-title">Deep Dive Planning</h3>
-              <p className="landing-survey-description">
+              <TrendingUp size={36} className="mx-auto mb-4 mt-2" style={{ color: '#f59e0b' }} />
+              <h3 style={{ fontSize: 20, fontWeight: 600, color: '#151515' }} className="mb-2">Deep Dive Planning</h3>
+              <p style={{ fontSize: 14, color: '#767676', lineHeight: '20px' }} className="mb-4">
                 A more detailed planning flow to deeply align your AI goals with how you work today.
               </p>
-              <div className="landing-survey-time">
+              <div className="flex items-center justify-center gap-2" style={{ color: '#5c5c5c', fontSize: 14 }}>
                 <Clock size={14} />
                 <span>10-15 minutes</span>
               </div>
@@ -435,7 +515,13 @@ export default function LandingPage() {
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate('/onboarding')}
-            className="landing-cta-secondary"
+            className="mt-12 inline-flex items-center gap-2 text-white px-10 py-4 rounded-lg font-semibold cursor-pointer"
+            style={{
+              backgroundColor: '#5236ab',
+              fontSize: 16,
+              lineHeight: '24px',
+              boxShadow: '0px 1px 5px rgba(0,0,0,0.12), 0px 2px 2px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.2)',
+            }}
           >
             Start Your Plan
             <ArrowRight size={18} />
@@ -446,15 +532,15 @@ export default function LandingPage() {
       {/* ============================================ */}
       {/* SECTION 5: FOOTER                          */}
       {/* ============================================ */}
-      <footer className="landing-footer">
+      <footer className="py-8 px-6 border-t border-gray-100 bg-white">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="landing-footer-logo">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#5236ab' }}>
               <span className="text-white font-bold text-sm">A</span>
             </div>
-            <span className="landing-footer-text">BeSciAI Platform</span>
+            <span style={{ fontSize: 14, color: '#767676' }}>BeSciAI Platform</span>
           </div>
-          <p className="landing-footer-copyright">
+          <p style={{ fontSize: 12, color: '#a8a8a8' }}>
             Powered by CGI — Personalized AI adoption journeys
           </p>
         </div>
