@@ -25,9 +25,9 @@ export default function ResourceDetailPage() {
 
   if (!resourceId || !resource) {
     return (
-      <div style={{ fontFamily: 'var(--font-primary)', padding: 24 }}>
-        <p style={{ color: 'var(--app-text-secondary)' }}>Resource not found.</p>
-        <button onClick={() => navigate('/app/resources')} className="mt-4 px-4 py-2 rounded-lg cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white' }}>
+      <div className="font-primary p-6">
+        <p className="text-app-secondary">Resource not found.</p>
+        <button onClick={() => navigate('/app/resources')} className="mt-4 btn-primary-purple">
           Back to Resources
         </button>
       </div>
@@ -64,15 +64,15 @@ export default function ResourceDetailPage() {
   };
 
   return (
-    <div style={{ fontFamily: 'var(--font-primary)', maxWidth: 800, margin: '0 auto' }}>
-      <button onClick={() => navigate('/app/resources')} className="flex items-center gap-2 mb-6 text-sm font-medium cursor-pointer" style={{ color: 'var(--app-text-secondary)' }}>
+    <div className="page-container-wide">
+      <button onClick={() => navigate('/app/resources')} className="btn-link-back">
         <ArrowLeft size={16} /> Back to Resources
       </button>
 
-      <div className="rounded-xl p-6 mb-6" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--app-text-primary)', marginBottom: 8 }}>{resource.title}</h1>
-        <p style={{ fontSize: 15, color: 'var(--app-text-secondary)', marginBottom: 16 }}>{resource.desc}</p>
-        <div className="flex flex-wrap gap-2 mb-6 text-sm" style={{ color: 'var(--app-text-muted)' }}>
+      <div className="card-detail">
+        <h1 className="card-detail-title">{resource.title}</h1>
+        <p className="card-detail-desc">{resource.desc}</p>
+        <div className="flex flex-wrap gap-2 mb-6 card-detail-meta">
           <span className="capitalize">{resource.type}</span>
           <span>·</span>
           <span>{resource.duration}</span>
@@ -80,48 +80,48 @@ export default function ResourceDetailPage() {
         </div>
 
         {resource.body && (
-          <div className="mb-6 p-4 rounded-lg" style={{ backgroundColor: 'var(--app-tab-bg)', border: '1px solid var(--app-border)' }}>
-            <h3 style={{ fontSize: 12, fontWeight: 600, color: 'var(--app-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>Read guide</h3>
-            <div className="prose prose-sm max-w-none text-sm whitespace-pre-wrap" style={{ color: 'var(--app-text-secondary)' }}>{resource.body}</div>
+          <div className="card-content-section">
+            <h3 className="card-content-title">Read guide</h3>
+            <div className="prose prose-sm max-w-none card-content-body">{resource.body}</div>
           </div>
         )}
 
         {resource.embedUrl && (
-          <div className="mb-6 rounded-lg overflow-hidden aspect-video" style={{ backgroundColor: 'var(--app-tab-bg)' }}>
+          <div className="mb-6 rounded-lg overflow-hidden aspect-video bg-app-bg">
             <iframe title={resource.title} src={resource.embedUrl} className="w-full h-full" allowFullScreen />
           </div>
         )}
 
         <div className="flex flex-wrap gap-3 mb-6">
           {resource.downloadUrl && (
-            <a href={resource.downloadUrl} download className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer" style={{ backgroundColor: '#5236ab', color: 'white', textDecoration: 'none' }}>
+            <a href={resource.downloadUrl} download className="btn-primary-purple no-underline">
               <Download size={18} /> Download PDF
             </a>
           )}
-          <button onClick={handleBookmark} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: saved ? '#5236ab' : 'var(--app-border-strong)', color: saved ? '#5236ab' : 'var(--app-text-secondary)' }}>
+          <button onClick={handleBookmark} className={`btn-secondary-border ${saved ? 'btn-secondary-border-saved' : ''}`}>
             <Bookmark size={18} fill={saved ? '#5236ab' : 'none'} /> {saved ? 'Saved' : 'Bookmark'}
           </button>
-          <button onClick={handleShare} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-secondary)' }}>
+          <button onClick={handleShare} className="btn-secondary-border">
             <Share2 size={18} /> Share with team
           </button>
         </div>
 
-        <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--app-text-primary)', marginBottom: 12 }}>Apply learning</h3>
+        <h3 className="heading-sm mb-3">Apply learning</h3>
         <div className="flex flex-wrap gap-3">
-          <button onClick={handleReferenceInWork} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-primary)' }}>
+          <button onClick={handleReferenceInWork} className="btn-secondary-border">
             <Link2 size={18} /> Reference in work
           </button>
-          <button onClick={() => navigate('/app/community', { state: { shareResource: resourceId } })} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-primary)' }}>
+          <button onClick={() => navigate('/app/community', { state: { shareResource: resourceId } })} className="btn-secondary-border">
             <Users size={18} /> Share in community
           </button>
-          <button onClick={() => navigate('/app/learn', { state: { tab: 'challenges', fromResource: resourceId } })} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer border" style={{ borderColor: 'var(--app-border-strong)', color: 'var(--app-text-primary)' }}>
+          <button onClick={() => navigate('/app/learn', { state: { tab: 'challenges', fromResource: resourceId } })} className="btn-secondary-border">
             <Target size={18} /> Use in challenge
           </button>
         </div>
       </div>
 
       {toast && (
-        <div className="fixed bottom-6 right-6 px-4 py-2 rounded-lg text-sm font-medium" style={{ backgroundColor: 'var(--app-surface)', border: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}>
+        <div className="toast">
           {toast}
         </div>
       )}

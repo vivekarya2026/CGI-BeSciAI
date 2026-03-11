@@ -3,6 +3,7 @@ import { useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ArrowRight, BookOpen, MousePointer2, Sparkles } from 'lucide-react';
 import { useChallengeTour } from '../context/ChallengeTourContext';
+import clsx from 'clsx';
 
 type TourStepId =
   | 'learn-challenges-tab'
@@ -477,8 +478,7 @@ export default function ChallengeGuidedTour() {
     return (
       <AnimatePresence>
         <motion.div
-          className="fixed inset-0 z-[140] flex items-center justify-center p-4"
-          style={{ fontFamily: 'var(--font-primary)' }}
+          className="tour-welcome-backdrop"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -490,55 +490,40 @@ export default function ChallengeGuidedTour() {
             onClick={handleWelcomeSkip}
           />
           <motion.div
-            className="relative rounded-2xl overflow-hidden w-full max-w-[420px] pointer-events-auto"
-            style={{
-              backgroundColor: 'rgb(255, 255, 255)',
-              boxShadow: '0 24px 64px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.15)',
-            }}
+            className="tour-welcome-modal"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className="h-1.5 w-full"
-              style={{ background: 'linear-gradient(90deg, rgb(82, 54, 171), rgb(168, 36, 101), rgb(227, 25, 55))' }}
-            />
+            <div className="tour-gradient-bar" />
             <div className="p-5 sm:p-7">
               <div className="flex items-start gap-3 mb-4">
-                <div
-                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shrink-0"
-                  style={{
-                    background: 'linear-gradient(135deg, rgb(242, 241, 249), rgb(230, 227, 243))',
-                    color: 'rgb(82, 54, 171)',
-                  }}
-                >
+                <div className="tour-welcome-icon w-12 h-12 sm:w-14 sm:h-14">
                   <Sparkles size={28} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h2 className="text-xl sm:text-[22px] font-bold leading-tight" style={{ color: 'rgb(21, 21, 21)' }}>
+                  <h2 className="tour-welcome-title text-xl sm:text-[22px]">
                     Welcome to BeSciAI!
                   </h2>
                 </div>
               </div>
-              <p className="text-sm sm:text-[15px] leading-relaxed mb-5 sm:mb-6" style={{ color: 'rgb(92, 92, 92)' }}>
+              <p className="tour-welcome-text text-sm sm:text-[15px]">
                 Ready to master AI? Let&apos;s take a quick interactive tour to show you how to earn points and level up your skills.
               </p>
               <div className="flex items-center justify-between">
                 <button
                   type="button"
                   onClick={handleWelcomeSkip}
-                  className="px-4 py-2.5 rounded-lg cursor-pointer transition-colors hover:bg-gray-50 text-sm font-semibold"
-                  style={{ color: 'rgb(118, 118, 118)' }}
+                  className="tour-skip-button hover:bg-gray-50"
                 >
                   Skip Tour
                 </button>
                 <button
                   type="button"
                   onClick={handleWelcomeNext}
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: '#5236ab' }}
+                  className="tour-next-button hover:opacity-90"
                 >
                   Start the Tour
                   <ArrowRight size={16} />
@@ -574,8 +559,7 @@ export default function ChallengeGuidedTour() {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[140] overflow-hidden pointer-events-none"
-        style={{ fontFamily: 'var(--font-primary)' }}
+        className="tour-overlay"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -629,16 +613,12 @@ export default function ChallengeGuidedTour() {
         {/* Purple border ring — no dimming, just the outline */}
         {rect && (
           <motion.div
-            className="absolute rounded-xl pointer-events-none"
+            className="tour-spotlight-ring"
             style={{
               top: rect.top - SPOTLIGHT_PADDING,
               left: rect.left - SPOTLIGHT_PADDING,
               width: rect.width + 2 * SPOTLIGHT_PADDING,
               height: rect.height + 2 * SPOTLIGHT_PADDING,
-              background: 'transparent',
-              border: '3px solid rgb(82, 54, 171)',
-              borderRadius: 12,
-              zIndex: 9998,
             }}
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -651,52 +631,44 @@ export default function ChallengeGuidedTour() {
 
         {/* Modal card — reference design: gradient bar, icon, badge, progress dots, CTA */}
         <motion.div
-          className="absolute rounded-2xl overflow-hidden pointer-events-auto"
-          style={{
-            ...tooltipStyle,
-            backgroundColor: 'rgb(255, 255, 255)',
-            boxShadow: '0 24px 64px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.15)',
-            zIndex: 10000,
-          }}
+          className="tour-modal"
+          style={tooltipStyle}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ type: 'spring', damping: 26, stiffness: 320 }}
         >
           {/* Gradient strip at top */}
-          <div
-            className="h-1.5 w-full"
-            style={{ background: 'linear-gradient(90deg, rgb(82, 54, 171), rgb(168, 36, 101), rgb(227, 25, 55))' }}
-          />
+          <div className="tour-gradient-bar" />
           <div className="p-5 sm:p-7">
             <div className="flex items-start justify-between gap-3 mb-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, rgb(242, 241, 249), rgb(230, 227, 243))', color: 'rgb(82, 54, 171)' }}>
+              <div className={clsx('tour-icon-container', isNarrow ? 'w-12 h-12' : 'w-14 h-14')}>
                 <BookOpen size={isNarrow ? 24 : 28} />
               </div>
               <button
                 onClick={handleSkip}
-                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-500 cursor-pointer transition-colors shrink-0"
+                className="tour-close-button hover:bg-gray-100"
                 aria-label="Close"
               >
                 <X size={isNarrow ? 16 : 20} />
               </button>
             </div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: 'rgb(242, 241, 249)', color: 'rgb(82, 54, 171)' }}>
+              <span className="tour-step-badge">
                 {stepNumber} of {steps.length}
               </span>
             </div>
-            <h3 className="text-base sm:text-[22px] font-bold leading-tight mb-2" style={{ color: 'rgb(21, 21, 21)' }}>
+            <h3 className="tour-title text-base sm:text-[22px]">
               {currentStep.title}
             </h3>
-            <p className="text-sm sm:text-[15px] leading-relaxed mb-5 sm:mb-6" style={{ color: 'rgb(92, 92, 92)' }}>
+            <p className="tour-body text-sm sm:text-[15px]">
               {currentStep.body}
             </p>
 
             {currentStep.advanceOnTargetClick ? (
-              <div className="flex items-center gap-2 mb-5 sm:mb-6 p-3 rounded-lg border" style={{ backgroundColor: '#f2f1f9', borderColor: '#cbc3e6' }}>
-                <MousePointer2 size={18} className="shrink-0" style={{ color: '#5236ab' }} />
-                <span className="text-xs sm:text-[13px] font-bold" style={{ color: '#5236ab' }}>
+              <div className="tour-click-hint">
+                <MousePointer2 size={18} className="shrink-0 text-[#5236ab]" />
+                <span className="tour-click-hint-text text-xs sm:text-[13px]">
                   Click the highlighted area to continue
                 </span>
               </div>
@@ -704,8 +676,7 @@ export default function ChallengeGuidedTour() {
               <div className="mb-5 sm:mb-6">
                 <button
                   onClick={goToNextStep}
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: '#5236ab' }}
+                  className="tour-next-button hover:opacity-90"
                 >
                   Got it, next
                   <ArrowRight size={16} />
@@ -714,16 +685,14 @@ export default function ChallengeGuidedTour() {
             )}
 
             {/* Progress dots (pills) */}
-            <div className="flex items-center gap-1.5 mb-5 sm:mb-6 flex-wrap">
+            <div className="tour-progress-dots">
               {steps.map((_, i) => (
                 <div
                   key={i}
-                  className="rounded-full transition-all"
-                  style={{
-                    width: i === stepIndex ? 24 : 8,
-                    height: 8,
-                    backgroundColor: i === stepIndex ? 'rgb(82, 54, 171)' : i < stepIndex ? 'rgb(203, 195, 230)' : 'rgb(230, 227, 243)',
-                  }}
+                  className={clsx(
+                    'tour-progress-dot',
+                    i === stepIndex ? 'tour-progress-dot-active' : i < stepIndex ? 'tour-progress-dot-completed' : 'tour-progress-dot-future'
+                  )}
                 />
               ))}
             </div>
@@ -732,16 +701,14 @@ export default function ChallengeGuidedTour() {
               <button
                 type="button"
                 onClick={handleSkip}
-                className="px-4 py-2.5 rounded-lg cursor-pointer transition-colors hover:bg-gray-50 text-sm font-semibold"
-                style={{ color: 'rgb(118, 118, 118)' }}
+                className="tour-skip-button hover:bg-gray-50"
               >
                 Skip Tour
               </button>
               <button
                 type="button"
                 onClick={handleNextClick}
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#5236ab' }}
+                className="tour-next-button hover:opacity-90"
               >
                 {stepIndex >= steps.length - 1 ? 'Finish' : 'Next'}
                 <ArrowRight size={16} />

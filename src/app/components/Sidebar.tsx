@@ -122,20 +122,20 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
 
   const sidebarContent = (isMobile: boolean) => (
     <div className={clsx(
-      "h-screen flex flex-col transition-colors duration-300",
+      "h-screen flex flex-col transition-colors duration-300 bg-app-surface",
       isMobile ? "w-[260px]" : ""
-    )} style={{ backgroundColor: 'var(--app-surface)' }}>
+    )}>
 
       {/* ---- Header / Logo ---- */}
-      <div className="h-16 flex items-center justify-between px-4" style={{ borderBottom: '1px solid var(--app-border)' }}>
+      <div className="sidebar-header">
         <div className="flex items-center gap-3 overflow-hidden">
           {/* Purple "A" logo */}
-          <div className="w-8 h-8 bg-[#5236ab] rounded-lg flex items-center justify-center shrink-0">
+          <div className="sidebar-logo">
             <span className="text-white font-bold text-lg">A</span>
           </div>
           {/* App name (hidden when desktop sidebar is collapsed) */}
           {(isMobile || !collapsed) && (
-            <span className="font-bold text-lg whitespace-nowrap" style={{ color: 'var(--app-text-primary)' }}>
+            <span className="font-bold text-lg whitespace-nowrap text-app-primary">
               BeSciAI
             </span>
           )}
@@ -145,9 +145,8 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
           <motion.button
             {...iconButtonMotion()}
             onClick={() => setMobileOpen(false)}
-            className="p-2 rounded-lg cursor-pointer"
+            className="p-2 rounded-lg cursor-pointer text-app-muted"
             aria-label="Close menu"
-            style={{ color: 'var(--app-text-muted)' }}
           >
             <X size={20} />
           </motion.button>
@@ -175,21 +174,25 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                     handleNavClick(item.path);
                   }
                 }}
-                className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative w-full text-left cursor-pointer min-h-[44px] hover:bg-[#ede9fe]"
-                style={{
-                  backgroundColor: (isActive && !isLearnItem) ? 'var(--app-brand-light)' : 'transparent',
-                  color: (isActive && !isLearnItem) ? '#8b5cf6' : 'var(--app-text-secondary)',
-                }}
+                className={clsx(
+                  "nav-item nav-item-hover group",
+                  (isActive && !isLearnItem) && "nav-item-active"
+                )}
               >
                 <item.icon
                   size={20}
-                  className="shrink-0"
-                  style={{ color: (isActive && !isLearnItem) ? '#8b5cf6' : 'var(--app-text-muted)' }}
+                  className={clsx(
+                    "shrink-0",
+                    (isActive && !isLearnItem) ? "text-[#8b5cf6]" : "text-app-muted"
+                  )}
                 />
 
                 {(isMobile || !collapsed) && (
                   <>
-                    <span className="whitespace-nowrap overflow-hidden text-sm flex-1" style={{ fontWeight: isActive ? 600 : 500 }}>
+                    <span className={clsx(
+                      "whitespace-nowrap overflow-hidden text-sm flex-1",
+                      isActive ? "font-semibold" : "font-medium"
+                    )}>
                       {item.label}
                     </span>
                     {hasSubItems && (
@@ -197,14 +200,14 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                         animate={{ rotate: learnExpanded ? 180 : 0 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <ChevronDown size={16} style={{ color: 'var(--app-text-muted)' }} />
+                        <ChevronDown size={16} className="text-app-muted" />
                       </motion.div>
                     )}
                   </>
                 )}
 
                 {!isMobile && collapsed && (
-                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                  <div className="nav-tooltip">
                     {item.label}
                   </div>
                 )}
@@ -229,20 +232,24 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                         key={subItem.path}
                         {...secondaryButtonMotion()}
                         onClick={() => handleNavClick(subItem.path)}
-                        className="flex items-center gap-3 pl-10 pr-3 py-2.5 rounded-lg transition-colors w-full text-left cursor-pointer hover:bg-[#ede9fe]"
-                        style={{
-                          backgroundColor: isSubActive ? '#f3f4f6' : 'transparent',
-                          color: isSubActive ? '#8b5cf6' : 'var(--app-text-secondary)',
-                        }}
+                        className={clsx(
+                          "nav-subitem nav-item-hover",
+                          isSubActive && "nav-subitem-active"
+                        )}
                       >
                         {subItem.icon && (
                           <subItem.icon
                             size={16}
-                            className="shrink-0"
-                            style={{ color: isSubActive ? '#8b5cf6' : 'var(--app-text-muted)' }}
+                            className={clsx(
+                              "shrink-0",
+                              isSubActive ? "text-[#8b5cf6]" : "text-app-muted"
+                            )}
                           />
                         )}
-                        <span className="text-sm" style={{ fontWeight: isSubActive ? 600 : 400 }}>
+                        <span className={clsx(
+                          "text-sm",
+                          isSubActive ? "font-semibold" : "font-normal"
+                        )}>
                           {subItem.label}
                         </span>
                       </motion.button>
@@ -256,21 +263,18 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
       </nav>
 
       {/* ---- Footer: User Profile + Actions ---- */}
-      <div className="p-2 flex flex-col gap-2" style={{ borderTop: '1px solid var(--app-border)' }}>
+      <div className="sidebar-footer">
         {/* User Profile */}
         {(isMobile || !collapsed) && (
           <div className="px-3 py-2 flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold text-white"
-              style={{ backgroundColor: '#8b5cf6' }}
-            >
+            <div className="profile-avatar">
               {user?.name ? user.name.charAt(0).toUpperCase() : 'JD'}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold truncate" style={{ color: 'var(--app-text-primary)' }}>
+              <div className="text-sm font-semibold truncate text-app-primary">
                 {user?.name || 'Jane Doe'}
               </div>
-              <div className="text-xs truncate" style={{ color: 'var(--app-text-muted)' }}>
+              <div className="text-xs truncate text-app-muted">
                 {user?.email || 'jane@example.com'}
               </div>
             </div>
@@ -282,8 +286,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
           <motion.button
             {...secondaryButtonMotion()}
             onClick={() => setCollapsed(!collapsed)}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full cursor-pointer"
-            style={{ color: 'var(--app-text-muted)' }}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full cursor-pointer text-app-muted"
           >
             {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
             {!collapsed && (
@@ -297,8 +300,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
         {/* Logout button */}
         <motion.button
           {...secondaryButtonMotion()}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full cursor-pointer"
-          style={{ color: 'var(--app-text-muted)' }}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full cursor-pointer text-app-muted"
           onClick={() => {
             logout();
             navigate('/');
@@ -327,8 +329,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
         initial={false}
         animate={{ width: collapsed ? 64 : 240 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="hidden lg:flex h-screen flex-col fixed left-0 top-0 z-50 transition-colors duration-300"
-        style={{ backgroundColor: 'var(--app-surface)', borderRight: '1px solid var(--app-border)', boxShadow: 'var(--app-shadow)' }}
+        className="hidden lg:flex h-screen flex-col fixed left-0 top-0 z-50 transition-colors duration-300 sidebar-container"
       >
         {sidebarContent(false)}
       </motion.div>

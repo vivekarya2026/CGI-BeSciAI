@@ -23,6 +23,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Lock, Eye, EyeOff, ShieldCheck, ArrowRight } from 'lucide-react';
+import clsx from 'clsx';
 
 // ============================================
 // 🔑 CHANGE YOUR PASSWORD HERE
@@ -69,14 +70,11 @@ export default function PasswordGate({ children }: PasswordGateProps) {
     // ---- Loading state (checking sessionStorage) ----
     if (isChecking) {
         return (
-            <div
-                className="min-h-screen flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #200a58 0%, #5236ab 40%, #a82465 70%, #e31937 100%)' }}
-            >
+            <div className="password-gate-loading">
                 <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    className="w-8 h-8 border-3 border-white/30 border-t-white rounded-full"
+                    className="password-gate-spinner"
                 />
             </div>
         );
@@ -89,22 +87,15 @@ export default function PasswordGate({ children }: PasswordGateProps) {
 
     // ---- Password Entry Screen ----
     return (
-        <div
-            className="min-h-screen flex items-center justify-center px-4"
-            style={{
-                background: 'linear-gradient(135deg, #200a58 0%, #5236ab 40%, #a82465 70%, #e31937 100%)',
-                fontFamily: 'var(--font-primary)',
-            }}
-        >
+        <div className="password-gate-container">
             {/* ---- Animated Background Particles ---- */}
             {[...Array(6)].map((_, i) => (
                 <motion.div
                     key={i}
-                    className="absolute rounded-full"
+                    className="password-gate-particle"
                     style={{
                         width: 200 + i * 80,
                         height: 200 + i * 80,
-                        border: '1px solid rgba(255,255,255,0.06)',
                         left: `${10 + i * 15}%`,
                         top: `${5 + i * 12}%`,
                     }}
@@ -124,7 +115,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="relative z-10 w-full max-w-md"
+                className="password-gate-card"
             >
                 {/* ---- Lock Icon ---- */}
                 <motion.div
@@ -133,14 +124,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
                     transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
                     className="flex justify-center mb-8"
                 >
-                    <div
-                        className="w-20 h-20 rounded-full flex items-center justify-center"
-                        style={{
-                            background: 'rgba(255,255,255,0.1)',
-                            backdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255,255,255,0.2)',
-                        }}
-                    >
+                    <div className="password-gate-lock-icon">
                         <Lock size={36} className="text-white" />
                     </div>
                 </motion.div>
@@ -148,38 +132,27 @@ export default function PasswordGate({ children }: PasswordGateProps) {
                 {/* ---- Title ---- */}
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center gap-2 mb-3">
-                        <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-md">
-                            <span className="text-white font-bold text-sm">B</span>
+                        <div className="password-gate-logo-box">
+                            <span className="password-gate-logo-text">B</span>
                         </div>
-                        <span className="text-white font-bold text-xl tracking-tight">BeSciAI</span>
+                        <span className="password-gate-brand-name">BeSciAI</span>
                     </div>
-                    <h1
-                        className="text-white mb-2"
-                        style={{ fontSize: 24, fontWeight: 700, lineHeight: '1.3', color: '#ffffff' }}
-                    >
+                    <h1 className="password-gate-title">
                         Protected Access
                     </h1>
-                    <p className="text-white/60" style={{ fontSize: 14, lineHeight: '20px' }}>
+                    <p className="password-gate-subtitle">
                         Enter the password to access this application
                     </p>
                 </div>
 
                 {/* ---- Password Form ---- */}
                 <form onSubmit={handleSubmit}>
-                    <div
-                        className="rounded-2xl p-6"
-                        style={{
-                            background: 'rgba(255,255,255,0.08)',
-                            backdropFilter: 'blur(20px)',
-                            border: '1px solid rgba(255,255,255,0.15)',
-                        }}
-                    >
+                    <div className="password-gate-form">
                         {/* Password Input Field */}
                         <div className="mb-4">
                             <label
                                 htmlFor="password-input"
-                                className="block text-white/70 mb-2"
-                                style={{ fontSize: 13, fontWeight: 500 }}
+                                className="password-gate-label"
                             >
                                 Password
                             </label>
@@ -193,14 +166,10 @@ export default function PasswordGate({ children }: PasswordGateProps) {
                                         setError('');
                                     }}
                                     placeholder="Enter access password"
-                                    className="w-full px-4 py-3 rounded-xl text-white placeholder-white/30 outline-none transition-all"
-                                    style={{
-                                        background: 'rgba(255,255,255,0.08)',
-                                        border: error
-                                            ? '1.5px solid #ef4444'
-                                            : '1.5px solid rgba(255,255,255,0.15)',
-                                        fontSize: 15,
-                                    }}
+                                    className={clsx(
+                                        'password-gate-input',
+                                        error && 'password-gate-input-error'
+                                    )}
                                     autoFocus
                                     autoComplete="off"
                                 />
@@ -208,7 +177,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+                                    className="password-gate-toggle hover:text-white/70"
                                 >
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
@@ -220,8 +189,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
                             <motion.p
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="text-red-400 mb-4"
-                                style={{ fontSize: 13 }}
+                                className="password-gate-error"
                             >
                                 {error}
                             </motion.p>
@@ -233,15 +201,10 @@ export default function PasswordGate({ children }: PasswordGateProps) {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             disabled={!password}
-                            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-semibold transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                            style={{
-                                background: password
-                                    ? 'linear-gradient(135deg, #e31937, #a82465)'
-                                    : 'rgba(255,255,255,0.1)',
-                                fontSize: 15,
-                                fontWeight: 600,
-                                boxShadow: password ? '0 4px 15px rgba(227,25,55,0.3)' : 'none',
-                            }}
+                            className={clsx(
+                                'password-gate-submit',
+                                password ? 'password-gate-submit-active' : 'password-gate-submit-disabled'
+                            )}
                         >
                             <ShieldCheck size={18} />
                             Access Application
@@ -251,7 +214,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
                 </form>
 
                 {/* ---- Footer hint ---- */}
-                <p className="text-center text-white/30 mt-6" style={{ fontSize: 12 }}>
+                <p className="password-gate-footer">
                     Contact the administrator if you need access credentials
                 </p>
             </motion.div>
