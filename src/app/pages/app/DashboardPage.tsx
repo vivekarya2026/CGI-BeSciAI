@@ -6,7 +6,7 @@
  * Layout: Header with stats, Resume card, Today's Challenge, Learning Journey, Sidebar updates
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import {
@@ -24,6 +24,8 @@ import {
   officeHourUpcoming,
 } from '../../data/learnData';
 import { NotificationsPanel } from '../../components/NotificationsPanel';
+import { HeaderStatsChips } from '../../components/HeaderStatsChips';
+import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 import {
   cardHoverMotion,
   primaryButtonMotion,
@@ -61,6 +63,7 @@ const HEATMAP_DATA: number[][] = [
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { user, progress } = useUser();
+  const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
 
   // Get current time for greeting
   const hour = new Date().getHours();
@@ -84,7 +87,7 @@ export default function DashboardPage() {
       {/* HEADER SECTION */}
       {/* ============================================ */}
       <header className="mb-5 sm:mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-1 text-app-primary">
               {greeting}, {user?.name || 'Alex'}! 👋
@@ -93,106 +96,20 @@ export default function DashboardPage() {
               Ready to continue your learning journey today?
             </p>
           </div>
-          <NotificationsPanel onNavigate={(path) => navigate(path)} />
+          <div className="flex flex-wrap items-center gap-3">
+            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
+            <button
+              type="button"
+              onClick={() => setMiniMessagesOpen((o) => !o)}
+              className="btn-secondary inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
+              aria-label="Toggle messages"
+            >
+              <MessageSquare size={18} />
+              <span className="hidden sm:inline">Messages</span>
+            </button>
+            <NotificationsPanel onNavigate={(path) => navigate(path)} />
+          </div>
         </div>
-
-        {/* Stats Row - 4 Cards */}
-        <motion.div
-          {...staggerContainer}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
-        >
-          {/* Longest Streak */}
-          <motion.div
-            {...cardHoverMotion()}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0 }}
-            className="card-base rounded-xl p-4 sm:p-5 cursor-pointer"
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="icon-container icon-container-yellow">
-                <Trophy size={20} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-2xl sm:text-3xl font-bold text-app-primary">
-                  21
-                </div>
-              </div>
-            </div>
-            <p className="text-xs sm:text-sm font-medium text-app-secondary">
-              Longest streak
-            </p>
-          </motion.div>
-
-          {/* Current Streak */}
-          <motion.div
-            {...cardHoverMotion()}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-            className="card-base rounded-xl p-4 sm:p-5 cursor-pointer"
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="icon-container icon-container-red">
-                <Flame size={20} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-2xl sm:text-3xl font-bold text-app-primary">
-                  {progress.streak || 14}
-                </div>
-              </div>
-            </div>
-            <p className="text-xs sm:text-sm font-medium text-app-secondary">
-              Current streak
-            </p>
-          </motion.div>
-
-          {/* XP */}
-          <motion.div
-            {...cardHoverMotion()}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="card-base rounded-xl p-4 sm:p-5 cursor-pointer"
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="icon-container icon-container-yellow">
-                <Star size={20} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-2xl sm:text-3xl font-bold text-app-primary">
-                  {progress.xp?.toLocaleString() || '1,850'}
-                </div>
-              </div>
-            </div>
-            <p className="text-xs sm:text-sm font-medium text-app-secondary">
-              XP
-            </p>
-          </motion.div>
-
-          {/* Challenges Completed */}
-          <motion.div
-            {...cardHoverMotion()}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="card-base rounded-xl p-4 sm:p-5 cursor-pointer"
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="icon-container icon-container-green">
-                <CheckCircle2 size={20} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-2xl sm:text-3xl font-bold text-app-primary">
-                  23
-                </div>
-              </div>
-            </div>
-            <p className="text-xs sm:text-sm font-medium text-app-secondary">
-              Challenges Completed
-            </p>
-          </motion.div>
-        </motion.div>
       </header>
 
       {/* ============================================ */}
@@ -201,6 +118,54 @@ export default function DashboardPage() {
       <div className="grid gap-5 lg:grid-cols-[minmax(0,2.1fr)_minmax(320px,1fr)] lg:gap-6">
         {/* LEFT COLUMN */}
         <div className="flex flex-col gap-5">
+          {/* Stats section - 5 tiles */}
+          <motion.section
+            {...cardHoverMotion()}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="card-base rounded-xl p-5 md:p-6"
+          >
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+              <motion.div {...cardHoverMotion()} className="badge-base badge-yellow rounded-lg p-4 cursor-pointer border border-[#fde68a]">
+                <div className="flex items-center gap-2 mb-2">
+                  <Flame size={20} className="text-[#f59e0b]" />
+                  <span className="text-2xl font-bold">{progress.streak ?? 5}</span>
+                </div>
+                <p className="text-xs font-medium">Day Streak</p>
+              </motion.div>
+              <motion.div {...cardHoverMotion()} className="badge-base badge-blue rounded-lg p-4 cursor-pointer border border-[#bfdbfe]">
+                <div className="flex items-center gap-2 mb-2">
+                  <Trophy size={20} className="text-[#3b82f6]" />
+                  <span className="text-2xl font-bold">{progress.modulesCompleted ?? 3}</span>
+                </div>
+                <p className="text-xs font-medium">Trainings Done</p>
+              </motion.div>
+              <motion.div {...cardHoverMotion()} className="badge-base badge-green rounded-lg p-4 cursor-pointer border border-[#bbf7d0]">
+                <div className="flex items-center gap-2 mb-2">
+                  <Target size={20} className="text-[#22c55e]" />
+                  <span className="text-2xl font-bold">23</span>
+                </div>
+                <p className="text-xs font-medium">Challenges</p>
+              </motion.div>
+              <motion.div {...cardHoverMotion()} className="badge-base badge-purple rounded-lg p-4 cursor-pointer border border-[#ddd6fe]">
+                <div className="flex items-center gap-2 mb-2">
+                  <Clock size={20} className="text-[#8b5cf6]" />
+                  <span className="text-2xl font-bold">42</span>
+                </div>
+                <p className="text-xs font-medium">Hours Learned</p>
+              </motion.div>
+              <motion.div {...cardHoverMotion()} className="badge-base badge-pink rounded-lg p-4 cursor-pointer border border-[#fbcfe8]">
+                <div className="flex items-center gap-2 mb-2">
+                  <Star size={20} className="text-[#db2777]" />
+                  <span className="text-2xl font-bold">{(progress.xp ?? 1250).toLocaleString()}</span>
+                </div>
+                <p className="text-xs font-medium">XP</p>
+              </motion.div>
+            </div>
+          </motion.section>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Resume Where You Left Off */}
           <motion.section
             initial={{ opacity: 0, y: 10 }}
@@ -336,6 +301,7 @@ export default function DashboardPage() {
               </motion.button>
             </div>
           </motion.section>
+          </div>
 
           {/* Your Learning Journey */}
           <motion.section
@@ -741,6 +707,15 @@ export default function DashboardPage() {
           </motion.section>
         </aside>
       </div>
+
+      <DashboardMiniMessages
+        isOpen={miniMessagesOpen}
+        onClose={() => setMiniMessagesOpen(false)}
+        onOpenFullMessages={() => {
+          setMiniMessagesOpen(false);
+          navigate('/app/messages');
+        }}
+      />
     </div>
   );
 }
