@@ -8,10 +8,11 @@ import { useParams, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import {
   ArrowLeft, BookOpen, ExternalLink, Headphones, MessageCircle, User, Play,
-  ChevronRight, HelpCircle, X, Save, CheckCircle, RotateCcw,
+  ChevronRight, X, Save, CircleHelp,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { getChallengeById, microLearnings } from '../../data/learnData';
+import { primaryButtonMotion, secondaryButtonMotion } from '../../components/ui/motionPresets';
 
 const WORKSPACE_DRAFT_KEY = 'challenge_workspace_draft';
 
@@ -94,35 +95,27 @@ export default function ChallengeWorkspacePage() {
   };
 
   return (
-    <div className="max-w-[800px] mx-auto">
+    <div className="max-w-[800px] mx-auto min-h-[92vh] flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <button onClick={() => navigate(`/app/learn/challenges/${challengeId}`)} className="flex items-center gap-2 text-sm font-medium cursor-pointer text-app-secondary">
           <ArrowLeft size={16} /> Back to challenge
         </button>
-        <div className="flex items-center gap-2">
-          <button onClick={() => setShowHelp(!showHelp)} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-app-strong cursor-pointer text-sm text-app-secondary">
-            <HelpCircle size={16} /> Need help?
-          </button>
-          <button onClick={() => { saveDraft(); navigate(`/app/learn/challenges/${challengeId}`); }} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-app-strong cursor-pointer text-sm text-app-secondary">
-            <Save size={16} /> Pause & Save
-          </button>
-        </div>
       </div>
 
-      {/* Stepper */}
-      <div className="flex gap-2 mb-8">
-        {[1, 2, 3].map(s => (
-          <button 
-            key={s} 
-            onClick={() => setStep(s as 1 | 2 | 3)} 
-            className={clsx(
-              "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium cursor-pointer",
-              step === s ? "btn-primary" : "bg-[var(--app-tab-bg)] text-app-secondary"
-            )}
-          >
-            Step {s} {step === s && <ChevronRight size={14} />}
-          </button>
-        ))}
+      {/* Progress bar (replaces 3-step stepper) */}
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-1.5">
+          <span className="text-xs font-medium text-app-muted">Progress</span>
+          <span className="text-xs font-semibold text-[#5236ab]">{Math.round((step / 3) * 100)}%</span>
+        </div>
+        <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden rounded-full">
+          <motion.div
+            className="progress-bar-fill h-full rounded-full"
+            initial={false}
+            animate={{ width: `${(step / 3) * 100}%` }}
+            transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+          />
+        </div>
       </div>
 
       {/* Need help panel */}
@@ -177,13 +170,6 @@ export default function ChallengeWorkspacePage() {
           <h2 className="text-lg font-bold text-app-primary mb-3">Step 1: Read instructions</h2>
           <h3 className="text-base font-semibold text-app-primary mb-2">{challenge.title}</h3>
           <p className="text-[15px] leading-6 text-app-secondary whitespace-pre-wrap">{instructions}</p>
-          <button
-            onClick={() => setStep(2)}
-            className="btn-primary mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold cursor-pointer"
-            data-tour-id="workspace-step-1-next"
-          >
-            Next: Access AI tools <ChevronRight size={18} />
-          </button>
         </motion.div>
       )}
 
@@ -196,6 +182,13 @@ export default function ChallengeWorkspacePage() {
           className="card-base rounded-xl p-6 mb-8 bg-app-surface border-app"
           data-tour-id="workspace-step-2"
         >
+          <button
+            type="button"
+            onClick={() => setStep(1)}
+            className="flex items-center gap-2 text-sm font-medium text-app-secondary hover:text-app-primary cursor-pointer mb-4"
+          >
+            <ArrowLeft size={16} /> Back to Step 1
+          </button>
           <h2 className="text-lg font-bold text-app-primary mb-3">Step 2: Access AI tools</h2>
           <p className="text-[15px] text-app-secondary mb-4">Use AI tools to complete this challenge. Open one or more of these:</p>
           <div className="flex flex-wrap gap-3 mb-6">
@@ -221,13 +214,6 @@ export default function ChallengeWorkspacePage() {
               Copilot <ExternalLink size={14} />
             </button>
           </div>
-          <button
-            onClick={() => setStep(3)}
-            className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold cursor-pointer"
-            data-tour-id="workspace-step-2-next"
-          >
-            Next: Work on challenge <ChevronRight size={18} />
-          </button>
         </motion.div>
       )}
 
@@ -310,6 +296,13 @@ export default function ChallengeWorkspacePage() {
           className="card-base rounded-xl p-6 mb-8 bg-app-surface border-app"
           data-tour-id="workspace-step-3"
         >
+          <button
+            type="button"
+            onClick={() => setStep(2)}
+            className="flex items-center gap-2 text-sm font-medium text-app-secondary hover:text-app-primary cursor-pointer mb-4"
+          >
+            <ArrowLeft size={16} /> Back to Step 2
+          </button>
           <h2 className="text-lg font-bold text-app-primary mb-3">Step 3: Work on challenge</h2>
           <p className="text-[15px] text-app-secondary mb-4">Use this space for notes, pasted outputs, or links to your work.</p>
           <textarea
@@ -323,23 +316,39 @@ export default function ChallengeWorkspacePage() {
         </motion.div>
       )}
 
-      {/* Challenge status: Completed / Pause & Save / Stuck */}
-      <div className="card-base rounded-xl p-5 border bg-app-surface border-app">
+      {/* Challenge status: Stuck (left) | Pause & Save + Next (right) — with microinteractions */}
+      <div className="card-base rounded-xl p-5 border bg-app-surface border-app mt-auto">
         <h3 className="text-sm font-semibold text-app-muted mb-3">Challenge status?</h3>
-        <div className="flex flex-wrap gap-3">
-          <button
-            onClick={() => navigate(`/app/learn/challenges/${challengeId}/submit`)}
-            className="btn-success inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold cursor-pointer"
-            data-tour-id="workspace-complete-submit"
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <motion.button
+            {...secondaryButtonMotion()}
+            onClick={() => setShowHelp(true)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-[#f59e0b] cursor-pointer font-semibold text-[#f59e0b] bg-amber-50 hover:bg-amber-100"
+            data-tour-id="workspace-stuck-help"
           >
-            <CheckCircle size={18} /> Completed — Submit
-          </button>
-          <button onClick={() => { saveDraft(); navigate(`/app/learn/challenges/${challengeId}`); }} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-app-strong cursor-pointer font-semibold text-app-secondary">
-            <Save size={18} /> Pause & Save
-          </button>
-          <button onClick={() => setShowHelp(true)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-[#f59e0b] cursor-pointer font-semibold text-[#f59e0b]">
-            <RotateCcw size={18} /> Stuck — Get help
-          </button>
+            <CircleHelp size={18} className="shrink-0 text-[#f59e0b]" /> Stuck — Get help
+          </motion.button>
+          <div className="flex flex-wrap items-center gap-3">
+            <motion.button
+              {...secondaryButtonMotion()}
+              onClick={() => { saveDraft(); navigate(`/app/learn/challenges/${challengeId}`); }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-app-strong cursor-pointer font-semibold text-app-secondary bg-transparent hover:bg-gray-50"
+            >
+              <Save size={18} /> Pause & Save
+            </motion.button>
+            <motion.button
+              {...primaryButtonMotion()}
+              onClick={() => {
+                if (step < 3) setStep((step + 1) as 1 | 2 | 3);
+                else navigate(`/app/learn/challenges/${challengeId}/submit`);
+              }}
+              className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold cursor-pointer"
+              data-tour-id="workspace-next"
+            >
+              {step < 3 ? 'Next' : 'Completed — Submit'}
+              <ChevronRight size={18} />
+            </motion.button>
+          </div>
         </div>
       </div>
     </div>

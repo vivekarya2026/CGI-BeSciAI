@@ -301,11 +301,12 @@ export default function LearnPage() {
               </div>
             </div>
 
-            {/* Training Grid - 3 columns */}
+            {/* Training Grid - 3 scenarios: Completed (green bar + Review), In progress (progress bar + Continue), New (Start) — same as Micro-learning cards */}
             <motion.div {...staggerContainer} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {filteredTrainings.slice(0, 6).map((training, idx) => {
                 const isCompleted = training.progress === 100;
-                const isInProgress = training.progress && training.progress > 0 && training.progress < 100;
+                const isInProgress = typeof training.progress === 'number' && training.progress > 0 && training.progress < 100;
+                const progressPct = training.progress ?? 0;
 
                 return (
                   <motion.div
@@ -317,7 +318,7 @@ export default function LearnPage() {
                     onClick={() => navigate(`/app/learn/trainings/${training.id}`)}
                     className="card-base p-5 cursor-pointer flex flex-col h-full"
                   >
-                    {/* Top: details */}
+                    {/* Top: badges, title, description, meta (duration, lessons, +XP) */}
                     <div className="flex-1 min-h-0">
                       <div className="flex flex-wrap items-center gap-2 mb-3">
                         {isCompleted && (
@@ -329,6 +330,11 @@ export default function LearnPage() {
                         <span className="badge-base badge-gray">
                           {training.category}
                         </span>
+                        {training.format && (
+                          <span className="badge-base badge-tab-bg">
+                            {training.format}
+                          </span>
+                        )}
                         {idx === 0 && !isCompleted && (
                           <span className="badge-base badge-popular inline-flex items-center gap-1">
                             <Star size={12} />
@@ -340,17 +346,22 @@ export default function LearnPage() {
                             Required
                           </span>
                         )}
+                        {training.difficulty && (
+                          <span className="badge-base badge-tab-muted">
+                            {training.difficulty}
+                          </span>
+                        )}
                       </div>
 
                       <h3 className="text-base font-bold mb-2 text-app-primary">
                         {training.title}
                       </h3>
 
-                      <p className="text-sm mb-4 text-app-secondary leading-relaxed">
+                      <p className="text-sm mb-3 text-app-secondary leading-relaxed line-clamp-3">
                         {training.description}
                       </p>
 
-                      <div className="flex items-center gap-3 mb-4 text-xs text-app-muted">
+                      <div className="flex items-center gap-3 text-xs text-app-muted">
                         <span className="inline-flex items-center gap-1">
                           <Clock size={14} />
                           {training.duration}
@@ -361,23 +372,39 @@ export default function LearnPage() {
                           +250 XP
                         </span>
                       </div>
+                    </div>
 
+                    {/* Bottom: progress bar + CTA (Review / Continue / Start) */}
+                    <div className="mt-auto pt-4 flex flex-col gap-4">
+                      {isCompleted && (
+                        <div>
+                          <div className="flex justify-between items-center mb-1.5">
+                            <span className="text-xs font-medium text-app-muted">Complete</span>
+                            <span className="text-xs font-semibold text-[#22c55e]">100%</span>
+                          </div>
+                          <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
+                            <div className="progress-bar-fill progress-bar-fill-green" style={{ width: '100%' }} />
+                          </div>
+                        </div>
+                      )}
                       {isInProgress && (
-                        <div className="mb-4">
-                          <div className="progress-bar-bg progress-bar-bg-thin">
-                            <div
-                              className="progress-bar-fill"
-                              style={{ width: `${training.progress}%` }}
+                        <div>
+                          <div className="flex justify-between items-center mb-1.5">
+                            <span className="text-xs font-medium text-app-muted">Progress</span>
+                            <span className="text-xs font-semibold text-[#5236ab]">{progressPct}%</span>
+                          </div>
+                          <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
+                            <motion.div
+                              className="progress-bar-fill h-full"
+                              initial={{ width: 0 }}
+                              animate={{ width: `${progressPct}%` }}
+                              transition={{ duration: 0.8, ease: 'easeOut' }}
                             />
                           </div>
                         </div>
                       )}
-                    </div>
-
-                    {/* Bottom: action button */}
-                    <div className="mt-auto pt-4">
                       <motion.button
-                        {...(isInProgress ? primaryButtonMotion() : secondaryButtonMotion())}
+                        {...(isInProgress ? primaryButtonMotion() : isCompleted ? primaryButtonMotion() : secondaryButtonMotion())}
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/app/learn/trainings/${training.id}`);
@@ -423,11 +450,11 @@ export default function LearnPage() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
           >
-            {/* Continue Learning Section */}
+            {/* Continue Microlearning Section */}
             {recommendedLesson && (
               <section className="mb-6">
                 <h2 className="text-lg font-bold mb-4 text-app-primary">
-                  Continue Learning
+                  Continue Microlearning
                 </h2>
 
                 <motion.div
@@ -464,8 +491,9 @@ export default function LearnPage() {
                           <Clock size={16} />
                           {recommendedLesson.duration}
                         </span>
-                        <span className="inline-flex items-center gap-1 micro-continue-meta-points">
-                          +{recommendedLesson.points} pts
+                        <span className="inline-flex items-center gap-1 text-[#db2777] font-semibold">
+                          <Star size={16} />
+                          +{recommendedLesson.points} XP
                         </span>
                       </div>
                     </div>
@@ -543,10 +571,12 @@ export default function LearnPage() {
               </div>
             </div>
 
-            {/* Micro-learning Grid - 3 columns, 6 items */}
+            {/* Micro-learning Grid - same card style as Training: Completed, In progress (progress bar + Continue), Start */}
             <motion.div {...staggerContainer} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {filteredMicro.map((micro, idx) => {
                 const isCompleted = micro.completed || completedMicroIds.has(micro.id);
+                const isInProgress = !isCompleted && typeof micro.progress === 'number' && micro.progress > 0 && micro.progress < 100;
+                const progressPct = micro.progress ?? 0;
 
                 return (
                   <motion.div
@@ -558,21 +588,21 @@ export default function LearnPage() {
                     onClick={() => navigate(`/app/learn/micro/${micro.id}`)}
                     className="card-base p-5 cursor-pointer flex flex-col h-full"
                   >
-                    {/* Top: details */}
+                    {/* Top: all information */}
                     <div className="flex-1 min-h-0">
                       <div className="flex flex-wrap items-center gap-2 mb-3">
-                        <span className={clsx("badge-base", getTopicClass(micro.topic))}>
-                          {micro.topic}
-                        </span>
-                        <span className="badge-base badge-blue">
-                          {micro.tool}
-                        </span>
                         {isCompleted && (
                           <span className="badge-base badge-green inline-flex items-center gap-1">
                             <CheckCircle size={12} />
                             Completed
                           </span>
                         )}
+                        <span className={clsx("badge-base", getTopicClass(micro.topic))}>
+                          {micro.topic}
+                        </span>
+                        <span className="badge-base badge-blue">
+                          {micro.tool}
+                        </span>
                         {!isCompleted && micro.hot && (
                           <span className="badge-base badge-trending inline-flex items-center gap-1">
                             <Star size={12} />
@@ -587,15 +617,11 @@ export default function LearnPage() {
                         )}
                       </div>
 
-                      <h3 className="text-base font-bold mb-2 text-app-primary">
+                      <h3 className="text-base font-bold mb-3 text-app-primary">
                         {micro.title}
                       </h3>
 
-                      <p className="text-sm mb-4 text-app-secondary leading-relaxed">
-                        {micro.description}
-                      </p>
-
-                      <div className="flex items-center gap-3 mb-4 text-xs text-app-muted">
+                      <div className="flex items-center gap-3 text-xs text-app-muted">
                         <span className="inline-flex items-center gap-1">
                           <Clock size={14} />
                           {micro.duration}
@@ -605,32 +631,59 @@ export default function LearnPage() {
                           +{micro.points} XP
                         </span>
                       </div>
-
-                      {isCompleted && (
-                        <div className="flex items-center gap-2 text-xs text-green-600">
-                          <div className="flex-1 h-1 rounded-full bg-green-500 max-w-[80px]" />
-                          <span className="font-semibold">Completed</span>
-                        </div>
-                      )}
                     </div>
 
-                    {/* Bottom: action button — same pattern as Training (Review/Start stroked) */}
-                    <div className="mt-auto pt-4">
+                    {/* Bottom: progress bar + CTA */}
+                    <div className="mt-auto pt-4 flex flex-col gap-4">
+                      {isCompleted && (
+                        <div>
+                          <div className="flex justify-between items-center mb-1.5">
+                            <span className="text-xs font-medium text-app-muted">Complete</span>
+                            <span className="text-xs font-semibold text-[#22c55e]">100%</span>
+                          </div>
+                          <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
+                            <div className="progress-bar-fill progress-bar-fill-green" style={{ width: '100%' }} />
+                          </div>
+                        </div>
+                      )}
+                      {isInProgress && (
+                        <div>
+                          <div className="flex justify-between items-center mb-1.5">
+                            <span className="text-xs font-medium text-app-muted">Progress</span>
+                            <span className="text-xs font-semibold text-[#5236ab]">{progressPct}%</span>
+                          </div>
+                          <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
+                            <motion.div
+                              className="progress-bar-fill h-full"
+                              initial={{ width: 0 }}
+                              animate={{ width: `${progressPct}%` }}
+                              transition={{ duration: 0.8, ease: 'easeOut' }}
+                            />
+                          </div>
+                        </div>
+                      )}
                       <motion.button
-                        {...secondaryButtonMotion()}
+                        {...(isInProgress ? primaryButtonMotion() : secondaryButtonMotion())}
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/app/learn/micro/${micro.id}`);
                         }}
                         className={clsx(
                           "w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer",
-                          isCompleted ? "btn-success-stroked" : "btn-primary-stroked"
+                          isCompleted && "btn-success-stroked",
+                          isInProgress && "btn-primary text-white",
+                          !isCompleted && !isInProgress && "btn-primary-stroked"
                         )}
                       >
                         {isCompleted ? (
                           <>
                             Review
                             <ChevronRight size={16} />
+                          </>
+                        ) : isInProgress ? (
+                          <>
+                            <Play size={16} />
+                            Continue
                           </>
                         ) : (
                           <>

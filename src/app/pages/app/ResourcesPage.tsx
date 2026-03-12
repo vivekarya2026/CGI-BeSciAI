@@ -64,10 +64,16 @@ export default function ResourcesPage() {
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <div className="relative flex-1 max-w-xl">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-app-hint" />
-          <input type="text" placeholder="Search resources..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="input-search" />
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6 w-full">
+        <div className="relative search-filter-width">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+          <input
+            type="text"
+            placeholder="Search resources..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="input-base input-with-icon w-full pl-9 text-app-primary placeholder:text-app-muted"
+          />
         </div>
         <div className="flex items-center gap-2">
           <label className="text-sm-medium text-app-muted whitespace-nowrap">Type</label>

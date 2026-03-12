@@ -14,7 +14,7 @@ export interface ProgressForChips {
   streak: number;
 }
 
-const chipBase = 'inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium';
+const chipBase = 'inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs-semibold';
 
 export function HeaderStatsChips({ progress }: { progress: ProgressForChips }) {
   return (

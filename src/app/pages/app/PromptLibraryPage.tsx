@@ -65,9 +65,15 @@ export default function PromptLibraryPage() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-app-hint" />
-          <input type="text" placeholder="Search prompts by title, tag, or description..." value={promptSearch} onChange={(e) => setPromptSearch(e.target.value)} className="input-search" />
+        <div className="relative flex-1 min-w-0">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
+          <input
+            type="text"
+            placeholder="Search prompts..."
+            value={promptSearch}
+            onChange={(e) => setPromptSearch(e.target.value)}
+            className="input-base input-with-icon w-full pl-9 text-app-primary placeholder:text-app-muted"
+          />
         </div>
         <motion.button
           {...primaryButtonMotion()}

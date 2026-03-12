@@ -41,6 +41,7 @@ import {
   LogOut,
   X,
   Library,
+  BookMarked,
   GraduationCap,
   Zap,
 } from 'lucide-react';
@@ -97,6 +98,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
     },
     { icon: Target, label: 'Challenges', path: '/app/challenges' },
     { icon: Library, label: 'Resources', path: '/app/resources' },
+    { icon: BookMarked, label: 'Prompt Library', path: '/app/prompt-library' },
     { icon: Users, label: 'Community', path: '/app/community' },
   ];
 
@@ -268,14 +270,14 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
         {(isMobile || !collapsed) && (
           <div className="px-3 py-2 flex items-center gap-3">
             <div className="profile-avatar">
-              {user?.name ? user.name.charAt(0).toUpperCase() : 'JD'}
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'AC'}
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold truncate text-app-primary">
-                {user?.name || 'Jane Doe'}
+                {user?.name || 'Alex Chen'}
               </div>
               <div className="text-xs truncate text-app-muted">
-                {user?.email || 'jane@example.com'}
+                {user?.email || 'alex@example.com'}
               </div>
             </div>
           </div>

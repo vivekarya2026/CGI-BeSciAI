@@ -10,8 +10,8 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import {
-  Target, Trophy, Flame, Star, Clock, Users, Search,
-  ChevronRight, ChevronDown, CheckCircle2, Play, Sparkles, TrendingUp, MessageSquare,
+  Target, Flame, Star, Clock, Users, Search,
+  ChevronRight, ChevronDown, CheckCircle2, Play, TrendingUp, MessageSquare,
 } from 'lucide-react';
 import {
   challenges,
@@ -21,7 +21,7 @@ import clsx from 'clsx';
 import {
   cardHoverMotion,
   primaryButtonMotion,
-  chipToggleMotion,
+  secondaryButtonMotion,
   staggerContainer,
 } from '../../components/ui/motionPresets';
 import { NotificationsPanel } from '../../components/NotificationsPanel';
@@ -34,17 +34,16 @@ export default function ChallengesPage() {
   const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
   const [typeFilter, setTypeFilter] = useState<'all' | string>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [calendarView, setCalendarView] = useState<'week' | 'month'>('week');
 
-  // Mock daily progress data (points earned each day)
+  // Daily progress: Sun, Mon completed; Tue missed streak; Wed = today; rest upcoming
   const dailyProgress = [
     { day: 'Sun', points: 50, completed: true, isActive: false },
     { day: 'Mon', points: 75, completed: true, isActive: false },
-    { day: 'Tue', points: 10, completed: true, isActive: true },
-    { day: 'Wed', points: 11, completed: false, isActive: false },
-    { day: 'Thu', points: 12, completed: false, isActive: false },
-    { day: 'Fri', points: 13, completed: false, isActive: false },
-    { day: 'Sat', points: 14, completed: false, isActive: false },
+    { day: 'Tue', points: 0, completed: false, isActive: false, missedStreak: true },
+    { day: 'Wed', points: 10, completed: false, isActive: true },
+    { day: 'Thu', points: 0, completed: false, isActive: false },
+    { day: 'Fri', points: 0, completed: false, isActive: false },
+    { day: 'Sat', points: 0, completed: false, isActive: false },
   ];
 
   // Mock leaderboard data
@@ -57,7 +56,7 @@ export default function ChallengesPage() {
 
   // Filter challenges
   const filteredChallenges = challenges.filter(c => {
-    const typeMatch = typeFilter === 'all' || c.frequency === typeFilter || c.type === typeFilter;
+    const typeMatch = typeFilter === 'all' || c.type === typeFilter;
     const searchMatch = !searchQuery.trim() || 
       (c.title + c.description).toLowerCase().includes(searchQuery.toLowerCase());
     return typeMatch && searchMatch;
@@ -71,18 +70,11 @@ export default function ChallengesPage() {
     return 'badge-gray';
   };
 
-  const getTypeBadgeClass = (frequency: string) => {
-    if (frequency === 'daily') return 'frequency-daily';
-    if (frequency === 'weekly') return 'frequency-weekly';
-    if (frequency === 'track') return 'frequency-track';
+  const getTypeBadgeClass = (type: string) => {
+    if (type === 'weekly') return 'frequency-weekly';
+    if (type === 'track') return 'frequency-track';
+    if (type === 'assigned') return 'frequency-daily';
     return 'badge-gray';
-  };
-
-  const getProgressColor = (points: number) => {
-    if (points >= 100) return 'bg-[#8b5cf6]';
-    if (points >= 75) return 'bg-[#3b82f6]';
-    if (points >= 50) return 'bg-[#22c55e]';
-    return 'bg-gray-200';
   };
 
   return (
@@ -123,58 +115,42 @@ export default function ChallengesPage() {
           {...cardHoverMotion()}
           className="compact-daily-progress-card"
         >
-          {/* Header */}
+          {/* Header — title left, subtitle right */}
           <div className="compact-daily-progress-header">
-            <div className="compact-daily-progress-title-container">
-              <h2 className="compact-daily-progress-title">Daily Progress</h2>
-              <span className="compact-daily-progress-subtitle">Keep your streak! 🔥</span>
-            </div>
-            
-            {/* Week/Month Toggle */}
-            <div className="compact-daily-progress-tabs">
-              {['week', 'month'].map(view => (
-                <motion.button
-                  key={view}
-                  {...chipToggleMotion()}
-                  onClick={() => setCalendarView(view as 'week' | 'month')}
-                  className={clsx(
-                    "compact-daily-progress-tab capitalize",
-                    calendarView === view ? "compact-daily-progress-tab-active" : "compact-daily-progress-tab-inactive"
-                  )}
-                >
-                  {view}
-                </motion.button>
-              ))}
-            </div>
+            <h3 className="compact-daily-progress-title">Daily Progress</h3>
+            <span className="compact-daily-progress-subtitle">Keep your streak!</span>
           </div>
 
-          {/* Compact Calendar Grid */}
+          {/* Compact Calendar Grid — Sun, Mon; Tue missed streak; Wed = today */}
           <div className="compact-daily-progress-grid">
             {dailyProgress.map((day, idx) => (
               <div key={idx} className="calendar-day-compact">
-                {/* Day Label */}
-                <span className="calendar-day-label">{day.day}</span>
+                {/* Day Label: show "Today" for active day */}
+                <span className="calendar-day-label">
+                  {day.isActive ? 'Today' : day.day}
+                </span>
                 
                 {/* Day Cell */}
                 <div className={clsx(
                   "calendar-day-cell",
                   day.isActive && "calendar-day-cell-active",
                   !day.isActive && day.completed && "calendar-day-cell-completed",
-                  !day.isActive && !day.completed && "calendar-day-cell-empty"
+                  (day as { missedStreak?: boolean }).missedStreak && "calendar-day-cell-missed",
+                  !day.isActive && !day.completed && !(day as { missedStreak?: boolean }).missedStreak && "calendar-day-cell-empty"
                 )}>
-                  {/* Sparkle Icon for completed days */}
-                  {day.completed && !day.isActive && (
-                    <Sparkles className="calendar-day-icon text-[#8200db]" />
+                  {/* Star (XP) icon for completed days and today */}
+                  {(day.completed || day.isActive) && day.points > 0 && (
+                    <Star className={clsx("calendar-day-icon shrink-0", day.isActive ? "text-white" : "text-[#db2777]")} size={14} />
                   )}
                   
-                  {/* Points */}
+                  {/* Points with XP label */}
                   <span className={clsx(
                     "calendar-day-points",
                     day.isActive && "calendar-day-points-active",
                     !day.isActive && day.completed && "calendar-day-points-completed",
                     !day.isActive && !day.completed && "calendar-day-points-empty"
                   )}>
-                    {day.points}
+                    {(day.completed || day.isActive) && day.points > 0 ? `${day.points} XP` : '—'}
                   </span>
                 </div>
               </div>
@@ -190,8 +166,7 @@ export default function ChallengesPage() {
           {/* Header */}
           <div className="leaderboard-compact-header">
             <div className="leaderboard-compact-header-left">
-              <Trophy size={14} className="text-[#eab308]" />
-              <h2 className="leaderboard-compact-header-title">Leaderboard</h2>
+              <h3 className="leaderboard-compact-header-title">Leaderboard</h3>
             </div>
             <span className="leaderboard-compact-header-subtitle">This Week</span>
           </div>
@@ -263,19 +238,20 @@ export default function ChallengesPage() {
             className="dropdown-base"
           >
             <option value="all">Filter by type - All</option>
-            <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
-            <option value="skill">Track</option>
-            <option value="community">Assigned</option>
+            <option value="track">Track</option>
+            <option value="assigned">Assigned</option>
           </select>
           <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
         </div>
       </div>
 
-      {/* CHALLENGES GRID */}
+      {/* CHALLENGES GRID — 3 scenarios: Completed, In progress (progress + Continue), New (Start) — same structure as Micro-learning cards */}
       <motion.div {...staggerContainer} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredChallenges.slice(0, 9).map((challenge, idx) => {
-          const isCompleted = challenge.completed;
+          const isCompleted = challenge.completed === true;
+          const isInProgress = !isCompleted && typeof challenge.progress === 'number' && challenge.progress > 0 && challenge.progress < 100;
+          const progressPct = challenge.progress ?? 0;
 
           return (
             <motion.div
@@ -284,76 +260,112 @@ export default function ChallengesPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
-              className="card-base p-5 cursor-pointer"
               onClick={() => navigate(`/app/learn/challenges/${challenge.id}/workspace`)}
+              className="card-base p-5 cursor-pointer flex flex-col h-full"
             >
-              {/* Badges Row */}
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                {/* Type Badge */}
-                <span className={clsx("badge-base", getTypeBadgeClass(challenge.frequency || 'daily'))}>
-                  {challenge.frequency || 'weekly'}
-                </span>
-
-                {/* Difficulty Badge */}
-                <span className={clsx("badge-base", getDifficultyClass(challenge.difficulty))}>
-                  {challenge.difficulty}
-                </span>
-
-                {/* Completion Status */}
-                {isCompleted && (
-                  <span className="badge-base badge-green inline-flex items-center gap-1">
-                    <CheckCircle2 size={12} />
-                    Done
+              {/* Top: badges, title, meta (time, participants, +XX XP) — no description */}
+              <div className="flex-1 min-h-0">
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  {isCompleted && (
+                    <span className="badge-base badge-green inline-flex items-center gap-1">
+                      <CheckCircle2 size={12} />
+                      Completed
+                    </span>
+                  )}
+                  <span className={clsx("badge-base", getTypeBadgeClass(challenge.type))}>
+                    {challenge.type}
                   </span>
+                  <span className={clsx("badge-base", getDifficultyClass(challenge.difficulty))}>
+                    {challenge.difficulty}
+                  </span>
+                </div>
+
+                <h3 className="text-base font-bold mb-2 text-app-primary">
+                  {challenge.title}
+                </h3>
+
+                <p className="text-sm mb-3 text-app-secondary leading-relaxed line-clamp-3">
+                  {challenge.description.length > 120
+                    ? `${challenge.description.substring(0, 120)}...`
+                    : challenge.description}
+                </p>
+
+                <div className="flex items-center gap-3 text-xs text-app-muted">
+                  <span className="inline-flex items-center gap-1">
+                    <Clock size={14} />
+                    {challenge.time}
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <Users size={14} />
+                    {challenge.participants}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[#db2777] font-semibold">
+                    <Star size={14} />
+                    +{challenge.points} XP
+                  </span>
+                </div>
+              </div>
+
+              {/* Bottom: progress bar + CTA (Review / Continue / Start) */}
+              <div className="mt-auto pt-4 flex flex-col gap-4">
+                {isCompleted && (
+                  <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-xs font-medium text-app-muted">Complete</span>
+                      <span className="text-xs font-semibold text-[#22c55e]">100%</span>
+                    </div>
+                    <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
+                      <div className="progress-bar-fill progress-bar-fill-green" style={{ width: '100%' }} />
+                    </div>
+                  </div>
                 )}
-              </div>
-
-              <h3 className="text-base font-bold mb-2 text-app-primary">
-                {challenge.title}
-              </h3>
-
-              <p className="text-sm mb-4 text-app-secondary leading-relaxed">
-                {challenge.description.substring(0, 100)}...
-              </p>
-
-              {/* Meta Info */}
-              <div className="flex items-center gap-3 mb-4 text-xs text-app-muted">
-                <span className="inline-flex items-center gap-1">
-                  <Clock size={14} />
-                  {challenge.timeEstimateMinutes || 20} min
-                </span>
-                <span className="inline-flex items-center gap-1">
-                  <Users size={14} />
-                  {challenge.participants || 0}
-                </span>
-                <span className="inline-flex items-center gap-1 text-[#8b5cf6] font-semibold">
-                  <Star size={14} />
-                  {challenge.points || 50} pts
-                </span>
-              </div>
-
-              {/* Category Label */}
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-medium text-app-muted">
-                  {challenge.category}
-                </span>
-              </div>
-
-              {/* View Button */}
-              <motion.button
-                {...primaryButtonMotion()}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(`/app/learn/challenges/${challenge.id}/workspace`);
-                }}
-                className={clsx(
-                  "w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer",
-                  isCompleted ? "btn-secondary" : "btn-primary"
+                {isInProgress && (
+                  <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-xs font-medium text-app-muted">Progress</span>
+                      <span className="text-xs font-semibold text-[#5236ab]">{progressPct}%</span>
+                    </div>
+                    <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
+                      <motion.div
+                        className="progress-bar-fill h-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progressPct}%` }}
+                        transition={{ duration: 0.8, ease: 'easeOut' }}
+                      />
+                    </div>
+                  </div>
                 )}
-              >
-                {isCompleted ? 'Review' : 'View'}
-                <ChevronRight size={16} />
-              </motion.button>
+                <motion.button
+                  {...(isInProgress ? primaryButtonMotion() : isCompleted ? primaryButtonMotion() : secondaryButtonMotion())}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/app/learn/challenges/${challenge.id}/workspace`);
+                  }}
+                  className={clsx(
+                    "w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm cursor-pointer",
+                    isCompleted && "btn-success-stroked",
+                    isInProgress && "btn-primary text-white",
+                    !isCompleted && !isInProgress && "btn-primary-stroked"
+                  )}
+                >
+                  {isCompleted ? (
+                    <>
+                      Review
+                      <ChevronRight size={16} />
+                    </>
+                  ) : isInProgress ? (
+                    <>
+                      <Play size={16} />
+                      Continue
+                    </>
+                  ) : (
+                    <>
+                      <Play size={16} />
+                      Start
+                    </>
+                  )}
+                </motion.button>
+              </div>
             </motion.div>
           );
         })}
