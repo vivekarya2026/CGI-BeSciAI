@@ -16,12 +16,13 @@ import {
 } from '../../data/learnData';
 import { useUser } from '../../context/UserContext';
 import { NotificationsPanel } from '../../components/NotificationsPanel';
+import { HeaderStatsChips } from '../../components/HeaderStatsChips';
 import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 export default function MicroLearningViewerPage() {
   const { microId } = useParams<{ microId: string }>();
   const navigate = useNavigate();
-  const { addXp } = useUser();
+  const { addXp, progress } = useUser();
   const [completed, setCompleted] = useState(() => (microId ? isMicroCompleted(microId) : false));
   const [justCompleted, setJustCompleted] = useState(false);
   const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
@@ -64,8 +65,10 @@ export default function MicroLearningViewerPage() {
         >
           <ArrowLeft size={16} /> Back to Learn
         </button>
-        <div className="flex gap-2 relative shrink-0">
-          <NotificationsPanel onNavigate={(path) => navigate(path)} />
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
+          </div>
           <button
             type="button"
             className="notifications-bell"
@@ -75,6 +78,9 @@ export default function MicroLearningViewerPage() {
             <MessageSquare size={18} className="text-app-muted" />
             <span className="notifications-badge">3</span>
           </button>
+          <div className="relative">
+            <NotificationsPanel onNavigate={(path) => navigate(path)} />
+          </div>
         </div>
       </div>
 

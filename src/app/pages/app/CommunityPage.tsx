@@ -25,6 +25,9 @@ import {
 import { useUser } from '../../context/UserContext';
 import { archetypes } from '../../data/archetypes';
 import { DiscussionForum } from '../../components/DiscussionForum';
+import { NotificationsPanel } from '../../components/NotificationsPanel';
+import { HeaderStatsChips } from '../../components/HeaderStatsChips';
+import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 // Defining the sub-tabs for the page
 type SubTab = 'peers' | 'stories' | 'forums' | 'champions';
@@ -50,10 +53,11 @@ const fadeUp = {
 };
 
 export default function CommunityPage() {
-  const { archetype } = useUser();
+  const { archetype, progress } = useUser();
   const navigate = useNavigate();
 
   // -- Local Page State --
+  const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<SubTab>('peers');
   const [leaderboardPeriod, setLeaderboardPeriod] = useState<'week' | 'month' | 'all'>('week');
 
@@ -132,15 +136,34 @@ export default function CommunityPage() {
     <div className="font-primary">
       {/* --- Page Header --- */}
       <motion.div
-        className="mb-6"
+        className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h1 className="page-title">Community</h1>
-        <p className="page-subtitle">
-          Connect with peers, share workflows, and grow together.
-        </p>
+        <div>
+          <h1 className="page-title">Community</h1>
+          <p className="page-subtitle">
+            Connect with peers, share workflows, and grow together.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
+          </div>
+          <button
+            type="button"
+            className="notifications-bell"
+            onClick={() => setMiniMessagesOpen(prev => !prev)}
+            aria-label="Open messages"
+          >
+            <MessageSquare size={18} className="text-app-muted" />
+            <span className="notifications-badge">3</span>
+          </button>
+          <div className="relative">
+            <NotificationsPanel onNavigate={(path) => navigate(path)} />
+          </div>
+        </div>
       </motion.div>
 
       {/* --- Sub-tabs Navigation --- */}
@@ -471,6 +494,12 @@ export default function CommunityPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <DashboardMiniMessages
+        isOpen={miniMessagesOpen}
+        onClose={() => setMiniMessagesOpen(false)}
+        onOpenFullMessages={() => navigate('/app/messages')}
+      />
     </div>
   );
 }

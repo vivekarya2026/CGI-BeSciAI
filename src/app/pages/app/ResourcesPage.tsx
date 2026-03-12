@@ -4,11 +4,15 @@
 
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Search, FileText, Video, Copy, Target, Headphones, Clock, Bookmark } from 'lucide-react';
+import { Search, FileText, Video, Copy, Target, Headphones, Clock, Bookmark, MessageSquare } from 'lucide-react';
 import { resources as resourcesList, isResourceSaved, type ResourceType } from '../../data/learnData';
 import { useNavigate } from 'react-router';
 import clsx from 'clsx';
+import { useUser } from '../../context/UserContext';
 import { cardHoverMotion, staggerContainer } from '../../components/ui/motionPresets';
+import { NotificationsPanel } from '../../components/NotificationsPanel';
+import { HeaderStatsChips } from '../../components/HeaderStatsChips';
+import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 const typeIcons: Record<string, React.ReactNode> = {
   guide: <FileText size={18} />,
@@ -21,6 +25,8 @@ const typeIcons: Record<string, React.ReactNode> = {
 
 export default function ResourcesPage() {
   const navigate = useNavigate();
+  const { progress } = useUser();
+  const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [resourceFilter, setResourceFilter] = useState<'all' | ResourceType>('all');
 
@@ -32,10 +38,31 @@ export default function ResourcesPage() {
 
   return (
     <div className="font-primary">
-      <h1 className="page-title">Resources</h1>
-      <p className="page-subtitle">
-        Guides, videos, templates, tools, podcasts, and articles. Search and filter by type.
-      </p>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="page-title">Resources</h1>
+          <p className="page-subtitle">
+            Guides, videos, templates, tools, podcasts, and articles. Search and filter by type.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
+          </div>
+          <button
+            type="button"
+            className="notifications-bell"
+            onClick={() => setMiniMessagesOpen(prev => !prev)}
+            aria-label="Open messages"
+          >
+            <MessageSquare size={18} className="text-app-muted" />
+            <span className="notifications-badge">3</span>
+          </button>
+          <div className="relative">
+            <NotificationsPanel onNavigate={(path) => navigate(path)} />
+          </div>
+        </div>
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1 max-w-xl">
@@ -85,6 +112,12 @@ export default function ResourcesPage() {
           );
         })}
       </motion.div>
+
+      <DashboardMiniMessages
+        isOpen={miniMessagesOpen}
+        onClose={() => setMiniMessagesOpen(false)}
+        onOpenFullMessages={() => navigate('/app/messages')}
+      />
     </div>
   );
 }

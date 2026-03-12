@@ -27,6 +27,7 @@ import {
   staggerContainer,
 } from '../../components/ui/motionPresets';
 import { NotificationsPanel } from '../../components/NotificationsPanel';
+import { HeaderStatsChips } from '../../components/HeaderStatsChips';
 import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 export type LearnSubTab = 'trainings' | 'micro';
@@ -134,8 +135,10 @@ export default function LearnPage() {
               : 'Quick, focused lessons to master specific AI tools and techniques'}
           </p>
         </div>
-        <div className="flex gap-2 relative shrink-0">
-          <NotificationsPanel onNavigate={(path) => navigate(path)} />
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
+          </div>
           <button
             type="button"
             className="notifications-bell"
@@ -145,6 +148,9 @@ export default function LearnPage() {
             <MessageSquare size={18} className="text-app-muted" />
             <span className="notifications-badge">3</span>
           </button>
+          <div className="relative">
+            <NotificationsPanel onNavigate={(path) => navigate(path)} />
+          </div>
         </div>
       </div>
 

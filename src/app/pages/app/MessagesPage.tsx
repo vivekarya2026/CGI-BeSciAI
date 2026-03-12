@@ -24,8 +24,12 @@ import {
   ArrowLeft, UserPlus, CheckCheck, MessageSquare,
   Sparkles, Circle,
 } from 'lucide-react';
+import { useNavigate } from 'react-router';
 import { useUser } from '../../context/UserContext';
 import clsx from 'clsx';
+import { NotificationsPanel } from '../../components/NotificationsPanel';
+import { HeaderStatsChips } from '../../components/HeaderStatsChips';
+import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 // ============================================
 // SECTION 1: DATA INTERFACES (Types)
@@ -132,9 +136,11 @@ const statusColors: Record<string, string> = {
 // ============================================
 
 export default function MessagesPage() {
-  const { user } = useUser();
+  const navigate = useNavigate();
+  const { user, progress } = useUser();
 
   // -- State Management --
+  const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>(initialConversations);
   const [selectedPeerId, setSelectedPeerId] = useState<string | null>('p1');
   const [messageInput, setMessageInput] = useState('');
@@ -231,7 +237,7 @@ export default function MessagesPage() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="flex items-center justify-between mb-6"
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6"
       >
         <div>
           <h1 className="messages-header-title">Messages</h1>
@@ -239,14 +245,31 @@ export default function MessagesPage() {
             Chat with your connected peers and grow together.
           </p>
         </div>
-        <motion.button
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.96 }}
-          onClick={() => setShowSuggestions(!showSuggestions)}
-          className="find-peers-button"
-        >
-          <UserPlus size={16} /> <span className="hidden sm:inline">Find Peers</span>
-        </motion.button>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
+          </div>
+          <button
+            type="button"
+            className="notifications-bell"
+            onClick={() => setMiniMessagesOpen(prev => !prev)}
+            aria-label="Open messages"
+          >
+            <MessageSquare size={18} className="text-app-muted" />
+            <span className="notifications-badge">3</span>
+          </button>
+          <div className="relative">
+            <NotificationsPanel onNavigate={(path) => navigate(path)} />
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={() => setShowSuggestions(!showSuggestions)}
+            className="find-peers-button"
+          >
+            <UserPlus size={16} /> <span className="hidden sm:inline">Find Peers</span>
+          </motion.button>
+        </div>
       </motion.div>
 
       {/* --- Suggested Connections Panel (Animated) --- */}
@@ -584,6 +607,12 @@ export default function MessagesPage() {
           )}
         </div>
       </motion.div>
+
+      <DashboardMiniMessages
+        isOpen={miniMessagesOpen}
+        onClose={() => setMiniMessagesOpen(false)}
+        onOpenFullMessages={() => navigate('/app/messages')}
+      />
     </div>
   );
 }

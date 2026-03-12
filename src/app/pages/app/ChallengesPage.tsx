@@ -11,7 +11,7 @@ import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import {
   Target, Trophy, Flame, Star, Clock, Users, Search,
-  ChevronRight, ChevronDown, CheckCircle2, Play, Sparkles, TrendingUp,
+  ChevronRight, ChevronDown, CheckCircle2, Play, Sparkles, TrendingUp, MessageSquare,
 } from 'lucide-react';
 import {
   challenges,
@@ -24,10 +24,14 @@ import {
   chipToggleMotion,
   staggerContainer,
 } from '../../components/ui/motionPresets';
+import { NotificationsPanel } from '../../components/NotificationsPanel';
+import { HeaderStatsChips } from '../../components/HeaderStatsChips';
+import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 export default function ChallengesPage() {
   const navigate = useNavigate();
   const { progress } = useUser();
+  const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
   const [typeFilter, setTypeFilter] = useState<'all' | string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [calendarView, setCalendarView] = useState<'week' | 'month'>('week');
@@ -84,13 +88,32 @@ export default function ChallengesPage() {
   return (
     <div className="font-primary bg-app-bg min-h-screen">
       {/* HEADER */}
-      <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-app-primary">
-          Daily Challenges
-        </h1>
-        <p className="text-sm sm:text-base mb-6 text-app-secondary">
-          Level up your skills with hands-on challenges
-        </p>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-app-primary">
+            Daily Challenges
+          </h1>
+          <p className="text-sm sm:text-base text-app-secondary">
+            Level up your skills with hands-on challenges
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
+          </div>
+          <button
+            type="button"
+            className="notifications-bell"
+            onClick={() => setMiniMessagesOpen(prev => !prev)}
+            aria-label="Open messages"
+          >
+            <MessageSquare size={18} className="text-app-muted" />
+            <span className="notifications-badge">3</span>
+          </button>
+          <div className="relative">
+            <NotificationsPanel onNavigate={(path) => navigate(path)} />
+          </div>
+        </div>
       </div>
 
       {/* MAIN LAYOUT: Daily Progress + Leaderboard - COMPACT FIGMA DESIGN */}
@@ -352,6 +375,12 @@ export default function ChallengesPage() {
           </p>
         </motion.div>
       )}
+
+      <DashboardMiniMessages
+        isOpen={miniMessagesOpen}
+        onClose={() => setMiniMessagesOpen(false)}
+        onOpenFullMessages={() => navigate('/app/messages')}
+      />
     </div>
   );
 }

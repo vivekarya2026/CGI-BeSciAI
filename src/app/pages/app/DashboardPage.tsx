@@ -23,8 +23,8 @@ import {
   officeHourLive,
   officeHourUpcoming,
 } from '../../data/learnData';
+import { STATS_TILES_CONFIG, type StatIconKey } from '../../data/statsConfig';
 import { NotificationsPanel } from '../../components/NotificationsPanel';
-import { HeaderStatsChips } from '../../components/HeaderStatsChips';
 import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 import {
   cardHoverMotion,
@@ -59,6 +59,14 @@ const HEATMAP_DATA: number[][] = [
   [0,1,1,0,1,0,0],[2,2,1,2,1,1,0],[1,2,2,1,2,0,0],[0,0,1,0,0,0,0],
   [2,2,1,2,1,1,0],[0,0,0,0,1,0,0],[1,1,1,0,1,0,0],[1,1,0,1,1,0,0],
 ];
+
+const STAT_ICONS: Record<StatIconKey, React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>> = {
+  flame: Flame,
+  trophy: Trophy,
+  target: Target,
+  clock: Clock,
+  star: Star,
+};
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -97,15 +105,14 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
             <button
               type="button"
+              className="notifications-bell"
               onClick={() => setMiniMessagesOpen((o) => !o)}
-              className="btn-secondary inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-              aria-label="Toggle messages"
+              aria-label="Open messages"
             >
-              <MessageSquare size={18} />
-              <span className="hidden sm:inline">Messages</span>
+              <MessageSquare size={18} className="text-app-muted" />
+              <span className="notifications-badge">3</span>
             </button>
             <NotificationsPanel onNavigate={(path) => navigate(path)} />
           </div>
@@ -118,50 +125,37 @@ export default function DashboardPage() {
       <div className="grid gap-5 lg:grid-cols-[minmax(0,2.1fr)_minmax(320px,1fr)] lg:gap-6">
         {/* LEFT COLUMN */}
         <div className="flex flex-col gap-5">
-          {/* Stats section - 5 tiles */}
+          {/* Stats section - 5 tiles (no hover animation), from statsConfig */}
           <motion.section
-            {...cardHoverMotion()}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="card-base rounded-xl p-5 md:p-6"
           >
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-              <motion.div {...cardHoverMotion()} className="badge-base badge-yellow rounded-lg p-4 cursor-pointer border border-[#fde68a]">
-                <div className="flex items-center gap-2 mb-2">
-                  <Flame size={20} className="text-[#f59e0b]" />
-                  <span className="text-2xl font-bold">{progress.streak ?? 5}</span>
-                </div>
-                <p className="text-xs font-medium">Day Streak</p>
-              </motion.div>
-              <motion.div {...cardHoverMotion()} className="badge-base badge-blue rounded-lg p-4 cursor-pointer border border-[#bfdbfe]">
-                <div className="flex items-center gap-2 mb-2">
-                  <Trophy size={20} className="text-[#3b82f6]" />
-                  <span className="text-2xl font-bold">{progress.modulesCompleted ?? 3}</span>
-                </div>
-                <p className="text-xs font-medium">Trainings Done</p>
-              </motion.div>
-              <motion.div {...cardHoverMotion()} className="badge-base badge-green rounded-lg p-4 cursor-pointer border border-[#bbf7d0]">
-                <div className="flex items-center gap-2 mb-2">
-                  <Target size={20} className="text-[#22c55e]" />
-                  <span className="text-2xl font-bold">23</span>
-                </div>
-                <p className="text-xs font-medium">Challenges</p>
-              </motion.div>
-              <motion.div {...cardHoverMotion()} className="badge-base badge-purple rounded-lg p-4 cursor-pointer border border-[#ddd6fe]">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock size={20} className="text-[#8b5cf6]" />
-                  <span className="text-2xl font-bold">42</span>
-                </div>
-                <p className="text-xs font-medium">Hours Learned</p>
-              </motion.div>
-              <motion.div {...cardHoverMotion()} className="badge-base badge-pink rounded-lg p-4 cursor-pointer border border-[#fbcfe8]">
-                <div className="flex items-center gap-2 mb-2">
-                  <Star size={20} className="text-[#db2777]" />
-                  <span className="text-2xl font-bold">{(progress.xp ?? 1250).toLocaleString()}</span>
-                </div>
-                <p className="text-xs font-medium">XP</p>
-              </motion.div>
+              {STATS_TILES_CONFIG.map((stat) => {
+                const Icon = STAT_ICONS[stat.iconKey];
+                const value = stat.id === 'streak' ? (progress.streak ?? 5)
+                  : stat.id === 'trainings' ? (progress.modulesCompleted ?? 3)
+                  : stat.id === 'challenges' ? 23
+                  : stat.id === 'hours' ? 42
+                  : (progress.xp ?? 1250);
+                const display = stat.id === 'xp' ? (value as number).toLocaleString() : String(value);
+                return (
+                  <motion.div
+                    key={stat.id}
+                    {...cardHoverMotion()}
+                    className="badge-base rounded-lg p-4 cursor-pointer border"
+                    style={{ borderColor: stat.borderColor, backgroundColor: stat.tileBg }}
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <Icon size={20} style={{ color: stat.iconColor }} />
+                      <span className="text-2xl font-bold" style={{ color: stat.textColor }}>{display}</span>
+                    </div>
+                    <p className="text-xs font-medium" style={{ color: stat.textColor }}>{stat.label}</p>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.section>
 
@@ -180,15 +174,15 @@ export default function DashboardPage() {
             {currentModule ? (
               <div className="flex flex-col gap-5">
                 {/* Top row: Thumbnail + Title/Subtitle */}
-                <div className="flex items-center gap-5">
-                  <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-xl shrink-0 overflow-hidden bg-gradient-to-br from-[#1e1b4b] to-[#312e81] relative">
+                <div className="items-center gap-5">
+                  <div className="h-28 sm:h-32 rounded-xl shrink-0 overflow-hidden bg-gradient-to-br from-[#1e1b4b] to-[#312e81] relative">
                     <img
                       src="/assets/Frame_30-b2059e27-34a7-430f-aed1-416718844c14.png"
                       alt={currentModule.title}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 mt-4">
                     <h3 className="text-base sm:text-lg font-bold mb-1.5 text-app-primary">
                       {currentModule.title}
                     </h3>
@@ -199,8 +193,8 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Bottom row: Progress bar + Resume button */}
-                <div className="flex items-end gap-5">
-                  <div className="flex-1 min-w-0">
+                <div className="items-end gap-5">
+                  <div className="flex-1 min-w-0 mb-4">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-xs font-medium text-app-muted">
                         {completionPct}% complete
@@ -222,7 +216,7 @@ export default function DashboardPage() {
                   <motion.button
                     {...primaryButtonMotion()}
                     onClick={() => navigate('/app/learn', { state: { mode: 'training' } })}
-                    className="btn-primary inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl font-semibold text-sm cursor-pointer shrink-0"
+                    className="btn-primary w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold text-sm cursor-pointer"
                   >
                     <Play size={16} />
                     Resume Lesson
@@ -243,7 +237,7 @@ export default function DashboardPage() {
             transition={{ delay: 0.25 }}
             className="card-base rounded-xl p-5 md:p-6"
           >
-            <h2 className="text-lg sm:text-xl font-semibold mb-4 text-app-primary">
+            <h2 className="text-lg sm:text-xl font-bold mb-2 text-app-primary">
               Today&apos;s Challenge
             </h2>
 
@@ -261,20 +255,20 @@ export default function DashboardPage() {
                 if (e.key === 'Enter' || e.key === ' ') navigate('/app/challenges');
               }}
             >
-              <div className="card-base rounded-lg p-4 mb-4">
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-2">
-                    <Target size={20} className="text-[#8b5cf6]" />
-                    <h3 className="text-base font-bold text-app-primary">
-                      {todayChallenge?.title || 'Practice reflection exercise'}
-                    </h3>
+              <div className="card-base rounded-lg p-4 mb-4 flex flex-col gap-4">
+                <div>
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="items-center">
+                      <Target size={20} className="text-[#8b5cf6]" />
+                      <h3 className="text-base font-bold text-app-primary mt-4">
+                        {todayChallenge?.title || 'Practice reflection exercise'}
+                      </h3>
+                    </div>
                   </div>
+                  <p className="text-sm mb-0 text-app-secondary">
+                    {todayChallenge?.description || 'Reflect on your AI learning journey and identify key takeaways'}
+                  </p>
                 </div>
-
-                <p className="text-sm mb-3 text-app-secondary">
-                  {todayChallenge?.description || 'Reflect on your AI learning journey and identify key takeaways'}
-                </p>
-
                 <div className="flex items-center gap-4 text-xs text-app-muted">
                   <span className="inline-flex items-center gap-1">
                     <Clock size={14} />
@@ -400,71 +394,7 @@ export default function DashboardPage() {
             </h2>
 
             {/* Activity Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              {/* Learning Streak */}
-              <motion.div
-                {...cardHoverMotion()}
-                className="badge-base badge-yellow rounded-lg p-4 cursor-pointer border border-[#fde68a]"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <Flame size={20} className="text-[#f59e0b]" />
-                  <span className="text-2xl font-bold">
-                    {progress.streak || 14}
-                  </span>
-                </div>
-                <p className="text-xs font-medium">
-                  Day Streak
-                </p>
-              </motion.div>
 
-              {/* Trainings Completed */}
-              <motion.div
-                {...cardHoverMotion()}
-                className="badge-base badge-blue rounded-lg p-4 cursor-pointer border border-[#bfdbfe]"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <Trophy size={20} className="text-[#3b82f6]" />
-                  <span className="text-2xl font-bold">
-                    {progress.modulesCompleted || 8}
-                  </span>
-                </div>
-                <p className="text-xs font-medium">
-                  Trainings Done
-                </p>
-              </motion.div>
-
-              {/* Challenges Completed */}
-              <motion.div
-                {...cardHoverMotion()}
-                className="badge-base badge-green rounded-lg p-4 cursor-pointer border border-[#bbf7d0]"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <Target size={20} className="text-[#22c55e]" />
-                  <span className="text-2xl font-bold">
-                    23
-                  </span>
-                </div>
-                <p className="text-xs font-medium">
-                  Challenges
-                </p>
-              </motion.div>
-
-              {/* Total Learning Hours */}
-              <motion.div
-                {...cardHoverMotion()}
-                className="badge-base badge-purple rounded-lg p-4 cursor-pointer border border-[#ddd6fe]"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock size={20} className="text-[#8b5cf6]" />
-                  <span className="text-2xl font-bold">
-                    42
-                  </span>
-                </div>
-                <p className="text-xs font-medium">
-                  Hours Learned
-                </p>
-              </motion.div>
-            </div>
 
             {/* Activity Heatmap - Last Year (GitHub-style) */}
             <div>
