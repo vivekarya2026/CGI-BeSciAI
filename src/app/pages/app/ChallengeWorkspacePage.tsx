@@ -1,5 +1,5 @@
 /**
- * Challenge Workspace — Phase 2: Read instructions → AI tools → Work; Need help? + Status actions.
+ * Challenge Workspace — Phase 2: Read instructions → AI tools → Submit; Need help? + Status actions.
  * Route: /app/learn/challenges/:challengeId/workspace
  */
 
@@ -8,10 +8,13 @@ import { useParams, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import {
   ArrowLeft, BookOpen, ExternalLink, Headphones, MessageCircle, User, Play,
-  ChevronRight, X, Save, CircleHelp,
+  ChevronRight, ChevronDown, ChevronUp, X, Save, CircleHelp, Star, Flame, Target, Home, Clock, Sparkles,
+  ListChecks, CheckCircle, Users, Lightbulb,
 } from 'lucide-react';
-import clsx from 'clsx';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { getChallengeById, microLearnings } from '../../data/learnData';
+import { useUser } from '../../context/UserContext';
 import { primaryButtonMotion, secondaryButtonMotion } from '../../components/ui/motionPresets';
 
 const WORKSPACE_DRAFT_KEY = 'challenge_workspace_draft';
@@ -42,8 +45,10 @@ const AI_TOOLS: Record<AiToolKey, { label: string; href: string; edgeAddonsSearc
 export default function ChallengeWorkspacePage() {
   const { challengeId } = useParams<{ challengeId: string }>();
   const navigate = useNavigate();
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [showHelp, setShowHelp] = useState(false);
+  const [showPrereqs, setShowPrereqs] = useState(false);
+  const [showHints, setShowHints] = useState(false);
   const [openTool, setOpenTool] = useState<AiToolKey | null>(null);
   const [notes, setNotes] = useState(() => {
     if (typeof window === 'undefined' || !challengeId) return '';
@@ -56,7 +61,12 @@ export default function ChallengeWorkspacePage() {
     }
   });
 
+  const { progress, addXp } = useUser();
+
   const challenge = useMemo(() => (challengeId ? getChallengeById(challengeId) : undefined), [challengeId]);
+
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [completionAwarded, setCompletionAwarded] = useState(false);
 
   const saveDraft = () => {
     if (!challengeId) return;
@@ -85,6 +95,29 @@ export default function ChallengeWorkspacePage() {
     !/OPR\//.test(window.navigator.userAgent) &&
     !/Brave\//.test(window.navigator.userAgent);
 
+  const quillModules = useMemo(
+    () => ({
+      toolbar: [
+        [{ header: [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['link', 'image', 'code-block'],
+        ['clean'],
+      ],
+    }),
+    []
+  );
+
+  const handleComplete = () => {
+    if (!challengeId || !challenge) return;
+    // Avoid double-awarding XP if the user clicks multiple times
+    if (!completionAwarded) {
+      addXp(challenge.points);
+      setCompletionAwarded(true);
+    }
+    setShowCompletionModal(true);
+  };
+
   const handleAiToolClick = (tool: AiToolKey) => {
     const meta = AI_TOOLS[tool];
     if (isEdge) {
@@ -96,23 +129,17 @@ export default function ChallengeWorkspacePage() {
 
   return (
     <div className="max-w-[800px] mx-auto min-h-[92vh] flex flex-col">
-      <div className="flex items-center justify-between mb-6">
-        <button onClick={() => navigate(`/app/learn/challenges/${challengeId}`)} className="flex items-center gap-2 text-sm font-medium cursor-pointer text-app-secondary">
-          <ArrowLeft size={16} /> Back to challenge
-        </button>
-      </div>
-
       {/* Progress bar (replaces 3-step stepper) */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-1.5">
           <span className="text-xs font-medium text-app-muted">Progress</span>
-          <span className="text-xs font-semibold text-[#5236ab]">{Math.round((step / 3) * 100)}%</span>
+          <span className="text-xs font-semibold text-[#5236ab]">{Math.round((step / 4) * 100)}%</span>
         </div>
         <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden rounded-full">
           <motion.div
             className="progress-bar-fill h-full rounded-full"
             initial={false}
-            animate={{ width: `${(step / 3) * 100}%` }}
+            animate={{ width: `${(step / 4) * 100}%` }}
             transition={{ type: 'spring', stiffness: 260, damping: 22 }}
           />
         </div>
@@ -158,22 +185,142 @@ export default function ChallengeWorkspacePage() {
         </motion.div>
       )}
 
-      {/* Step 1: Read instructions */}
+      {/* Step 1: Gamified challenge overview (mission brief, meta strip, objectives, description, accordions) */}
       {step === 1 && (
         <motion.div
           key="step1"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="card-base rounded-xl p-6 mb-8 bg-app-surface border-app"
+          className="card-base rounded-xl p-6 mb-8 bg-app-surface border-app shadow-[var(--app-shadow)]"
           data-tour-id="workspace-step-1"
         >
-          <h2 className="text-lg font-bold text-app-primary mb-3">Step 1: Read instructions</h2>
-          <h3 className="text-base font-semibold text-app-primary mb-2">{challenge.title}</h3>
-          <p className="text-[15px] leading-6 text-app-secondary whitespace-pre-wrap">{instructions}</p>
+          {/* Badge + Title */}
+          <span className="inline-block text-xs font-medium text-app-muted uppercase tracking-wider mb-2">Step 1 · Mission brief</span>
+          <h1 className="text-2xl font-bold text-app-primary mb-5">{challenge.title}</h1>
+
+          {/* Meta strip: time, difficulty badge, XP pill */}
+          <div className="flex flex-wrap items-center gap-3 mb-6 py-3 px-4 rounded-xl bg-[var(--app-surface-alt)] border border-[var(--app-border)]">
+            <span className="flex items-center gap-2 text-sm text-app-muted"><Clock size={14} /> Est. {challenge.time}</span>
+            <span className="flex items-center gap-2">
+              <Target size={14} className="text-app-muted shrink-0" />
+              <span
+                className={[
+                  'rounded-full px-2.5 py-0.5 text-xs font-semibold',
+                  challenge.difficulty === 'Beginner' && 'bg-gray-100 text-gray-700',
+                  challenge.difficulty === 'Intermediate' && 'bg-amber-50 text-amber-800',
+                  challenge.difficulty === 'Advanced' && 'bg-[var(--app-brand-light)] text-[var(--app-brand)]',
+                ].filter(Boolean).join(' ') || 'bg-[var(--app-tab-bg)] text-app-secondary'}
+              >
+                {challenge.difficulty}
+              </span>
+            </span>
+            <span className="flex items-center gap-2 rounded-full px-2.5 py-0.5 text-xs font-semibold bg-[var(--app-brand-light)] text-[var(--app-brand)]">
+              <Star size={14} /> +{challenge.points} XP
+            </span>
+          </div>
+
+          {/* Objectives */}
+          {challenge.objectives && challenge.objectives.length > 0 && (
+            <div className="mb-5">
+              <h3 className="flex items-center gap-2 text-xs font-semibold text-app-muted uppercase tracking-wider mb-2">
+                <ListChecks size={14} /> Objectives
+              </h3>
+              <ul className="list-disc list-inside space-y-1 text-sm text-app-secondary">
+                {challenge.objectives.map((obj, i) => <li key={i}>{obj}</li>)}
+              </ul>
+            </div>
+          )}
+
+          {/* Description */}
+          <p className="text-[15px] leading-[22px] text-app-secondary mb-6">{challenge.description}</p>
+
+          {/* Prerequisites accordion */}
+          {challenge.prerequisites && challenge.prerequisites.length > 0 && (
+            <div className="mb-5">
+              <button
+                type="button"
+                onClick={() => setShowPrereqs(!showPrereqs)}
+                className="flex items-center justify-between w-full gap-2 text-sm font-semibold cursor-pointer text-[#5236ab] hover:text-[#4328a0]"
+                aria-expanded={showPrereqs}
+                aria-controls="workspace-prereqs-content"
+                id="workspace-prereqs-trigger"
+              >
+                <span className="flex items-center gap-2">
+                  <CheckCircle size={14} /> Prerequisites
+                </span>
+                {showPrereqs ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              </button>
+              <div id="workspace-prereqs-content" role="region" aria-labelledby="workspace-prereqs-trigger" className="overflow-hidden">
+                {showPrereqs && (
+                  <ul className="list-disc list-inside space-y-1 text-sm text-app-secondary mt-2">
+                    {challenge.prerequisites.map((p, i) => <li key={i}>{p}</li>)}
+                  </ul>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Related content */}
+          <div className="mb-5">
+            <h3 className="flex items-center gap-2 text-xs font-semibold text-app-muted uppercase tracking-wider mb-2">
+              <BookOpen size={14} /> Related content
+            </h3>
+            {relatedMicro.length > 0 ? (
+              <ul className="space-y-2">
+                {relatedMicro.map(m => (
+                  <li key={m.id}>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/app/learn', { state: { tab: 'micro' } })}
+                      className="flex items-center gap-2 text-sm cursor-pointer text-[#5236ab] hover:underline"
+                    >
+                      <BookOpen size={14} /> {m.title} <ExternalLink size={12} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-app-hint">No related content.</p>
+            )}
+          </div>
+
+          {/* Peer examples */}
+          <div className="mb-5">
+            <h3 className="flex items-center gap-2 text-xs font-semibold text-app-muted uppercase tracking-wider mb-2">
+              <Users size={14} /> Peer examples
+            </h3>
+            <p className="text-sm text-app-hint">See how others did it — coming soon.</p>
+          </div>
+
+          {/* Coach hints accordion */}
+          {challenge.coachHints && challenge.coachHints.length > 0 && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setShowHints(!showHints)}
+                className="flex items-center justify-between w-full gap-2 text-sm font-semibold cursor-pointer text-[#5236ab] hover:text-[#4328a0]"
+                aria-expanded={showHints}
+                aria-controls="workspace-hints-content"
+                id="workspace-hints-trigger"
+              >
+                <span className="flex items-center gap-2">
+                  <Lightbulb size={14} /> Coach hints
+                </span>
+                {showHints ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              </button>
+              <div id="workspace-hints-content" role="region" aria-labelledby="workspace-hints-trigger" className="overflow-hidden">
+                {showHints && (
+                  <ul className="list-disc list-inside space-y-1 text-sm text-app-secondary mt-2">
+                    {challenge.coachHints.map((h, i) => <li key={i}>{h}</li>)}
+                  </ul>
+                )}
+              </div>
+            </div>
+          )}
         </motion.div>
       )}
 
-      {/* Step 2: Access AI tools */}
+      {/* Step 2: Read instructions */}
       {step === 2 && (
         <motion.div
           key="step2"
@@ -189,7 +336,29 @@ export default function ChallengeWorkspacePage() {
           >
             <ArrowLeft size={16} /> Back to Step 1
           </button>
-          <h2 className="text-lg font-bold text-app-primary mb-3">Step 2: Access AI tools</h2>
+          <h2 className="text-lg font-bold text-app-primary mb-3">Step 2: Read instructions</h2>
+          <h3 className="text-base font-semibold text-app-primary mb-2">{challenge.title}</h3>
+          <p className="text-[15px] leading-6 text-app-secondary whitespace-pre-wrap">{instructions}</p>
+        </motion.div>
+      )}
+
+      {/* Step 3: Access AI tools */}
+      {step === 3 && (
+        <motion.div
+          key="step3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="card-base rounded-xl p-6 mb-8 bg-app-surface border-app"
+          data-tour-id="workspace-step-3"
+        >
+          <button
+            type="button"
+            onClick={() => setStep(2)}
+            className="flex items-center gap-2 text-sm font-medium text-app-secondary hover:text-app-primary cursor-pointer mb-4"
+          >
+            <ArrowLeft size={16} /> Back to Step 2
+          </button>
+          <h2 className="text-lg font-bold text-app-primary mb-3">Step 3: Access AI tools</h2>
           <p className="text-[15px] text-app-secondary mb-4">Use AI tools to complete this challenge. Open one or more of these:</p>
           <div className="flex flex-wrap gap-3 mb-6">
             <button
@@ -213,6 +382,39 @@ export default function ChallengeWorkspacePage() {
             >
               Copilot <ExternalLink size={14} />
             </button>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Step 4: Submit your work + rich editor submission area */}
+      {step === 4 && (
+        <motion.div
+          key="step4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="card-base rounded-xl p-6 mb-8 bg-app-surface border-app"
+          data-tour-id="workspace-step-4"
+        >
+          <button
+            type="button"
+            onClick={() => setStep(3)}
+            className="flex items-center gap-2 text-sm font-medium text-app-secondary hover:text-app-primary cursor-pointer mb-4"
+          >
+            <ArrowLeft size={16} /> Back to Step 3
+          </button>
+          <h2 className="text-lg font-bold text-app-primary mb-3">Step 4: Submit your work</h2>
+          <p className="text-[15px] text-app-secondary mb-4">
+            Use this rich editor to capture everything for your submission — paste text, links, code,
+            screenshots, or notes in one place.
+          </p>
+          <div className="workspace-rich-editor-wrapper">
+            <ReactQuill
+              theme="snow"
+              value={notes}
+              onChange={(value) => setNotes(value)}
+              onBlur={() => saveDraft()}
+              modules={quillModules}
+            />
           </div>
         </motion.div>
       )}
@@ -287,35 +489,6 @@ export default function ChallengeWorkspacePage() {
         </div>
       )}
 
-      {/* Step 3: Work on challenge */}
-      {step === 3 && (
-        <motion.div
-          key="step3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="card-base rounded-xl p-6 mb-8 bg-app-surface border-app"
-          data-tour-id="workspace-step-3"
-        >
-          <button
-            type="button"
-            onClick={() => setStep(2)}
-            className="flex items-center gap-2 text-sm font-medium text-app-secondary hover:text-app-primary cursor-pointer mb-4"
-          >
-            <ArrowLeft size={16} /> Back to Step 2
-          </button>
-          <h2 className="text-lg font-bold text-app-primary mb-3">Step 3: Work on challenge</h2>
-          <p className="text-[15px] text-app-secondary mb-4">Use this space for notes, pasted outputs, or links to your work.</p>
-          <textarea
-            value={notes}
-            onChange={e => setNotes(e.target.value)}
-            onBlur={saveDraft}
-            placeholder="Paste outputs, links, or notes here..."
-            rows={10}
-            className="w-full rounded-lg p-4 outline-none resize-y text-sm border border-app-strong bg-app-bg text-app-primary"
-          />
-        </motion.div>
-      )}
-
       {/* Challenge status: Stuck (left) | Pause & Save + Next (right) — with microinteractions */}
       <div className="card-base rounded-xl p-5 border bg-app-surface border-app mt-auto">
         <h3 className="text-sm font-semibold text-app-muted mb-3">Challenge status?</h3>
@@ -331,7 +504,7 @@ export default function ChallengeWorkspacePage() {
           <div className="flex flex-wrap items-center gap-3">
             <motion.button
               {...secondaryButtonMotion()}
-              onClick={() => { saveDraft(); navigate(`/app/learn/challenges/${challengeId}`); }}
+              onClick={() => { saveDraft(); navigate('/app/learn', { state: { tab: 'challenges' } }); }}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-app-strong cursor-pointer font-semibold text-app-secondary bg-transparent hover:bg-gray-50"
             >
               <Save size={18} /> Pause & Save
@@ -339,18 +512,86 @@ export default function ChallengeWorkspacePage() {
             <motion.button
               {...primaryButtonMotion()}
               onClick={() => {
-                if (step < 3) setStep((step + 1) as 1 | 2 | 3);
-                else navigate(`/app/learn/challenges/${challengeId}/submit`);
+                if (step < 4) setStep((step + 1) as 1 | 2 | 3 | 4);
+                else handleComplete();
               }}
               className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold cursor-pointer"
               data-tour-id="workspace-next"
             >
-              {step < 3 ? 'Next' : 'Completed — Submit'}
+              {step < 4 ? 'Next' : 'Completed — Submit'}
               <ChevronRight size={18} />
             </motion.button>
           </div>
         </div>
       </div>
+
+      {/* Gamified completion modal */}
+      {showCompletionModal && (
+        <div className="challenge-complete-backdrop">
+          <div className="challenge-complete-modal">
+            <button
+              type="button"
+              className="challenge-complete-close"
+              onClick={() => setShowCompletionModal(false)}
+              aria-label="Close"
+            >
+              <X size={18} />
+            </button>
+            <div className="challenge-complete-header">
+              <h2 className="challenge-complete-title">Great work!</h2>
+              <p className="challenge-complete-subtitle">
+                You completed {challenge.title}
+              </p>
+            </div>
+            <div className="challenge-complete-body">
+              <div className="challenge-complete-xp-badge">
+                <Star size={24} className="challenge-complete-xp-icon" />
+                <div className="challenge-complete-xp-text">
+                  <span className="label">XP earned</span>
+                  <span className="value">+{challenge.points} XP</span>
+                </div>
+              </div>
+
+              <div className="challenge-complete-streak">
+                <Flame size={18} className="challenge-complete-streak-icon" />
+                <span className="challenge-complete-streak-text">
+                  Streak: {progress.streak} days • Keep it going for bonus XP
+                </span>
+              </div>
+
+              <div className="challenge-complete-confetti-row">
+                <span className="dot dot-pink" />
+                <span className="dot dot-amber" />
+                <span className="dot dot-purple" />
+                <span className="dot dot-blue" />
+              </div>
+            </div>
+
+            <div className="challenge-complete-actions">
+              <button
+                type="button"
+                className="btn-secondary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm cursor-pointer"
+                onClick={() => {
+                  setShowCompletionModal(false);
+                  navigate('/app/learn', { state: { tab: 'challenges' } });
+                }}
+              >
+                <Target size={18} /> Next challenge
+              </button>
+              <button
+                type="button"
+                className="btn-primary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm cursor-pointer"
+                onClick={() => {
+                  setShowCompletionModal(false);
+                  navigate('/app/dashboard');
+                }}
+              >
+                <Home size={18} /> Back to home
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

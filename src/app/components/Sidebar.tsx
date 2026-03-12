@@ -158,9 +158,12 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
       {/* ---- Navigation Links ---- */}
       <nav className="flex-1 py-6 flex flex-col gap-1 px-2 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = item.path === '/app/learn' 
-            ? location.pathname.startsWith('/app/learn') 
-            : (location.pathname === item.path || location.pathname.startsWith(item.path + '/'));
+          const isOnChallengeRoute = location.pathname.startsWith('/app/learn/challenges') || location.pathname.startsWith('/app/challenges');
+          const isActive = item.path === '/app/learn'
+            ? location.pathname.startsWith('/app/learn') && !location.pathname.startsWith('/app/learn/challenges')
+            : item.path === '/app/challenges'
+              ? isOnChallengeRoute
+              : (location.pathname === item.path || location.pathname.startsWith(item.path + '/'));
           const hasSubItems = item.subItems && item.subItems.length > 0;
           const isLearnItem = item.label === 'Learn';
 
@@ -185,7 +188,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                   size={20}
                   className={clsx(
                     "shrink-0",
-                    (isActive && !isLearnItem) ? "text-[#8b5cf6]" : "text-app-muted"
+                    (isActive && !isLearnItem) ? "text-[#5236ab]" : "text-app-muted"
                   )}
                 />
 
@@ -225,8 +228,9 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                   className="overflow-hidden"
                 >
                   {item.subItems!.map((subItem) => {
-                    const isSubActive = location.pathname.startsWith('/app/learn') && 
-                      (location.search.includes(subItem.path.split('?')[1]) || 
+                    const isOnLearnIndex = location.pathname === '/app/learn';
+                    const isSubActive = isOnLearnIndex &&
+                      (location.search.includes(subItem.path.split('?')[1]) ||
                        (subItem.label === 'Trainings' && !location.search));
                     
                     return (
@@ -244,7 +248,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                             size={16}
                             className={clsx(
                               "shrink-0",
-                              isSubActive ? "text-[#8b5cf6]" : "text-app-muted"
+                              isSubActive ? "text-[#5236ab]" : "text-app-muted"
                             )}
                           />
                         )}
