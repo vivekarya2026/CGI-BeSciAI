@@ -27,9 +27,9 @@ import {
 import { useNavigate } from 'react-router';
 import { useUser } from '../../context/UserContext';
 import clsx from 'clsx';
-import { NotificationsPanel } from '../../components/NotificationsPanel';
-import { HeaderStatsChips } from '../../components/HeaderStatsChips';
+import { PageHeader } from '../../components/PageHeader';
 import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
+import { ARCHETYPE_COLORS as archetypeColors, STATUS_COLORS as statusColors } from '../../lib/colors';
 
 // ============================================
 // SECTION 1: DATA INTERFACES (Types)
@@ -121,15 +121,6 @@ const initialConversations: Conversation[] = [
     ],
   },
 ];
-
-const archetypeColors: Record<string, string> = {
-  Trailblazer: '#f59e0b', Guide: '#14b8a6', Connector: '#8b5cf6',
-  Explorer: '#0ea5e9', Champion: '#e31937', Innovator: '#84cc16',
-};
-
-const statusColors: Record<string, string> = {
-  online: '#1ab977', away: '#f1a425', offline: '#a8a8a8',
-};
 
 // ============================================
 // SECTION 3: COMPONENT LOGIC
@@ -233,44 +224,22 @@ export default function MessagesPage() {
   return (
     <div className="font-primary">
       {/* --- Page Header --- */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6"
+      <PageHeader
+        title="Messages"
+        subtitle="Chat with your connected peers and grow together."
+        progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }}
+        onMessagesClick={() => setMiniMessagesOpen(prev => !prev)}
+        onNavigate={navigate}
       >
-        <div>
-          <h1 className="messages-header-title">Messages</h1>
-          <p className="messages-header-subtitle">
-            Chat with your connected peers and grow together.
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
-          </div>
-          <button
-            type="button"
-            className="notifications-bell"
-            onClick={() => setMiniMessagesOpen(prev => !prev)}
-            aria-label="Open messages"
-          >
-            <MessageSquare size={18} className="text-app-muted" />
-            <span className="notifications-badge">3</span>
-          </button>
-          <div className="relative">
-            <NotificationsPanel onNavigate={(path) => navigate(path)} />
-          </div>
-          <motion.button
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            onClick={() => setShowSuggestions(!showSuggestions)}
-            className="find-peers-button"
-          >
-            <UserPlus size={16} /> <span className="hidden sm:inline">Find Peers</span>
-          </motion.button>
-        </div>
-      </motion.div>
+        <motion.button
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.96 }}
+          onClick={() => setShowSuggestions(!showSuggestions)}
+          className="find-peers-button"
+        >
+          <UserPlus size={16} /> <span className="hidden sm:inline">Find Peers</span>
+        </motion.button>
+      </PageHeader>
 
       {/* --- Suggested Connections Panel (Animated) --- */}
       <AnimatePresence>
@@ -306,6 +275,7 @@ export default function MessagesPage() {
                       <span
                         className="status-dot"
                         style={{ backgroundColor: statusColors[peer.status] }}
+                        aria-label={peer.status}
                       />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -389,6 +359,7 @@ export default function MessagesPage() {
                     <span
                       className="status-dot"
                       style={{ backgroundColor: statusColors[peer.status] }}
+                      aria-label={peer.status}
                     />
                   </div>
 
@@ -464,6 +435,7 @@ export default function MessagesPage() {
                   <span
                     className="status-dot"
                     style={{ backgroundColor: statusColors[selectedPeer.status] }}
+                    aria-label={selectedPeer.status}
                   />
                 </div>
                 <div className="flex-1">
@@ -530,17 +502,14 @@ export default function MessagesPage() {
                       >
                         {msg.text}
                         <div
-                          className="flex items-center gap-1 mt-1"
-                          style={{ justifyContent: isMe ? 'flex-end' : 'flex-start' }}
+                          className={`flex items-center gap-1 mt-1 ${isMe ? 'justify-end' : 'justify-start'}`}
                         >
                           <span className="message-time">{msg.time}</span>
                           {isMe && (
                             <CheckCheck
                               size={13}
-                              style={{
-                                opacity: 0.7,
-                                color: msg.status === 'read' ? '#a5d6ff' : 'rgba(255,255,255,0.5)',
-                              }}
+                              className="opacity-70"
+                              style={{ color: msg.status === 'read' ? '#a5d6ff' : 'rgba(255,255,255,0.5)' }}
                             />
                           )}
                         </div>

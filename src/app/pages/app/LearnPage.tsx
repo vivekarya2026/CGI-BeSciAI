@@ -10,13 +10,9 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   GraduationCap, Zap, Play, CheckCircle, Clock,
-  Star, ChevronDown, ChevronRight, MessageSquare, Search,
+  Star, ChevronDown, ChevronRight, Search,
 } from 'lucide-react';
-import {
-  trainings,
-  microLearnings,
-  getCompletedMicroIds,
-} from '../../data/learnData';
+import { useLearnFilters } from '../../hooks/useLearnFilters';
 import { useUser } from '../../context/UserContext';
 import { useNavigate, useLocation } from 'react-router';
 import clsx from 'clsx';
@@ -26,8 +22,7 @@ import {
   secondaryButtonMotion,
   staggerContainer,
 } from '../../components/ui/motionPresets';
-import { NotificationsPanel } from '../../components/NotificationsPanel';
-import { HeaderStatsChips } from '../../components/HeaderStatsChips';
+import { PageHeader } from '../../components/PageHeader';
 import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 export type LearnSubTab = 'trainings' | 'micro';
@@ -39,61 +34,26 @@ export default function LearnPage() {
 
   const [activeTab, setActiveTab] = useState<LearnSubTab>('trainings');
   const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
-  
-  // Training filters
-  const [trainingSearchQuery, setTrainingSearchQuery] = useState('');
-  const [trainingSubjectFilter, setTrainingSubjectFilter] = useState<string>('all');
-  const [trainingFormatFilter, setTrainingFormatFilter] = useState<string>('all');
-  const [trainingLevelFilter, setTrainingLevelFilter] = useState<string>('all');
-  
-  // Micro-learning filters
-  const [microSearchQuery, setMicroSearchQuery] = useState('');
-  const [microTopicFilter, setMicroTopicFilter] = useState<string>('all');
-  const [microToolFilter, setMicroToolFilter] = useState<string>('all');
-  const [microSortFilter, setMicroSortFilter] = useState<string>('default');
 
-  // Find unfinished training
-  const unfinishedTraining = trainings.find(t => t.progress && t.progress > 0 && t.progress < 100);
-  
-  // Find unfinished micro-learning or show most recent/recommended
-  const completedMicroIds = getCompletedMicroIds();
-  const unfinishedLesson = microLearnings.find(m => {
-    const isCompleted = m.completed || completedMicroIds.has(m.id);
-    return !isCompleted && m.progress && m.progress > 0;
-  });
-  
-  // If no unfinished lesson, show the first non-completed lesson as recommended
-  const recommendedLesson = unfinishedLesson || microLearnings.find(m => {
-    const isCompleted = m.completed || completedMicroIds.has(m.id);
-    return !isCompleted;
-  });
-
-  // Filter trainings
-  const filteredTrainings = trainings.filter(t => {
-    const subjectOk = trainingSubjectFilter === 'all' || t.category === trainingSubjectFilter;
-    const formatOk = trainingFormatFilter === 'all' || t.format === trainingFormatFilter;
-    const levelOk = trainingLevelFilter === 'all' || t.difficulty === trainingLevelFilter;
-    const q = trainingSearchQuery.trim().toLowerCase();
-    const searchOk = !q || [t.title, t.description, t.category].some(
-      (v) => v && String(v).toLowerCase().includes(q)
-    );
-    return subjectOk && formatOk && levelOk && searchOk;
-  });
-
-  // Filter micro-learnings
-  const filteredMicro = microLearnings.filter(m => {
-    const topicOk = microTopicFilter === 'all' || m.topic === microTopicFilter;
-    const toolOk = microToolFilter === 'all' || m.tool === microToolFilter;
-    const q = microSearchQuery.trim().toLowerCase();
-    const searchOk = !q || [m.title, m.description, m.topic, m.tool].some(
-      (v) => v && String(v).toLowerCase().includes(q)
-    );
-    return topicOk && toolOk && searchOk;
-  }).sort((a, b) => {
-    if (microSortFilter === 'recent') return (b.addedAt || '').localeCompare(a.addedAt || '');
-    if (microSortFilter === 'popular') return (b.hot ? 1 : 0) - (a.hot ? 1 : 0);
-    return 0;
-  }).slice(0, 6);
+  const {
+    trainingSearchQuery, setTrainingSearchQuery,
+    trainingSubjectFilter, setTrainingSubjectFilter,
+    trainingFormatFilter, setTrainingFormatFilter,
+    trainingLevelFilter, setTrainingLevelFilter,
+    microSearchQuery, setMicroSearchQuery,
+    microTopicFilter, setMicroTopicFilter,
+    microToolFilter, setMicroToolFilter,
+    microSortFilter, setMicroSortFilter,
+    unfinishedTraining,
+    recommendedLesson,
+    filteredTrainings,
+    filteredMicro,
+    subjects,
+    formats,
+    levels,
+    topics,
+    tools,
+  } = useLearnFilters();
 
   // Handle tab from URL params
   useEffect(() => {
@@ -103,13 +63,6 @@ export default function LearnPage() {
       setActiveTab(tab);
     }
   }, [location.search]);
-
-  // Get unique values for filters
-  const subjects = ['all', ...new Set(trainings.map(t => t.category))];
-  const formats = ['all', ...new Set(trainings.map(t => t.format).filter(Boolean))];
-  const levels = ['all', ...new Set(trainings.map(t => t.difficulty).filter(Boolean))];
-  const topics = ['all', ...new Set(microLearnings.map(m => m.topic))];
-  const tools = ['all', ...new Set(microLearnings.map(m => m.tool))];
 
   const getTopicClass = (topic: string) => {
     const classes: Record<string, string> = {
@@ -124,35 +77,15 @@ export default function LearnPage() {
   return (
     <div className="font-primary bg-app-bg min-h-screen">
       {/* HEADER */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-app-primary">
-            {activeTab === 'trainings' ? 'Trainings' : 'Micro-learnings'}
-          </h1>
-          <p className="text-sm sm:text-base text-app-secondary">
-            {activeTab === 'trainings'
-              ? 'Build your AI skills with personalized training paths'
-              : 'Quick, focused lessons to master specific AI tools and techniques'}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
-          </div>
-          <button
-            type="button"
-            className="notifications-bell"
-            onClick={() => setMiniMessagesOpen(prev => !prev)}
-            aria-label="Open messages"
-          >
-            <MessageSquare size={18} className="text-app-muted" />
-            <span className="notifications-badge">3</span>
-          </button>
-          <div className="relative">
-            <NotificationsPanel onNavigate={(path) => navigate(path)} />
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title={activeTab === 'trainings' ? 'Trainings' : 'Micro-learnings'}
+        subtitle={activeTab === 'trainings'
+          ? 'Build your AI skills with personalized training paths'
+          : 'Quick, focused lessons to master specific AI tools and techniques'}
+        progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }}
+        onMessagesClick={() => setMiniMessagesOpen(prev => !prev)}
+        onNavigate={navigate}
+      />
 
       {/* TAB CONTENT */}
       <AnimatePresence mode="wait">

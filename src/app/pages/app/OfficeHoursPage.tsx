@@ -14,7 +14,10 @@ import {
   officeHourQA,
   officeHourSlots,
 } from '../../data/learnData';
+import { useNavigate } from 'react-router';
 import { useUser } from '../../context/UserContext';
+import { PageHeader } from '../../components/PageHeader';
+import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 /** Heatmap intensity 0–4; colors from guidelines (gray 50 → purple scale). */
 const HEATMAP_COLORS = ['#efefef', '#e6e3f3', '#cbc3e6', '#9e83f5', '#5236ab'] as const;
@@ -43,6 +46,8 @@ function formatShortDate(d: Date): string {
 
 export default function OfficeHoursPage() {
   const { progress } = useUser();
+  const navigate = useNavigate();
+  const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
   const [officeSubTab, setOfficeSubTab] = useState<'live' | 'recordings' | 'qa' | 'coaching'>('live');
   const [officePostSession, setOfficePostSession] = useState<string | null>(null);
   const [qaSearch, setQaSearch] = useState('');
@@ -87,10 +92,13 @@ export default function OfficeHoursPage() {
 
   return (
     <div className="font-primary">
-      <h1 className="page-title">Office Hours</h1>
-      <p className="page-subtitle">
-        Join live sessions, watch recordings, browse Q&A, or book 1:1 coaching.
-      </p>
+      <PageHeader
+        title="Office Hours"
+        subtitle="Join live sessions, watch recordings, browse Q&A, or book 1:1 coaching."
+        progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }}
+        onMessagesClick={() => setMiniMessagesOpen(prev => !prev)}
+        onNavigate={navigate}
+      />
 
       {/* Your Usage Activity — heatmap + legend + summary cards */}
       <section aria-label="Your usage activity" className="heatmap-container">
@@ -98,16 +106,15 @@ export default function OfficeHoursPage() {
           <h2 className="heatmap-title text-lg sm:text-xl">Your Usage Activity</h2>
           <div className="flex items-center gap-2 heatmap-legend-text shrink-0">
             <span>Less</span>
-            {HEATMAP_COLORS.map((color, i) => (
-              <div key={i} className="heatmap-legend-box shrink-0" style={{ backgroundColor: color }} aria-hidden />
+            {([0, 1, 2, 3, 4] as const).map((level) => (
+              <div key={level} className={`heatmap-legend-box heatmap-legend-swatch-${level} shrink-0`} aria-hidden />
             ))}
             <span>More</span>
           </div>
         </div>
 
         <div
-          className="w-full max-w-full overflow-x-auto overflow-y-hidden"
-          style={{ WebkitOverflowScrolling: 'touch', marginLeft: -4, marginRight: -4 }}
+          className="heatmap-scroll-container"
           aria-label="Scroll to see full year"
         >
           <div className="flex flex-col shrink-0" style={{ minWidth: heatmapBlockMinWidth }}>
@@ -139,8 +146,7 @@ export default function OfficeHoursPage() {
                   return (
                     <div
                       key={i}
-                      className="rounded-sm"
-                      style={{ width: cellSize, height: cellSize, backgroundColor: HEATMAP_COLORS[level] }}
+                      className={`rounded-sm heatmap-cell heatmap-cell-${level}`}
                       title={idx < yearActivity.length ? `${formatShortDate(date)}: ${level > 0 ? `Level ${level} activity` : 'No activity'}` : undefined}
                     />
                   );
@@ -327,6 +333,12 @@ export default function OfficeHoursPage() {
           </div>
         </>
       )}
+
+      <DashboardMiniMessages
+        isOpen={miniMessagesOpen}
+        onClose={() => setMiniMessagesOpen(false)}
+        onOpenFullMessages={() => navigate('/app/messages')}
+      />
     </div>
   );
 }

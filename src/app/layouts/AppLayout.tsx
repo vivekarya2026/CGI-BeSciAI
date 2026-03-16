@@ -33,6 +33,10 @@ import { ByteBot } from '../components/ByteBot';
 import { Menu } from 'lucide-react';
 import ChallengeGuidedTour from '../components/ChallengeGuidedTour';
 import { ChallengeTourProvider } from '../context/ChallengeTourContext';
+import { Toaster } from '../components/ui/sonner';
+
+/** Set to true to enable the ByteBot floating AI assistant. */
+const BYTEBOT_ENABLED = false;
 
 export default function AppLayout() {
   // ---- State ----
@@ -128,12 +132,15 @@ export default function AppLayout() {
 
       {/* ============================================ */}
       {/* SECTION 4: BYTEBOT (AI CHAT ASSISTANT)      */}
-      {/* Temporarily hidden via feature flag          */}
+      {/* Set BYTEBOT_ENABLED = true to re-enable     */}
       {/* ============================================ */}
-      {false && <ByteBot />}
+      {BYTEBOT_ENABLED && <ByteBot />}
 
       {/* Challenge walkthrough — start from "Show me around", skip anytime */}
       <ChallengeGuidedTour />
+
+      {/* Global toast notifications (sonner) */}
+      <Toaster />
     </div>
     </ChallengeTourProvider>
   );

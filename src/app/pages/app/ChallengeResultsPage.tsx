@@ -7,6 +7,7 @@ import React, { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
 import { CheckCircle, Star, BarChart3, Bell, Share2, Target, LayoutDashboard, MessageSquare } from 'lucide-react';
+import { toast } from 'sonner';
 import clsx from 'clsx';
 import { getChallengeById } from '../../data/learnData';
 import { useUser } from '../../context/UserContext';
@@ -34,12 +35,20 @@ export default function ChallengeResultsPage() {
       try {
         await navigator.share({ title: challenge?.title ?? 'Challenge', url });
       } catch {
-        await navigator.clipboard.writeText(url);
-        alert('Link copied to clipboard');
+        try {
+          await navigator.clipboard.writeText(url);
+          toast.success('Link copied to clipboard');
+        } catch {
+          toast.error('Could not copy link');
+        }
       }
     } else {
-      await navigator.clipboard.writeText(url);
-      alert('Link copied to clipboard');
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success('Link copied to clipboard');
+      } catch {
+        toast.error('Could not copy link');
+      }
     }
   };
 

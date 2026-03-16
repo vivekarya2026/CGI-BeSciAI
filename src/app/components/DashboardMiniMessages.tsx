@@ -7,6 +7,7 @@ import {
   CheckCheck,
 } from 'lucide-react';
 import clsx from 'clsx';
+import { ARCHETYPE_COLORS as archetypeColors, STATUS_COLORS as statusColors } from '../lib/colors';
 
 type MiniMessageStatus = 'sent' | 'delivered' | 'read';
 
@@ -29,18 +30,6 @@ interface MiniConversation {
   messages: MiniMessage[];
 }
 
-const archetypeColors: Record<string, string> = {
-  Trailblazer: '#f59e0b',
-  Guide: '#14b8a6',
-  Connector: '#8b5cf6',
-  Innovator: '#84cc16',
-};
-
-const statusColors: Record<'online' | 'away' | 'offline', string> = {
-  online: '#1ab977',
-  away: '#f1a425',
-  offline: '#a8a8a8',
-};
 
 const MINI_CONVERSATIONS: MiniConversation[] = [
   {

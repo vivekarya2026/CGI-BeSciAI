@@ -17,6 +17,39 @@ import {
   Building2,
 } from 'lucide-react';
 
+// ─── Static page content data ─────────────────────────────────────────────────
+
+const JOURNEY_STEPS = [
+  { n: '01', t: 'Set Your AI Goals', d: 'Define your role, readiness level, and what AI success looks like for you personally.' },
+  { n: '02', t: 'Get Your Learning Path', d: 'Unlock a role-specific curriculum with real prompt libraries, use cases, and tool access.' },
+  { n: '03', t: 'Build the Habit', d: 'Behavioral nudges, milestones, and peer recognition keep you engaged and progressing.' },
+  { n: '04', t: 'Measure Your Growth', d: 'Track AI skill maturity with self-reporting tools and team-level adoption insights.' },
+];
+
+const FEATURES = [
+  { icon: <Compass size={20} />, title: 'Unified Start Here Hub', desc: 'One clear entry point that guides every user through tools, training, and next steps—no confusion, no scattered resources.' },
+  { icon: <Target size={20} />, title: 'Role-Specific Journeys', desc: 'Tailored learning paths for functional, technical, and hybrid roles. Prompt examples mapped to your actual job, not generic theory.' },
+  { icon: <BookOpen size={20} />, title: 'Searchable Prompt Library', desc: 'Real-world, AI-confirmed prompt examples ready for immediate use in your daily workflows—approved and accessible.' },
+  { icon: <Trophy size={20} />, title: 'Peer Recognition System', desc: 'Badges, shout-outs, and mentor matching to celebrate progress and build social momentum within your team.' },
+  { icon: <Brain size={20} />, title: 'Behavioral Nudges', desc: 'Science-backed micro-interventions that build lasting AI habits through rewarding, low-friction daily interactions.' },
+  { icon: <BarChart3 size={20} />, title: 'Progress & Analytics', desc: 'Self-tracking of AI usage, milestones, and skill maturity—so you and your org always know where you stand.' },
+];
+
+const PILLARS = [
+  { icon: <Zap size={22} />, title: 'Frictionless by Default', desc: 'Every interaction is designed to remove barriers, not add steps.' },
+  { icon: <FlaskConical size={22} />, title: 'Behavioral Science Core', desc: 'Habit formation and nudge theory baked into every feature.' },
+  { icon: <Users size={22} />, title: 'Community-Powered', desc: 'Peer learning, examples, and mentorship amplify individual progress.' },
+  { icon: <Building2 size={22} />, title: 'Enterprise-Ready', desc: 'Compliance-aware, scalable, and designed for org-wide rollout.' },
+];
+
+const SEGMENTS = [
+  { role: 'End Users', desc: 'Employees at any AI-readiness level who need a clear, structured path to confidently integrate AI into daily work—without survey fatigue or anxiety.', tag: 'Low → High Readiness', tagClass: 'landing2-tag landing2-tag-purple' },
+  { role: 'Team Managers', desc: 'Leaders who want to drive participation, assess team readiness, and get real feedback on AI adoption—with minimal manual effort.', tag: 'Pilot & Rollout', tagClass: 'landing2-tag landing2-tag-rose' },
+  { role: 'Sponsors & Admins', desc: 'Executives and program owners who need org-wide visibility, adoption reporting, and proof that the program is delivering measurable results.', tag: 'Enterprise Overview', tagClass: 'landing2-tag landing2-tag-violet' },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function LandingPage() {
   const navigate = useNavigate();
 
@@ -149,28 +182,7 @@ export default function LandingPage() {
           </div>
 
           <div className="landing2-platform-visual">
-            {[
-              {
-                n: '01',
-                t: 'Set Your AI Goals',
-                d: 'Define your role, readiness level, and what AI success looks like for you personally.',
-              },
-              {
-                n: '02',
-                t: 'Get Your Learning Path',
-                d: 'Unlock a role-specific curriculum with real prompt libraries, use cases, and tool access.',
-              },
-              {
-                n: '03',
-                t: 'Build the Habit',
-                d: 'Behavioral nudges, milestones, and peer recognition keep you engaged and progressing.',
-              },
-              {
-                n: '04',
-                t: 'Measure Your Growth',
-                d: 'Track AI skill maturity with self-reporting tools and team-level adoption insights.',
-              },
-            ].map((s) => (
+            {JOURNEY_STEPS.map((s) => (
               <div key={s.n} className="landing2-journey-step">
                 <div className="landing2-step-num">{s.n}</div>
                 <div>
@@ -194,38 +206,7 @@ export default function LandingPage() {
         </h2>
 
         <div className="landing2-features-grid">
-          {[
-            {
-              icon: <Compass size={20} />,
-              title: 'Unified Start Here Hub',
-              desc: 'One clear entry point that guides every user through tools, training, and next steps—no confusion, no scattered resources.',
-            },
-            {
-              icon: <Target size={20} />,
-              title: 'Role-Specific Journeys',
-              desc: 'Tailored learning paths for functional, technical, and hybrid roles. Prompt examples mapped to your actual job, not generic theory.',
-            },
-            {
-              icon: <BookOpen size={20} />,
-              title: 'Searchable Prompt Library',
-              desc: 'Real-world, AI-confirmed prompt examples ready for immediate use in your daily workflows—approved and accessible.',
-            },
-            {
-              icon: <Trophy size={20} />,
-              title: 'Peer Recognition System',
-              desc: 'Badges, shout-outs, and mentor matching to celebrate progress and build social momentum within your team.',
-            },
-            {
-              icon: <Brain size={20} />,
-              title: 'Behavioral Nudges',
-              desc: 'Science-backed micro-interventions that build lasting AI habits through rewarding, low-friction daily interactions.',
-            },
-            {
-              icon: <BarChart3 size={20} />,
-              title: 'Progress & Analytics',
-              desc: 'Self-tracking of AI usage, milestones, and skill maturity—so you and your org always know where you stand.',
-            },
-          ].map((f) => (
+          {FEATURES.map((f) => (
             <div key={f.title} className="landing2-feature-card">
               <div className="landing2-feature-icon" aria-hidden="true">
                 {f.icon}
@@ -242,12 +223,7 @@ export default function LandingPage() {
           <div className="landing2-section-label">Why BeSciAI</div>
           <h2 className="landing2-section-title">Built Different, by Design</h2>
           <div className="landing2-pillars-grid">
-            {[
-              { icon: <Zap size={22} />, title: 'Frictionless by Default', desc: 'Every interaction is designed to remove barriers, not add steps.' },
-              { icon: <FlaskConical size={22} />, title: 'Behavioral Science Core', desc: 'Habit formation and nudge theory baked into every feature.' },
-              { icon: <Users size={22} />, title: 'Community-Powered', desc: 'Peer learning, examples, and mentorship amplify individual progress.' },
-              { icon: <Building2 size={22} />, title: 'Enterprise-Ready', desc: 'Compliance-aware, scalable, and designed for org-wide rollout.' },
-            ].map((p) => (
+            {PILLARS.map((p) => (
               <div key={p.title} className="landing2-pillar">
                 <span className="landing2-pillar-icon" aria-hidden="true">
                   {p.icon}
@@ -268,26 +244,7 @@ export default function LandingPage() {
           on the AI Journey
         </h2>
         <div className="landing2-segments-grid">
-          {[
-            {
-              role: 'End Users',
-              desc: 'Employees at any AI-readiness level who need a clear, structured path to confidently integrate AI into daily work—without survey fatigue or anxiety.',
-              tag: 'Low → High Readiness',
-              tagClass: 'landing2-tag landing2-tag-purple',
-            },
-            {
-              role: 'Team Managers',
-              desc: 'Leaders who want to drive participation, assess team readiness, and get real feedback on AI adoption—with minimal manual effort.',
-              tag: 'Pilot & Rollout',
-              tagClass: 'landing2-tag landing2-tag-rose',
-            },
-            {
-              role: 'Sponsors & Admins',
-              desc: 'Executives and program owners who need org-wide visibility, adoption reporting, and proof that the program is delivering measurable results.',
-              tag: 'Enterprise Overview',
-              tagClass: 'landing2-tag landing2-tag-violet',
-            },
-          ].map((s) => (
+          {SEGMENTS.map((s) => (
             <div key={s.role} className="landing2-segment-card">
               <div className="landing2-segment-role">{s.role}</div>
               <div className="landing2-segment-desc">{s.desc}</div>

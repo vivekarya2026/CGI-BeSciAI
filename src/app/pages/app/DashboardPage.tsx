@@ -24,7 +24,7 @@ import {
   officeHourUpcoming,
 } from '../../data/learnData';
 import { STATS_TILES_CONFIG, type StatIconKey } from '../../data/statsConfig';
-import { NotificationsPanel } from '../../components/NotificationsPanel';
+import { PageHeader } from '../../components/PageHeader';
 import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 import {
   cardHoverMotion,
@@ -79,7 +79,7 @@ export default function DashboardPage() {
 
   // Get current training module
   const currentModule = learningModules.find(m => !m.completed && !m.locked);
-  const completionPct = currentModule ? ((currentModule as any).progress || 60) : 0;
+  const completionPct = currentModule?.progress ?? 60;
 
   // Get today's challenge
   const dayIndex = Math.floor(Date.now() / 86400000);
@@ -94,30 +94,12 @@ export default function DashboardPage() {
       {/* ============================================ */}
       {/* HEADER SECTION */}
       {/* ============================================ */}
-      <header className="mb-5 sm:mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-1 text-app-primary">
-              {greeting}, {user?.name || 'Alex'}! 👋
-            </h1>
-            <p className="text-sm sm:text-base text-app-secondary">
-              Ready to continue your learning journey today?
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              className="notifications-bell"
-              onClick={() => setMiniMessagesOpen((o) => !o)}
-              aria-label="Open messages"
-            >
-              <MessageSquare size={18} className="text-app-muted" />
-              <span className="notifications-badge">3</span>
-            </button>
-            <NotificationsPanel onNavigate={(path) => navigate(path)} />
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title={<>{greeting}, {user?.name || 'Alex'}! 👋</>}
+        subtitle="Ready to continue your learning journey today?"
+        onMessagesClick={() => setMiniMessagesOpen((o) => !o)}
+        onNavigate={navigate}
+      />
 
       {/* ============================================ */}
       {/* MAIN CONTENT - TWO COLUMN LAYOUT */}

@@ -3547,6 +3547,41 @@
   padding: 1rem 1.5rem;
 }
 
+/* ========================================
+   HEATMAP COMPONENT (OfficeHoursPage)
+   ======================================== */
+
+/* Fixed-size cell shared by all heatmap squares */
+.heatmap-cell {
+  width: 10px;
+  height: 10px;
+}
+
+/* Intensity levels: maps to HEATMAP_COLORS array [0–4] */
+.heatmap-cell-0 { background-color: #efefef; }
+.heatmap-cell-1 { background-color: #e6e3f3; }
+.heatmap-cell-2 { background-color: #cbc3e6; }
+.heatmap-cell-3 { background-color: #9e83f5; }
+.heatmap-cell-4 { background-color: #5236ab; }
+
+/* Legend color swatches */
+.heatmap-legend-swatch-0 { background-color: #efefef; }
+.heatmap-legend-swatch-1 { background-color: #e6e3f3; }
+.heatmap-legend-swatch-2 { background-color: #cbc3e6; }
+.heatmap-legend-swatch-3 { background-color: #9e83f5; }
+.heatmap-legend-swatch-4 { background-color: #5236ab; }
+
+/* Scroll container with cross-browser scroll support */
+.heatmap-scroll-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  margin-left: -4px;
+  margin-right: -4px;
+}
+
 .onboarding-btn-back {
   display: flex;
   align-items: center;

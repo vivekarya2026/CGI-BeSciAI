@@ -11,7 +11,7 @@ import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import {
   Target, Flame, Star, Clock, Users, Search,
-  ChevronRight, ChevronDown, CheckCircle2, Play, TrendingUp, MessageSquare,
+  ChevronRight, ChevronDown, CheckCircle2, Play, TrendingUp,
 } from 'lucide-react';
 import {
   challenges,
@@ -24,9 +24,55 @@ import {
   secondaryButtonMotion,
   staggerContainer,
 } from '../../components/ui/motionPresets';
-import { NotificationsPanel } from '../../components/NotificationsPanel';
-import { HeaderStatsChips } from '../../components/HeaderStatsChips';
+import { PageHeader } from '../../components/PageHeader';
 import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
+
+// ─── Module-level data ────────────────────────────────────────────────────────
+
+/** Daily progress: Sun/Mon completed; Tue missed streak; Wed = today; rest upcoming */
+const DAILY_PROGRESS = [
+  { day: 'Sun', points: 50, completed: true, isActive: false },
+  { day: 'Mon', points: 75, completed: true, isActive: false },
+  { day: 'Tue', points: 0, completed: false, isActive: false, missedStreak: true },
+  { day: 'Wed', points: 10, completed: false, isActive: true },
+  { day: 'Thu', points: 0, completed: false, isActive: false },
+  { day: 'Fri', points: 0, completed: false, isActive: false },
+  { day: 'Sat', points: 0, completed: false, isActive: false },
+];
+
+/** Mock weekly leaderboard entries */
+const LEADERBOARD = [
+  { rank: 1, name: 'Sarah Chen', xp: 2450, isYou: false, medal: '🥇' },
+  { rank: 2, name: 'Alex Kumar', xp: 2280, isYou: false, medal: '🥈' },
+  { rank: 3, name: 'Jamie Lee', xp: 2150, isYou: false, medal: '🥉' },
+  { rank: 4, name: 'You', xp: 1890, isYou: true, medal: '' },
+];
+
+// ─── Module-level helpers ─────────────────────────────────────────────────────
+
+function getDifficultyClass(difficulty: string): string {
+  const lower = difficulty.toLowerCase();
+  if (lower === 'easy' || lower === 'beginner') return 'difficulty-beginner';
+  if (lower === 'medium' || lower === 'intermediate') return 'difficulty-intermediate';
+  if (lower === 'hard' || lower === 'advanced') return 'difficulty-advanced';
+  return 'badge-gray';
+}
+
+function getTypeBadgeClass(type: string): string {
+  if (type === 'weekly') return 'frequency-weekly';
+  if (type === 'track') return 'frequency-track';
+  if (type === 'assigned') return 'frequency-daily';
+  return 'badge-gray';
+}
+
+function getMedalClass(idx: number): string {
+  if (idx === 0) return 'leaderboard-compact-medal-gold';
+  if (idx === 1) return 'leaderboard-compact-medal-silver';
+  if (idx === 2) return 'leaderboard-compact-medal-bronze';
+  return 'leaderboard-compact-medal-other';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function ChallengesPage() {
   const navigate = useNavigate();
@@ -35,78 +81,23 @@ export default function ChallengesPage() {
   const [typeFilter, setTypeFilter] = useState<'all' | string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Daily progress: Sun, Mon completed; Tue missed streak; Wed = today; rest upcoming
-  const dailyProgress = [
-    { day: 'Sun', points: 50, completed: true, isActive: false },
-    { day: 'Mon', points: 75, completed: true, isActive: false },
-    { day: 'Tue', points: 0, completed: false, isActive: false, missedStreak: true },
-    { day: 'Wed', points: 10, completed: false, isActive: true },
-    { day: 'Thu', points: 0, completed: false, isActive: false },
-    { day: 'Fri', points: 0, completed: false, isActive: false },
-    { day: 'Sat', points: 0, completed: false, isActive: false },
-  ];
-
-  // Mock leaderboard data
-  const leaderboard = [
-    { rank: 1, name: 'Sarah Chen', xp: 2450, isYou: false, medal: '🥇' },
-    { rank: 2, name: 'Alex Kumar', xp: 2280, isYou: false, medal: '🥈' },
-    { rank: 3, name: 'Jamie Lee', xp: 2150, isYou: false, medal: '🥉' },
-    { rank: 4, name: 'You', xp: 1890, isYou: true, medal: '' },
-  ];
-
-  // Filter challenges
   const filteredChallenges = challenges.filter(c => {
     const typeMatch = typeFilter === 'all' || c.type === typeFilter;
-    const searchMatch = !searchQuery.trim() || 
+    const searchMatch = !searchQuery.trim() ||
       (c.title + c.description).toLowerCase().includes(searchQuery.toLowerCase());
     return typeMatch && searchMatch;
   });
 
-  const getDifficultyClass = (difficulty: string) => {
-    const lower = difficulty.toLowerCase();
-    if (lower === 'easy' || lower === 'beginner') return 'difficulty-beginner';
-    if (lower === 'medium' || lower === 'intermediate') return 'difficulty-intermediate';
-    if (lower === 'hard' || lower === 'advanced') return 'difficulty-advanced';
-    return 'badge-gray';
-  };
-
-  const getTypeBadgeClass = (type: string) => {
-    if (type === 'weekly') return 'frequency-weekly';
-    if (type === 'track') return 'frequency-track';
-    if (type === 'assigned') return 'frequency-daily';
-    return 'badge-gray';
-  };
-
   return (
     <div className="font-primary bg-app-bg min-h-screen">
       {/* HEADER */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-app-primary">
-            Daily Challenges
-          </h1>
-          <p className="text-sm sm:text-base text-app-secondary">
-            Level up your skills with hands-on challenges
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
-          </div>
-          <button
-            type="button"
-            className="notifications-bell"
-            onClick={() => setMiniMessagesOpen(prev => !prev)}
-            aria-label="Open messages"
-          >
-            <MessageSquare size={18} className="text-app-muted" />
-            <span className="notifications-badge">3</span>
-          </button>
-          <div className="relative">
-            <NotificationsPanel onNavigate={(path) => navigate(path)} />
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="Daily Challenges"
+        subtitle="Level up your skills with hands-on challenges"
+        progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }}
+        onMessagesClick={() => setMiniMessagesOpen(prev => !prev)}
+        onNavigate={navigate}
+      />
 
       {/* MAIN LAYOUT: Daily Progress + Leaderboard - COMPACT FIGMA DESIGN */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
@@ -123,7 +114,7 @@ export default function ChallengesPage() {
 
           {/* Compact Calendar Grid — Sun, Mon; Tue missed streak; Wed = today */}
           <div className="compact-daily-progress-grid">
-            {dailyProgress.map((day, idx) => (
+            {DAILY_PROGRESS.map((day, idx) => (
               <div key={idx} className="calendar-day-compact">
                 {/* Day Label: show "Today" for active day */}
                 <span className="calendar-day-label">
@@ -173,14 +164,7 @@ export default function ChallengesPage() {
 
           {/* Horizontal Leaderboard Cards */}
           <div className="leaderboard-compact-container">
-            {leaderboard.map((user, idx) => {
-              const getMedalClass = () => {
-                if (idx === 0) return 'leaderboard-compact-medal-gold';
-                if (idx === 1) return 'leaderboard-compact-medal-silver';
-                if (idx === 2) return 'leaderboard-compact-medal-bronze';
-                return 'leaderboard-compact-medal-other';
-              };
-
+            {LEADERBOARD.map((user, idx) => {
               return (
                 <div
                   key={idx}
@@ -190,7 +174,7 @@ export default function ChallengesPage() {
                   )}
                 >
                   {/* Medal/Rank */}
-                  <div className={clsx("leaderboard-compact-medal", getMedalClass())}>
+                  <div className={clsx("leaderboard-compact-medal", getMedalClass(idx))}>
                     {user.medal || user.rank}
                   </div>
 

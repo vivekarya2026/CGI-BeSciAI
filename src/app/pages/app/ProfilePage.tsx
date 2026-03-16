@@ -35,7 +35,7 @@ import clsx from 'clsx';
 type SubTab = 'info' | 'archetype' | 'goals' | 'progress' | 'workflows' | 'settings';
 
 // Icon mapping to help us find the right icon for the current Archetype
-const iconMap: Record<string, any> = {
+const ICON_MAP: Record<string, any> = {
   Mountain, Lamp, Network, Compass, Trophy, Lightbulb,
 };
 
@@ -65,7 +65,7 @@ export default function ProfilePage() {
 
   // Look up full data for the current user's archetype
   const arch = archetype ? archetypes[archetype.toLowerCase()] : archetypes.trailblazer;
-  const ArchIcon = arch ? iconMap[arch.icon] : Mountain;
+  const ArchIcon = arch ? ICON_MAP[arch.icon] : Mountain;
 
   // Configuration for the tab navigation bar
   const tabs: { id: SubTab; label: string; icon: React.ReactNode }[] = [

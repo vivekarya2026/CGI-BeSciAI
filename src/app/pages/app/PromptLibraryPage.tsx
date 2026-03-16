@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Search, Bookmark, MessageSquare } from 'lucide-react';
+import { Search, Bookmark } from 'lucide-react';
 import { promptLibrary, isPromptSaved } from '../../data/learnData';
 import { useNavigate } from 'react-router';
 import clsx from 'clsx';
@@ -15,8 +15,7 @@ import {
   secondaryButtonMotion,
   staggerContainer,
 } from '../../components/ui/motionPresets';
-import { NotificationsPanel } from '../../components/NotificationsPanel';
-import { HeaderStatsChips } from '../../components/HeaderStatsChips';
+import { PageHeader } from '../../components/PageHeader';
 import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 export default function PromptLibraryPage() {
@@ -38,31 +37,13 @@ export default function PromptLibraryPage() {
 
   return (
     <div className="font-primary">
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="page-title">Prompt Library</h1>
-          <p className="page-subtitle">
-            Search and browse prompts by category. Copy, customize, bookmark, or apply in a challenge.
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
-          </div>
-          <button
-            type="button"
-            className="notifications-bell"
-            onClick={() => setMiniMessagesOpen(prev => !prev)}
-            aria-label="Open messages"
-          >
-            <MessageSquare size={18} className="text-app-muted" />
-            <span className="notifications-badge">3</span>
-          </button>
-          <div className="relative">
-            <NotificationsPanel onNavigate={(path) => navigate(path)} />
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="Prompt Library"
+        subtitle="Search and browse prompts by category. Copy, customize, bookmark, or apply in a challenge."
+        progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }}
+        onMessagesClick={() => setMiniMessagesOpen(prev => !prev)}
+        onNavigate={navigate}
+      />
 
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1 min-w-0">
@@ -119,7 +100,7 @@ export default function PromptLibraryPage() {
               </div>
             </div>
             <h4 className="text-base-semibold text-app-primary mb-2">{p.title}</h4>
-            <p className="text-sm-regular text-app-secondary mb-3" style={{ lineHeight: '20px' }}>{p.description}</p>
+            <p className="text-sm-regular text-app-secondary mb-3 leading-5">{p.description}</p>
             <div className="flex flex-wrap gap-1.5 mb-3">
               {p.tags.slice(0, 3).map(tag => <span key={tag} className="badge-tab-muted px-2 py-0.5 rounded text-xs">{tag}</span>)}
             </div>

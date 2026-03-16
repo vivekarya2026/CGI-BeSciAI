@@ -13,7 +13,7 @@
  * 4. Champions Network: Connect with senior experts and join office hours.
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router';
 import {
@@ -25,14 +25,25 @@ import {
 import { useUser } from '../../context/UserContext';
 import { archetypes } from '../../data/archetypes';
 import { DiscussionForum } from '../../components/DiscussionForum';
-import { NotificationsPanel } from '../../components/NotificationsPanel';
-import { HeaderStatsChips } from '../../components/HeaderStatsChips';
+import { PageHeader } from '../../components/PageHeader';
 import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
-// Defining the sub-tabs for the page
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 type SubTab = 'peers' | 'stories' | 'forums' | 'champions';
 
-// Stagger animation config
+interface LeaderboardEntry {
+  rank: number;
+  name: string;
+  points: number;
+  avatar: string;
+  archetype: string;
+  change: number;
+  isCurrentUser?: boolean;
+}
+
+// ─── Animation presets ────────────────────────────────────────────────────────
+
 const staggerContainer = {
   hidden: {},
   show: {
@@ -52,82 +63,87 @@ const fadeUp = {
   transition: { duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }
 };
 
+// ─── Module-level helpers ─────────────────────────────────────────────────────
+
+/** Returns the brand color for a given archetype name. */
+function getArchetypeColor(name: string): string {
+  return archetypes[name.toLowerCase()]?.color || '#5236ab';
+}
+
+// ─── Sub-tab navigation config ────────────────────────────────────────────────
+
+const TABS: { id: SubTab; label: string; icon: React.ReactNode }[] = [
+  { id: 'peers', label: 'Peer Progress', icon: <Users size={16} /> },
+  { id: 'stories', label: 'Success Stories', icon: <BookOpen size={16} /> },
+  { id: 'forums', label: 'Discussion Forums', icon: <MessageSquare size={16} /> },
+  { id: 'champions', label: 'Champions Network', icon: <Crown size={16} /> },
+];
+
+// ─── Mock data ────────────────────────────────────────────────────────────────
+
+const TRENDING_WORKFLOWS = [
+  { id: 1, title: 'Email Triage Automation', creator: 'Sarah K.', avatar: '👩‍💻', likes: 124, saves: 89, archetype: 'Trailblazer' },
+  { id: 2, title: 'Meeting Notes Generator', creator: 'Mike R.', avatar: '👨‍🔬', likes: 98, saves: 67, archetype: 'Innovator' },
+  { id: 3, title: 'Customer Response Templates', creator: 'Priya S.', avatar: '👩‍🎨', likes: 87, saves: 55, archetype: 'Guide' },
+];
+
+const SUCCESS_STORIES = [
+  { name: 'Lisa M.', role: 'Marketing Manager', metric: '40% more content', desc: 'How Lisa used AI to transform her content strategy.', archetype: 'Guide' },
+  { name: 'David K.', role: 'Data Analyst', metric: '8 hours saved/week', desc: 'David automated his entire reporting workflow.', archetype: 'Trailblazer' },
+  { name: 'Ana P.', role: 'HR Director', metric: '3x faster hiring', desc: 'AI-powered screening and candidate communication.', archetype: 'Connector' },
+];
+
+const EXPERTS = [
+  { name: 'Dr. Emily Chen', expertise: ['Prompt Engineering', 'AI Ethics'], archetype: 'Guide', available: true, avatar: '👩‍🏫' },
+  { name: 'Marcus Williams', expertise: ['Automation', 'Workflows'], archetype: 'Innovator', available: true, avatar: '👨‍💻' },
+  { name: 'Sophie Laurent', expertise: ['Data Analysis', 'Leadership'], archetype: 'Trailblazer', available: false, avatar: '👩‍🔬' },
+];
+
+const OFFICE_SESSIONS = [
+  { title: 'Prompt Engineering Q&A', host: 'Dr. Emily Chen', date: 'Mar 2, 2:00 PM', spots: '5/20', avatar: '👩‍🏫' },
+  { title: 'Automation Deep Dive', host: 'Marcus Williams', date: 'Mar 4, 10:00 AM', spots: '12/20', avatar: '👨‍💻' },
+];
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+/** Displays a rank change indicator (up / down / neutral). */
+function RankChange({ change }: { change: number }) {
+  if (change > 0) return (
+    <span className="flex items-center gap-0.5 rank-change-up">
+      <ChevronUp size={14} />
+    </span>
+  );
+  if (change < 0) return (
+    <span className="flex items-center gap-0.5 rank-change-down">
+      <ChevronDown size={14} />
+    </span>
+  );
+  return (
+    <span className="flex items-center rank-change-neutral">
+      <Minus size={14} />
+    </span>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function CommunityPage() {
   const { archetype, progress } = useUser();
   const navigate = useNavigate();
 
-  // -- Local Page State --
   const [miniMessagesOpen, setMiniMessagesOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<SubTab>('peers');
   const [leaderboardPeriod, setLeaderboardPeriod] = useState<'week' | 'month' | 'all'>('week');
 
-  // Definitions for the navigation menu buttons
-  const tabs: { id: SubTab; label: string; icon: React.ReactNode }[] = [
-    { id: 'peers', label: 'Peer Progress', icon: <Users size={16} /> },
-    { id: 'stories', label: 'Success Stories', icon: <BookOpen size={16} /> },
-    { id: 'forums', label: 'Discussion Forums', icon: <MessageSquare size={16} /> },
-    { id: 'champions', label: 'Champions Network', icon: <Crown size={16} /> },
-  ];
-
-  // Helper: Gets the brand color for a specific archetype
-  const getArchetypeColor = (name: string) => {
-    const key = name.toLowerCase();
-    return archetypes[key]?.color || '#5236ab';
-  };
-
-  // ============================================
-  // MOCK DATA (For visualization)
-  // ============================================
-  const trendingWorkflows = [
-    { id: 1, title: 'Email Triage Automation', creator: 'Sarah K.', avatar: '👩‍💻', likes: 124, saves: 89, archetype: 'Trailblazer' },
-    { id: 2, title: 'Meeting Notes Generator', creator: 'Mike R.', avatar: '👨‍🔬', likes: 98, saves: 67, archetype: 'Innovator' },
-    { id: 3, title: 'Customer Response Templates', creator: 'Priya S.', avatar: '👩‍🎨', likes: 87, saves: 55, archetype: 'Guide' },
-  ];
-
-  const leaderboard = [
+  // The current user's entry uses the live archetype from context — memoized to avoid recreation per render
+  const leaderboard: LeaderboardEntry[] = useMemo(() => [
     { rank: 1, name: 'Jordan T.', points: 4520, avatar: '🏆', archetype: 'Champion', change: 0 },
     { rank: 2, name: 'Sarah K.', points: 4180, avatar: '👩‍💻', archetype: 'Trailblazer', change: 1 },
     { rank: 3, name: 'Mike R.', points: 3950, avatar: '👨‍🔬', archetype: 'Innovator', change: -1 },
     { rank: 4, name: 'You', points: 1250, avatar: '🙋', archetype: archetype || 'Trailblazer', change: 2, isCurrentUser: true },
     { rank: 5, name: 'Priya S.', points: 1180, avatar: '👩‍🎨', archetype: 'Guide', change: -1 },
     { rank: 6, name: 'James L.', points: 1050, avatar: '👨‍💼', archetype: 'Connector', change: 0 },
-  ];
-
-  const successStories = [
-    { name: 'Lisa M.', role: 'Marketing Manager', metric: '40% more content', desc: 'How Lisa used AI to transform her content strategy.', archetype: 'Guide' },
-    { name: 'David K.', role: 'Data Analyst', metric: '8 hours saved/week', desc: 'David automated his entire reporting workflow.', archetype: 'Trailblazer' },
-    { name: 'Ana P.', role: 'HR Director', metric: '3x faster hiring', desc: 'AI-powered screening and candidate communication.', archetype: 'Connector' },
-  ];
-
-  const experts = [
-    { name: 'Dr. Emily Chen', expertise: ['Prompt Engineering', 'AI Ethics'], archetype: 'Guide', available: true, avatar: '👩‍🏫' },
-    { name: 'Marcus Williams', expertise: ['Automation', 'Workflows'], archetype: 'Innovator', available: true, avatar: '👨‍💻' },
-    { name: 'Sophie Laurent', expertise: ['Data Analysis', 'Leadership'], archetype: 'Trailblazer', available: false, avatar: '👩‍🔬' },
-  ];
-
-  const officeSessions = [
-    { title: 'Prompt Engineering Q&A', host: 'Dr. Emily Chen', date: 'Mar 2, 2:00 PM', spots: '5/20', avatar: '👩‍🏫' },
-    { title: 'Automation Deep Dive', host: 'Marcus Williams', date: 'Mar 4, 10:00 AM', spots: '12/20', avatar: '👨‍💻' },
-  ];
-
-  // Rank change indicator
-  const RankChange = ({ change }: { change: number }) => {
-    if (change > 0) return (
-      <span className="flex items-center gap-0.5 rank-change-up">
-        <ChevronUp size={14} />
-      </span>
-    );
-    if (change < 0) return (
-      <span className="flex items-center gap-0.5 rank-change-down">
-        <ChevronDown size={14} />
-      </span>
-    );
-    return (
-      <span className="flex items-center rank-change-neutral">
-        <Minus size={14} />
-      </span>
-    );
-  };
+  ], [archetype]);
 
   // ============================================
   // UI RENDER
@@ -135,36 +151,13 @@ export default function CommunityPage() {
   return (
     <div className="font-primary">
       {/* --- Page Header --- */}
-      <motion.div
-        className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <div>
-          <h1 className="page-title">Community</h1>
-          <p className="page-subtitle">
-            Connect with peers, share workflows, and grow together.
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <HeaderStatsChips progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }} />
-          </div>
-          <button
-            type="button"
-            className="notifications-bell"
-            onClick={() => setMiniMessagesOpen(prev => !prev)}
-            aria-label="Open messages"
-          >
-            <MessageSquare size={18} className="text-app-muted" />
-            <span className="notifications-badge">3</span>
-          </button>
-          <div className="relative">
-            <NotificationsPanel onNavigate={(path) => navigate(path)} />
-          </div>
-        </div>
-      </motion.div>
+      <PageHeader
+        title="Community"
+        subtitle="Connect with peers, share workflows, and grow together."
+        progress={{ xp: progress.xp ?? 0, modulesCompleted: progress.modulesCompleted ?? 0, totalModules: progress.totalModules ?? 12, streak: progress.streak ?? 0 }}
+        onMessagesClick={() => setMiniMessagesOpen(prev => !prev)}
+        onNavigate={navigate}
+      />
 
       {/* --- Sub-tabs Navigation --- */}
       <motion.div
@@ -173,7 +166,7 @@ export default function CommunityPage() {
         transition={{ duration: 0.35, delay: 0.1 }}
         className="community-tab-nav"
       >
-        {tabs.map(tab => (
+        {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
@@ -198,7 +191,7 @@ export default function CommunityPage() {
               initial="hidden"
               animate="show"
             >
-              {trendingWorkflows.map((wf) => (
+              {TRENDING_WORKFLOWS.map((wf) => (
                 <motion.div
                   key={wf.id}
                   variants={staggerItem}
@@ -258,16 +251,16 @@ export default function CommunityPage() {
 
               <div className="space-y-2">
                 {leaderboard.map((entry, i) => {
-                  const entryClass = (entry as any).isCurrentUser ? 'leaderboard-entry-current' : i === 0 ? 'leaderboard-entry-first' : 'leaderboard-entry-other';
-                  const rankClass = i === 0 ? 'leaderboard-rank-first' : (entry as any).isCurrentUser ? 'leaderboard-rank-current' : 'leaderboard-rank-other';
-                  const pointsClass = i === 0 ? 'leaderboard-points-first' : (entry as any).isCurrentUser ? 'leaderboard-points-current' : 'leaderboard-points-other';
+                  const entryClass = entry.isCurrentUser ? 'leaderboard-entry-current' : i === 0 ? 'leaderboard-entry-first' : 'leaderboard-entry-other';
+                  const rankClass = i === 0 ? 'leaderboard-rank-first' : entry.isCurrentUser ? 'leaderboard-rank-current' : 'leaderboard-rank-other';
+                  const pointsClass = i === 0 ? 'leaderboard-points-first' : entry.isCurrentUser ? 'leaderboard-points-current' : 'leaderboard-points-other';
                   return (
                     <motion.div
                       key={i}
                       initial={{ opacity: 0, x: -12 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.35, delay: 0.3 + i * 0.06 }}
-                      whileHover={{ scale: 1.005, backgroundColor: (entry as any).isCurrentUser ? undefined : i === 0 ? undefined : 'var(--app-surface-hover)' }}
+                      whileHover={{ scale: 1.005, backgroundColor: entry.isCurrentUser ? undefined : i === 0 ? undefined : 'var(--app-surface-hover)' }}
                       className={`leaderboard-entry ${entryClass}`}
                     >
                       {/* Rank number */}
@@ -280,7 +273,7 @@ export default function CommunityPage() {
 
                       {/* Name & archetype */}
                       <div className="flex-1">
-                        <span className={(entry as any).isCurrentUser ? 'leaderboard-name leaderboard-name-current' : 'leaderboard-name'}>
+                        <span className={entry.isCurrentUser ? 'leaderboard-name leaderboard-name-current' : 'leaderboard-name'}>
                           {entry.name}
                         </span>
                         <div className="flex items-center gap-1">
@@ -316,7 +309,7 @@ export default function CommunityPage() {
               initial="hidden"
               animate="show"
             >
-              {successStories.map((story, i) => (
+              {SUCCESS_STORIES.map((story, i) => (
                 <motion.div
                   key={i}
                   variants={staggerItem}
@@ -403,7 +396,7 @@ export default function CommunityPage() {
               initial="hidden"
               animate="show"
             >
-              {experts.map((expert, i) => (
+              {EXPERTS.map((expert, i) => (
                 <motion.div
                   key={i}
                   variants={staggerItem}
@@ -416,7 +409,7 @@ export default function CommunityPage() {
                   {/* Archetype label with dot */}
                   <div className="flex items-center justify-center gap-1.5 mb-3">
                     <span className="archetype-dot" style={{ backgroundColor: getArchetypeColor(expert.archetype) }} />
-                    <span className="archetype-label" style={{ fontWeight: 500 }}>{expert.archetype}</span>
+                    <span className="archetype-label font-medium">{expert.archetype}</span>
                   </div>
 
                   {/* Expertise tags */}
@@ -456,7 +449,7 @@ export default function CommunityPage() {
             >
               <h2 className="leaderboard-title mb-4">Upcoming Office Hours</h2>
               <div className="grid sm:grid-cols-2 gap-4">
-                {officeSessions.map((session, i) => (
+                {OFFICE_SESSIONS.map((session, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, y: 12 }}
