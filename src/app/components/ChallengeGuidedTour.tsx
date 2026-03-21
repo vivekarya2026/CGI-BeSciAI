@@ -667,7 +667,7 @@ export default function ChallengeGuidedTour() {
 
             {currentStep.advanceOnTargetClick ? (
               <div className="tour-click-hint">
-                <MousePointer2 size={18} className="shrink-0 text-[#5236ab]" />
+                <MousePointer2 size={18} className="shrink-0 text-cgi-purple" />
                 <span className="tour-click-hint-text text-xs sm:text-[13px]">
                   Click the highlighted area to continue
                 </span>

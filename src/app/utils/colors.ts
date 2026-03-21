@@ -82,14 +82,14 @@ export const COLORS = {
     200: '#cb7ca3',
   },
 
-  // Archetypes
+  // Archetypes (matches design-tokens.css and lib/colors.ts)
   archetypes: {
-    trailblazer: '#FFC107', // Amber/Gold
-    guide: '#00BCD4', // Teal/Cyan
-    connector: '#9C27B0', // Purple/Violet
-    explorer: '#03A9F4', // Sky Blue
-    champion: '#F44336', // Red/Crimson
-    innovator: '#8BC34A', // Electric Green
+    trailblazer: '#f59e0b',
+    guide: '#14b8a6',
+    connector: '#8b5cf6',
+    explorer: '#0ea5e9',
+    champion: '#e31937',
+    innovator: '#84cc16',
   }
 };
 

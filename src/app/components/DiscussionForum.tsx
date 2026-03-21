@@ -125,8 +125,8 @@ const forumThreads: ForumThread[] = [
 ];
 
 const archetypeColors: Record<string, string> = {
-  Trailblazer: '#f59e0b', Guide: '#14b8a6', Connector: '#8b5cf6',
-  Explorer: '#0ea5e9', Champion: '#e31937', Innovator: '#84cc16',
+  Trailblazer: 'var(--archetype-trailblazer)', Guide: 'var(--archetype-guide)', Connector: 'var(--archetype-connector)',
+  Explorer: 'var(--archetype-explorer)', Champion: 'var(--archetype-champion)', Innovator: 'var(--archetype-innovator)',
 };
 
 export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: string) => void }) {
@@ -162,7 +162,7 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
         {/* Navigation Head */}
         <button 
           onClick={() => setSelectedThread(null)} 
-          className="forum-back-button hover:text-[#5236ab]"
+          className="forum-back-button hover:text-cgi-purple"
         >
           <ArrowLeft size={16} /> Back to Discussions
         </button>
@@ -177,7 +177,7 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
         >
           {/* Category + Pinned badges */}
           <div className="flex items-center gap-2 mb-3">
-            <span className="forum-category-badge" style={{ backgroundColor: `${selectedThread.categoryColor || '#5236ab'}15`, color: selectedThread.categoryColor || '#5236ab' }}>
+            <span className="forum-category-badge" style={{ backgroundColor: `${selectedThread.categoryColor || 'var(--cgi-purple)'}15`, color: selectedThread.categoryColor || 'var(--cgi-purple)' }}>
               {selectedThread.categoryIcon} {selectedThread.category}
             </span>
             {selectedThread.pinned && (
@@ -196,7 +196,7 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
               <div>
                 <div className="flex items-center gap-2">
                   <span className="forum-author-name">{selectedThread.author.name}</span>
-                  <span className="forum-archetype-dot" style={{ backgroundColor: archetypeColors[selectedThread.author.archetype] || '#5236ab' }} />
+                  <span className="forum-archetype-dot" style={{ backgroundColor: archetypeColors[selectedThread.author.archetype] || 'var(--cgi-purple)' }} />
                   <span className="forum-archetype-label">{selectedThread.author.archetype}</span>
                 </div>
                 <div className="forum-timestamp">{selectedThread.createdAt}</div>
@@ -216,7 +216,7 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
           {selectedThread.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-app">
               {selectedThread.tags.map(tag => (
-                <span key={tag} className="forum-tag hover:bg-[var(--app-brand-light)] hover:text-[#5236ab]">
+                <span key={tag} className="forum-tag hover:bg-[var(--app-brand-light)] hover:text-cgi-purple">
                   {tag}
                 </span>
               ))}
@@ -256,7 +256,7 @@ export function DiscussionForum({ onSuggestChat }: { onSuggestChat?: (name: stri
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="forum-reply-author">{reply.author.name}</span>
-                      <span className="forum-archetype-dot" style={{ backgroundColor: archetypeColors[reply.author.archetype] || '#5236ab' }} />
+                      <span className="forum-archetype-dot" style={{ backgroundColor: archetypeColors[reply.author.archetype] || 'var(--cgi-purple)' }} />
                       <span className="forum-archetype-label">{reply.author.archetype}</span>
                     </div>
                     <span className="forum-timestamp">{reply.time}</span>

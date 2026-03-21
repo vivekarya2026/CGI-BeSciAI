@@ -99,7 +99,7 @@ export default function ResourceDetailPage() {
             </a>
           )}
           <button onClick={handleBookmark} className={`btn-secondary-border ${saved ? 'btn-secondary-border-saved' : ''}`}>
-            <Bookmark size={18} fill={saved ? '#5236ab' : 'none'} /> {saved ? 'Saved' : 'Bookmark'}
+            <Bookmark size={18} fill={saved ? 'var(--cgi-purple)' : 'none'} /> {saved ? 'Saved' : 'Bookmark'}
           </button>
           <button onClick={handleShare} className="btn-secondary-border">
             <Share2 size={18} /> Share with team

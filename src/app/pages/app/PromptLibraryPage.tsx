@@ -96,7 +96,7 @@ export default function PromptLibraryPage() {
             <div className="flex items-center justify-between mb-3">
               <span className="badge-tab-bg text-xs-semibold px-2 py-0.5 rounded">{p.category}</span>
               <div className="flex items-center gap-2">
-                <Bookmark size={14} className={clsx(isPromptSaved(p.id) ? 'text-[#5236ab]' : 'text-app-hint')} fill={isPromptSaved(p.id) ? '#5236ab' : 'none'} />
+                <Bookmark size={14} className={clsx(isPromptSaved(p.id) ? 'text-cgi-purple' : 'text-app-hint')} fill={isPromptSaved(p.id) ? 'var(--cgi-purple)' : 'none'} />
               </div>
             </div>
             <h4 className="text-base-semibold text-app-primary mb-2">{p.title}</h4>

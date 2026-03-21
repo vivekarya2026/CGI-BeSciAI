@@ -184,7 +184,7 @@ export function ByteBot() {
                   {/* Bot Avatar */}
                   {msg.role === 'bot' && (
                     <div className="bytebot-message-bot-avatar">
-                      <Bot size={16} className="text-[#5236ab]" />
+                      <Bot size={16} className="text-cgi-purple" />
                     </div>
                   )}
                   {/* Message Bubble */}
@@ -225,7 +225,7 @@ export function ByteBot() {
                   className="flex items-center gap-2"
                 >
                   <div className="bytebot-typing-avatar">
-                    <Bot size={16} className="text-[#5236ab]" />
+                    <Bot size={16} className="text-cgi-purple" />
                   </div>
                   <div className="bytebot-typing-bubble">
                     {[0, 1, 2].map(i => (

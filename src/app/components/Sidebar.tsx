@@ -188,7 +188,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                   size={20}
                   className={clsx(
                     "shrink-0",
-                    (isActive && !isLearnItem) ? "text-[#5236ab]" : "text-app-muted"
+                    (isActive && !isLearnItem) ? "text-cgi-purple" : "text-app-muted"
                   )}
                 />
 
@@ -248,7 +248,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                             size={16}
                             className={clsx(
                               "shrink-0",
-                              isSubActive ? "text-[#5236ab]" : "text-app-muted"
+                              isSubActive ? "text-cgi-purple" : "text-app-muted"
                             )}
                           />
                         )}

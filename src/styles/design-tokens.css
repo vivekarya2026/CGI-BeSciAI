@@ -1,11 +1,23 @@
 :root {
-  /* Primary Colors */
+  /* ========================================
+     TEXT COLORS
+     ======================================== */
+  --color-text-default: rgba(51,51,51);
+  --color-text-links: rgba(82,54,171);
+  --color-text-disabled: rgba(21,21,21);
+  --color-text-icons: rgba(21,21,21);
+
+  /* ========================================
+     PRIMARY COLORS
+     ======================================== */
   --cgi-purple: #5236ab;
+  --cgi-purple-rgb: 82, 54, 171;
   --cgi-red: #e31937;
+  --cgi-red-rgb: 227, 25, 55;
   --cgi-gray: #333333;
   --white: #ffffff;
 
-  /* Color Scales */
+  /* Purple Scale */
   --purple-900: #200a58;
   --purple-800: #2d1e5e;
   --purple-700: #3a2679;
@@ -17,6 +29,7 @@
   --purple-100: #e6e3f3;
   --purple-50: #f2f1f9;
 
+  /* Gray Scale */
   --gray-900: #151515;
   --gray-800: #1c1c1c;
   --gray-700: #242424;
@@ -28,36 +41,154 @@
   --gray-100: #c0c0c0;
   --gray-50: #efefef;
 
+  /* Red Scale */
   --red-900: #600a17;
-  --red-600: #e31937;
+  --red-800: #7d0d1e;
+  --red-700: #a21127;
+  --red-600: #cf1632;
+  --red-500: #e31937;
+  --red-400: #e9465f;
+  --red-300: #ed6479;
+  --red-200: #f395a3;
+  --red-100: #f7b7c1;
   --red-50: #fce8eb;
 
-  /* Semantic Colors */
+  /* White Scale */
+  --white-700: #ebeef2;
+  --white-600: #f0f3f6;
+  --white-500: #f2f4f7;
+  --white-400: #f5f7f9;
+  --white-300: #f6f8f9;
+  --white-200: #f9fafb;
+  --white-100: #fcfdfd;
+
+  /* ========================================
+     SECONDARY COLORS
+     ======================================== */
+  --magenta-base: #a82465;
   --success-base: #1ab977;
   --warning-base: #f1a425;
   --error-base: #b00020;
-  --magenta-base: #a82465;
 
-  /* Typography */
+  /* Magenta Scale */
+  --magenta-600: #7e1b4c;
+  --magenta-300: #a82465;
+  --magenta-200: #cb7ca3;
+
+  /* Success Scale */
+  --success-900: #0b4e32;
+  --success-800: #0e6641;
+  --success-700: #128354;
+  --success-600: #18a86c;
+  --success-400: #48c792;
+  --success-300: #66d0a4;
+  --success-200: #96dfc0;
+  --success-100: #b8e9d5;
+  --success-50: #e8f8f1;
+
+  /* Warning Scale */
+  --warning-900: #654510;
+  --warning-800: #855a14;
+  --warning-700: #ab741a;
+  --warning-600: #db9522;
+  --warning-400: #f4b651;
+  --warning-300: #f6c26d;
+  --warning-200: #f9d59b;
+  --warning-100: #fbe3bb;
+  --warning-50: #fef6e9;
+
+  /* Error Scale */
+  --error-900: #4a000d;
+  --error-800: #610012;
+  --error-700: #7d0017;
+  --error-600: #a0001d;
+  --error-400: #c0334d;
+  --error-300: #ca546a;
+  --error-200: #db8a98;
+  --error-100: #e7b0ba;
+  --error-50: #f7e6e9;
+
+  /* ========================================
+     GRADIENTS
+     ======================================== */
+  --gradient-a-vertical: linear-gradient(to bottom, rgba(227,25,55) 0%, rgba(168,36,101) 60%, rgba(82,54,171) 100%);
+  --gradient-a-vertical-counter: linear-gradient(to bottom, rgba(82,54,171) 0%, rgba(168,36,101) 40%, rgba(227,25,55) 100%);
+  --gradient-a-horizontal: linear-gradient(to right, rgba(227,25,55) 0%, rgba(168,36,101) 60%, rgba(82,54,171) 100%);
+  --gradient-b-vertical: linear-gradient(to bottom, rgba(153,31,61) 0%, rgba(227,25,55) 33%, rgba(255,106,0) 66%, rgba(255,205,210) 100%);
+
+  /* ========================================
+     COMPONENT COLORS
+     ======================================== */
+  --modal-background: rgba(0,0,25);
+  --label-info: #dedaec;
+  --label-success: #d6eee4;
+  --label-warning: #f8ecd8;
+  --label-error: #ecd2d7;
+
+  /* ========================================
+     DATA VISUALIZATION
+     ======================================== */
+  --dataviz-1: #200a58;
+  --dataviz-2: #2d156d;
+  --dataviz-3: #392082;
+  --dataviz-4: #462b96;
+  --dataviz-5: #5236ab;
+  --dataviz-6: #6f3094;
+  --dataviz-7: #822c84;
+  --dataviz-8: #8c2a7d;
+  --dataviz-9: #a92565;
+  --dataviz-10: #b3235e;
+  --dataviz-11: #c61f4e;
+  --dataviz-12: #e31937;
+  --dataviz-13: #e93248;
+  --dataviz-14: #ee4b58;
+  --dataviz-15: #f46569;
+  --dataviz-16: #f15861;
+  --dataviz-17: #f97e79;
+  --dataviz-18: #ff978a;
+  --dataviz-19: #feb194;
+  --dataviz-20: #fecb9d;
+  --dataviz-21: #fde5a7;
+
+  /* ========================================
+     TYPOGRAPHY
+     ======================================== */
   --font-primary: 'Source Sans 3', 'Source Sans Pro', system-ui, -apple-system, sans-serif;
-  
+
   /* Text Sizes */
-  --text-xs: 12px;
-  --text-sm: 14px;
-  --text-base: 16px;
-  --text-lg: 18px;
-  --text-xl: 20px;
-  --text-2xl: 24px;
-  --text-3xl: 28px;
-  --text-4xl: 38px;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.75rem;
+  --text-4xl: 2.375rem;
 
-  /* Shadows */
-  --shadow-sm: 0px 1px 2px rgba(21, 21, 21, 0.25);
-  --shadow-md: 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
-  --shadow-lg: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  --shadow-xl: 0px 1px 3px 1px rgba(0, 0, 0, 0.15), 0px 1px 2px rgba(0, 0, 0, 0.3);
+  /* ========================================
+     SHADOWS
+     ======================================== */
+  --shadow-upload-loading: -1px 1px 2px rgba(0,0,0,0.13);
+  --shadow-upload: 0px 1px 2px rgba(21,21,21,0.25);
+  --shadow-dropdown: 0px 2px 6px 2px rgba(0,0,0,0.15), 0px 2px 6px 2px rgba(0,0,0,0.15);
+  --shadow-primary-button: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px rgba(0,0,0,0.14), 0px 1px 5px rgba(0,0,0,0.12);
+  --shadow-secondary-button: 0px 1px 3px 1px rgba(0,0,0,0.15), 0px 1px 2px rgba(0,0,0,0.3);
+  --shadow-modal: 0px 4px 4px rgba(0,0,0,0.25);
+  --shadow-floating-bar: 0px -2px 7px rgba(0,0,0,0.25);
+  --shadow-filter: 0px 1px 2px rgba(21,21,21,0.25);
+  --shadow-alerts: 0px 0px 4px rgba(0,0,0,0.25);
+  --shadow-button-hover: 0px 1px 2px rgba(0,0,0,0.3), 0px 1px 3px 1px rgba(0,0,0,0.15);
+  --shadow-chart-card: 0px 1px 4px rgba(0,0,0,0.2);
 
-  /* Spacing */
+  /* Legacy aliases */
+  --shadow-sm: var(--shadow-upload);
+  --shadow-md: var(--shadow-dropdown);
+  --shadow-lg: var(--shadow-modal);
+  --shadow-xl: var(--shadow-secondary-button);
+
+  /* ========================================
+     SPACING
+     ======================================== */
   --spacing-1: 4px;
   --spacing-2: 8px;
   --spacing-3: 12px;
@@ -67,19 +198,23 @@
   --spacing-12: 48px;
   --spacing-16: 64px;
 
-  /* Archetype Colors */
-  --archetype-trailblazer: #F59E0B; /* Amber */
-  --archetype-guide: #14B8A6; /* Teal */
-  --archetype-connector: #8B5CF6; /* Violet */
-  --archetype-explorer: #0EA5E9; /* Sky Blue */
-  --archetype-champion: #DC2626; /* Red */
-  --archetype-innovator: #84CC16; /* Lime/Green */
+  /* ========================================
+     ARCHETYPE COLORS
+     ======================================== */
+  --archetype-trailblazer: #F59E0B;
+  --archetype-guide: #14B8A6;
+  --archetype-connector: #8B5CF6;
+  --archetype-explorer: #0EA5E9;
+  --archetype-champion: #DC2626;
+  --archetype-innovator: #84CC16;
 }
 
-/* Global resets for font */
+/* ========================================
+   GLOBAL RESETS
+   ======================================== */
 body {
   font-family: var(--font-primary);
-  color: var(--gray-500);
+  color: var(--color-text-default);
   background-color: var(--white);
 }
 
@@ -88,17 +223,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a {
-  color: var(--cgi-purple);
+  color: var(--color-text-links);
   text-decoration: none;
 }
 a:hover {
   text-decoration: underline;
 }
 
-/* Utility classes matching guidelines */
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
 .text-cgi-purple { color: var(--cgi-purple); }
 .text-cgi-red { color: var(--cgi-red); }
-.text-cgi-gray { color: var(--gray-500); }
+.text-cgi-gray { color: var(--cgi-gray); }
 .bg-cgi-purple { background-color: var(--cgi-purple); }
 .bg-cgi-red { background-color: var(--cgi-red); }
-.bg-cgi-gray { background-color: var(--gray-500); }
+.bg-cgi-gray { background-color: var(--cgi-gray); }

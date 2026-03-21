@@ -133,7 +133,7 @@ export default function ChallengeWorkspacePage() {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-1.5">
           <span className="text-xs font-medium text-app-muted">Progress</span>
-          <span className="text-xs font-semibold text-[#5236ab]">{Math.round((step / 4) * 100)}%</span>
+          <span className="text-xs font-semibold text-cgi-purple">{Math.round((step / 4) * 100)}%</span>
         </div>
         <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden rounded-full">
           <motion.div
@@ -167,7 +167,7 @@ export default function ChallengeWorkspacePage() {
                 <ul className="space-y-2">
                   {relatedMicro.map(m => (
                     <li key={m.id}>
-                      <button onClick={() => navigate('/app/learn', { state: { tab: 'micro' } })} className="flex items-center gap-1 text-sm cursor-pointer text-[#5236ab]"><BookOpen size={14} /> {m.title} <ExternalLink size={12} /></button>
+                      <button onClick={() => navigate('/app/learn', { state: { tab: 'micro' } })} className="flex items-center gap-1 text-sm cursor-pointer text-cgi-purple"><BookOpen size={14} /> {m.title} <ExternalLink size={12} /></button>
                     </li>
                   ))}
                 </ul>
@@ -175,11 +175,11 @@ export default function ChallengeWorkspacePage() {
             </div>
             <div>
               <h4 className="text-xs font-semibold text-app-muted mb-2">Check Prompt Library</h4>
-              <button onClick={() => navigate('/app/prompt-library')} className="flex items-center gap-2 text-sm cursor-pointer text-[#5236ab]">Open Prompt Library <ExternalLink size={12} /></button>
+              <button onClick={() => navigate('/app/prompt-library')} className="flex items-center gap-2 text-sm cursor-pointer text-cgi-purple">Open Prompt Library <ExternalLink size={12} /></button>
             </div>
             <div>
               <h4 className="text-xs font-semibold text-app-muted mb-2">Join Office Hours</h4>
-              <button onClick={() => navigate('/app/office-hours')} className="flex items-center gap-2 text-sm cursor-pointer text-[#5236ab]">See Office Hours <ExternalLink size={12} /></button>
+              <button onClick={() => navigate('/app/office-hours')} className="flex items-center gap-2 text-sm cursor-pointer text-cgi-purple">See Office Hours <ExternalLink size={12} /></button>
             </div>
           </div>
         </motion.div>
@@ -240,7 +240,7 @@ export default function ChallengeWorkspacePage() {
               <button
                 type="button"
                 onClick={() => setShowPrereqs(!showPrereqs)}
-                className="flex items-center justify-between w-full gap-2 text-sm font-semibold cursor-pointer text-[#5236ab] hover:text-[#4328a0]"
+                className="flex items-center justify-between w-full gap-2 text-sm font-semibold cursor-pointer text-cgi-purple hover:text-purple-700"
                 aria-expanded={showPrereqs}
                 aria-controls="workspace-prereqs-content"
                 id="workspace-prereqs-trigger"
@@ -272,7 +272,7 @@ export default function ChallengeWorkspacePage() {
                     <button
                       type="button"
                       onClick={() => navigate('/app/learn', { state: { tab: 'micro' } })}
-                      className="flex items-center gap-2 text-sm cursor-pointer text-[#5236ab] hover:underline"
+                      className="flex items-center gap-2 text-sm cursor-pointer text-cgi-purple hover:underline"
                     >
                       <BookOpen size={14} /> {m.title} <ExternalLink size={12} />
                     </button>
@@ -298,7 +298,7 @@ export default function ChallengeWorkspacePage() {
               <button
                 type="button"
                 onClick={() => setShowHints(!showHints)}
-                className="flex items-center justify-between w-full gap-2 text-sm font-semibold cursor-pointer text-[#5236ab] hover:text-[#4328a0]"
+                className="flex items-center justify-between w-full gap-2 text-sm font-semibold cursor-pointer text-cgi-purple hover:text-purple-700"
                 aria-expanded={showHints}
                 aria-controls="workspace-hints-content"
                 id="workspace-hints-trigger"
@@ -364,21 +364,21 @@ export default function ChallengeWorkspacePage() {
             <button
               type="button"
               onClick={() => handleAiToolClick('chatgpt')}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#5236ab] cursor-pointer text-[#5236ab]"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cgi-purple cursor-pointer text-cgi-purple"
             >
               ChatGPT <ExternalLink size={14} />
             </button>
             <button
               type="button"
               onClick={() => handleAiToolClick('claude')}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#5236ab] cursor-pointer text-[#5236ab]"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cgi-purple cursor-pointer text-cgi-purple"
             >
               Claude <ExternalLink size={14} />
             </button>
             <button
               type="button"
               onClick={() => handleAiToolClick('copilot')}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#5236ab] cursor-pointer text-[#5236ab]"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cgi-purple cursor-pointer text-cgi-purple"
             >
               Copilot <ExternalLink size={14} />
             </button>
@@ -496,10 +496,10 @@ export default function ChallengeWorkspacePage() {
           <motion.button
             {...secondaryButtonMotion()}
             onClick={() => setShowHelp(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-[#f59e0b] cursor-pointer font-semibold text-[#f59e0b] bg-amber-50 hover:bg-amber-100"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-archetype-trailblazer cursor-pointer font-semibold text-archetype-trailblazer bg-amber-50 hover:bg-amber-100"
             data-tour-id="workspace-stuck-help"
           >
-            <CircleHelp size={18} className="shrink-0 text-[#f59e0b]" /> Stuck — Get help
+            <CircleHelp size={18} className="shrink-0 text-archetype-trailblazer" /> Stuck — Get help
           </motion.button>
           <div className="flex flex-wrap items-center gap-3">
             <motion.button

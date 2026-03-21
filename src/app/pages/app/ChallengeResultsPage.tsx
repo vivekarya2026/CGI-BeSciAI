@@ -13,10 +13,10 @@ import { getChallengeById } from '../../data/learnData';
 import { useUser } from '../../context/UserContext';
 
 const FEEDBACK_ITEMS = [
-  { id: 'confirm', icon: CheckCircle, label: 'Submission received', color: '#1ab977' },
-  { id: 'points', icon: Star, label: 'Points awarded', color: '#db2777' },
-  { id: 'score', icon: BarChart3, label: 'Auto-score', sub: 'Your submission is being reviewed', color: '#f59e0b' },
-  { id: 'notify', icon: Bell, label: 'Notifications', sub: "We'll notify you when feedback is ready", color: '#0ea5e9' },
+  { id: 'confirm', icon: CheckCircle, label: 'Submission received', color: 'var(--success-base)' },
+  { id: 'points', icon: Star, label: 'Points awarded', color: 'var(--magenta-base)' },
+  { id: 'score', icon: BarChart3, label: 'Auto-score', sub: 'Your submission is being reviewed', color: 'var(--archetype-trailblazer)' },
+  { id: 'notify', icon: Bell, label: 'Notifications', sub: "We'll notify you when feedback is ready", color: 'var(--archetype-explorer)' },
 ];
 
 export default function ChallengeResultsPage() {
@@ -98,12 +98,12 @@ export default function ChallengeResultsPage() {
         <div className="card-base rounded-xl p-6 mb-8 bg-app-surface border-app">
           <h2 className="text-sm font-semibold text-app-muted uppercase tracking-wider mb-4">Post-submission</h2>
           <ul className="space-y-3 text-sm text-app-secondary">
-            <li className="flex items-center gap-2"><CheckCircle size={16} className="text-[#1ab977]" /> Submission received</li>
-            <li className="flex items-center gap-2"><CheckCircle size={16} className="text-[#1ab977]" /> Points awarded: {challenge.points} XP</li>
-            <li className="flex items-center gap-2"><CheckCircle size={16} className="text-[#1ab977]" /> Auto-score in progress</li>
-            <li className="flex items-center gap-2"><CheckCircle size={16} className="text-[#1ab977]" /> Notifications sent</li>
-            {streakBonus > 0 && <li className="flex items-center gap-2"><Star size={16} className="text-[#db2777]" /> Streak bonus: +{streakBonus} XP (total {totalPoints} XP)</li>}
-            <li className="flex items-center gap-2"><CheckCircle size={16} className="text-[#1ab977]" /> Badge: Challenge completed</li>
+            <li className="flex items-center gap-2"><CheckCircle size={16} className="text-success-base" /> Submission received</li>
+            <li className="flex items-center gap-2"><CheckCircle size={16} className="text-success-base" /> Points awarded: {challenge.points} XP</li>
+            <li className="flex items-center gap-2"><CheckCircle size={16} className="text-success-base" /> Auto-score in progress</li>
+            <li className="flex items-center gap-2"><CheckCircle size={16} className="text-success-base" /> Notifications sent</li>
+            {streakBonus > 0 && <li className="flex items-center gap-2"><Star size={16} className="text-magenta-base" /> Streak bonus: +{streakBonus} XP (total {totalPoints} XP)</li>}
+            <li className="flex items-center gap-2"><CheckCircle size={16} className="text-success-base" /> Badge: Challenge completed</li>
           </ul>
         </div>
 
@@ -111,14 +111,14 @@ export default function ChallengeResultsPage() {
         <h2 className="text-base font-semibold text-app-primary mb-3">What&apos;s next?</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <motion.button whileHover={{ y: -2 }} onClick={() => navigate('/app/learn')} className="rounded-xl p-5 text-left cursor-pointer flex items-center gap-4 border bg-app-surface border-app">
-            <MessageSquare size={24} className="text-[#5236ab]" />
+            <MessageSquare size={24} className="text-cgi-purple" />
             <div>
               <div className="text-[15px] font-semibold text-app-primary">View Feedback Details</div>
               <div className="text-[13px] text-app-muted">See detailed feedback when ready (in Learn)</div>
             </div>
           </motion.button>
           <motion.button whileHover={{ y: -2 }} onClick={handleShare} className="rounded-xl p-5 text-left cursor-pointer flex items-center gap-4 border bg-app-surface border-app">
-            <Share2 size={24} className="text-[#5236ab]" />
+            <Share2 size={24} className="text-cgi-purple" />
             <div>
               <div className="text-[15px] font-semibold text-app-primary">Share Success</div>
               <div className="text-[13px] text-app-muted">Copy link or share</div>
@@ -130,14 +130,14 @@ export default function ChallengeResultsPage() {
             className="rounded-xl p-5 text-left cursor-pointer flex items-center gap-4 border bg-app-surface border-app"
             data-tour-id="results-start-next"
           >
-            <Target size={24} className="text-[#5236ab]" />
+            <Target size={24} className="text-cgi-purple" />
             <div>
               <div className="text-[15px] font-semibold text-app-primary">Start Next Challenge</div>
               <div className="text-[13px] text-app-muted">Browse challenges</div>
             </div>
           </motion.button>
           <motion.button whileHover={{ y: -2 }} onClick={() => navigate('/app/dashboard')} className="rounded-xl p-5 text-left cursor-pointer flex items-center gap-4 border bg-app-surface border-app">
-            <LayoutDashboard size={24} className="text-[#5236ab]" />
+            <LayoutDashboard size={24} className="text-cgi-purple" />
             <div>
               <div className="text-[15px] font-semibold text-app-primary">Return to Dashboard</div>
               <div className="text-[13px] text-app-muted">Back to overview</div>

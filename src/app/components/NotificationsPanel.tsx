@@ -27,12 +27,12 @@ export interface Notification {
 
 // --- Icons & Colors for each Notification Type ---
 const typeConfig: Record<string, { icon: React.ReactNode; color: string; bg: string; darkBg: string }> = {
-  achievement: { icon: <Award size={18} />, color: '#f59e0b', bg: '#fef3c7', darkBg: '#3d2e0a' },
-  learning: { icon: <BookOpen size={18} />, color: '#5236ab', bg: '#f2f1f9', darkBg: '#251f3a' },
-  social: { icon: <ThumbsUp size={18} />, color: '#e31937', bg: '#fce8eb', darkBg: '#3a0d15' },
-  community: { icon: <MessageSquare size={18} />, color: '#14b8a6', bg: '#ccfbf1', darkBg: '#0a2e29' },
-  message: { icon: <MessageSquare size={18} />, color: '#5236ab', bg: '#f2f1f9', darkBg: '#251f3a' },
-  system: { icon: <Zap size={18} />, color: '#0ea5e9', bg: '#e0f2fe', darkBg: '#0a2540' },
+  achievement: { icon: <Award size={18} />, color: 'var(--archetype-trailblazer)', bg: 'var(--warning-100)', darkBg: '#3d2e0a' },
+  learning: { icon: <BookOpen size={18} />, color: 'var(--cgi-purple)', bg: '#f2f1f9', darkBg: '#251f3a' },
+  social: { icon: <ThumbsUp size={18} />, color: 'var(--cgi-red)', bg: '#fce8eb', darkBg: '#3a0d15' },
+  community: { icon: <MessageSquare size={18} />, color: 'var(--archetype-guide)', bg: '#ccfbf1', darkBg: '#0a2e29' },
+  message: { icon: <MessageSquare size={18} />, color: 'var(--cgi-purple)', bg: '#f2f1f9', darkBg: '#251f3a' },
+  system: { icon: <Zap size={18} />, color: 'var(--archetype-explorer)', bg: '#e0f2fe', darkBg: '#0a2540' },
 };
 
 export function NotificationsPanel({ onNavigate }: { onNavigate?: (path: string) => void }) {
@@ -87,7 +87,7 @@ export function NotificationsPanel({ onNavigate }: { onNavigate?: (path: string)
         onClick={() => setIsOpen(!isOpen)}
         className="notifications-bell"
       >
-        <Bell size={18} className={clsx(isOpen ? 'text-[#5236ab]' : 'text-app-muted')} />
+        <Bell size={18} className={clsx(isOpen ? 'text-cgi-purple' : 'text-app-muted')} />
         {unreadCount > 0 && (
           <span className="notifications-badge">
             {unreadCount}

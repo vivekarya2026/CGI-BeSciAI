@@ -253,7 +253,7 @@ export default function MessagesPage() {
           >
             <div className="suggestions-panel">
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles size={18} className="text-[#5236ab]" />
+                <Sparkles size={18} className="text-cgi-purple" />
                 <h3 className="suggestions-title">
                   Suggested Connections
                 </h3>
@@ -285,7 +285,7 @@ export default function MessagesPage() {
                       <div className="archetype-indicator">
                         <span
                           className="archetype-dot"
-                          style={{ backgroundColor: archetypeColors[peer.archetype] || '#8b5cf6' }}
+                          style={{ backgroundColor: archetypeColors[peer.archetype] || 'var(--purple-400)' }}
                         />
                         <span className="archetype-name-small">{peer.archetype}</span>
                       </div>

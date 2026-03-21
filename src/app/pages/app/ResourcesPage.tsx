@@ -87,7 +87,7 @@ export default function ResourcesPage() {
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${iconBadgeClass}`}>{typeIcons[r.type] || <FileText size={18} />}</div>
                   <span className="capitalize text-xs-semibold text-app-muted">{r.type}</span>
                 </div>
-                <Bookmark size={16} className={clsx(isResourceSaved(r.id) ? 'text-[#5236ab]' : 'text-app-hint')} fill={isResourceSaved(r.id) ? '#5236ab' : 'none'} />
+                <Bookmark size={16} className={clsx(isResourceSaved(r.id) ? 'text-cgi-purple' : 'text-app-hint')} fill={isResourceSaved(r.id) ? 'var(--cgi-purple)' : 'none'} />
               </div>
               <h4 className="text-base-semibold text-app-primary mb-2">{r.title}</h4>
               <p className="text-sm-regular text-app-secondary mb-3 leading-5">{r.desc}</p>

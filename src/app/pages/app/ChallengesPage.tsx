@@ -131,7 +131,7 @@ export default function ChallengesPage() {
                 )}>
                   {/* Star (XP) icon for completed days and today */}
                   {(day.completed || day.isActive) && day.points > 0 && (
-                    <Star className={clsx("calendar-day-icon shrink-0", day.isActive ? "text-white" : "text-[#db2777]")} size={14} />
+                    <Star className={clsx("calendar-day-icon shrink-0", day.isActive ? "text-white" : "text-magenta-base")} size={14} />
                   )}
                   
                   {/* Points with XP label */}
@@ -283,7 +283,7 @@ export default function ChallengesPage() {
                     <Users size={14} />
                     {challenge.participants}
                   </span>
-                  <span className="inline-flex items-center gap-1 text-[#db2777] font-semibold">
+                  <span className="inline-flex items-center gap-1 text-magenta-base font-semibold">
                     <Star size={14} />
                     +{challenge.points} XP
                   </span>
@@ -296,7 +296,7 @@ export default function ChallengesPage() {
                   <div>
                     <div className="flex justify-between items-center mb-1.5">
                       <span className="text-xs font-medium text-app-muted">Complete</span>
-                      <span className="text-xs font-semibold text-[#22c55e]">100%</span>
+                      <span className="text-xs font-semibold text-success-base">100%</span>
                     </div>
                     <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
                       <div className="progress-bar-fill progress-bar-fill-green" style={{ width: '100%' }} />
@@ -307,7 +307,7 @@ export default function ChallengesPage() {
                   <div>
                     <div className="flex justify-between items-center mb-1.5">
                       <span className="text-xs font-medium text-app-muted">Progress</span>
-                      <span className="text-xs font-semibold text-[#5236ab]">{progressPct}%</span>
+                      <span className="text-xs font-semibold text-cgi-purple">{progressPct}%</span>
                     </div>
                     <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
                       <motion.div

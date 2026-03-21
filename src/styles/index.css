@@ -2,4 +2,5 @@
 @import './tailwind.css';
 @import './theme.css';
 @import './design-tokens.css';
+@import '../imports/color-palette.css';
 @import './components.css';

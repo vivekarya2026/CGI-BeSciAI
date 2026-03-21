@@ -300,7 +300,7 @@ export function DashboardMiniMessages({
                         <div className="flex items-center gap-1">
                           <span
                             className="archetype-dot"
-                            style={{ backgroundColor: archetypeColors[convo.archetype] || '#8b5cf6' }}
+                            style={{ backgroundColor: archetypeColors[convo.archetype] || 'var(--purple-400)' }}
                           />
                           <span className="mini-conversation-preview">
                             {convo.messages[convo.messages.length - 1]?.text}

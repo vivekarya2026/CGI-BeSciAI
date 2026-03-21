@@ -461,8 +461,8 @@ export default function ProfilePage() {
               {[
                 { label: 'Total Learning Hours', value: '24.5', icon: <Clock size={22} />, color: 'var(--app-brand)', bg: 'var(--app-brand-light)' },
                 { label: 'Modules Completed', value: '3', icon: <BookOpen size={22} />, color: 'var(--app-brand)', bg: 'var(--app-brand-light)' },
-                { label: 'Current Streak', value: `${progress.streak} days`, icon: <Flame size={22} />, color: '#ea580c', bg: '#fff7ed' },
-                { label: 'Total XP', value: progress.xp.toLocaleString(), icon: <Star size={22} />, color: '#db2777', bg: '#fce7f3' },
+                { label: 'Current Streak', value: `${progress.streak} days`, icon: <Flame size={22} />, color: 'var(--warning-900)', bg: '#fff7ed' },
+                { label: 'Total XP', value: progress.xp.toLocaleString(), icon: <Star size={22} />, color: 'var(--magenta-base)', bg: '#fce7f3' },
               ].map((stat, i) => (
                 <motion.div
                   key={stat.label}

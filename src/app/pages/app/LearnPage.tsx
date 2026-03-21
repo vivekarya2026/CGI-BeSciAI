@@ -13,6 +13,7 @@ import {
   Star, ChevronDown, ChevronRight, Search,
 } from 'lucide-react';
 import { useLearnFilters } from '../../hooks/useLearnFilters';
+import { getCompletedMicroIds } from '../../data/learnData';
 import { useUser } from '../../context/UserContext';
 import { useNavigate, useLocation } from 'react-router';
 import clsx from 'clsx';
@@ -54,6 +55,8 @@ export default function LearnPage() {
     topics,
     tools,
   } = useLearnFilters();
+
+  const completedMicroIds = getCompletedMicroIds();
 
   // Handle tab from URL params
   useEffect(() => {
@@ -300,7 +303,7 @@ export default function LearnPage() {
                           {training.duration}
                         </span>
                         <span>{training.lessons} lessons</span>
-                        <span className="inline-flex items-center gap-1 text-[#db2777] font-semibold">
+                        <span className="inline-flex items-center gap-1 text-magenta-base font-semibold">
                           <Star size={14} />
                           +250 XP
                         </span>
@@ -313,7 +316,7 @@ export default function LearnPage() {
                         <div>
                           <div className="flex justify-between items-center mb-1.5">
                             <span className="text-xs font-medium text-app-muted">Complete</span>
-                            <span className="text-xs font-semibold text-[#22c55e]">100%</span>
+                            <span className="text-xs font-semibold text-success-base">100%</span>
                           </div>
                           <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
                             <div className="progress-bar-fill progress-bar-fill-green" style={{ width: '100%' }} />
@@ -324,7 +327,7 @@ export default function LearnPage() {
                         <div>
                           <div className="flex justify-between items-center mb-1.5">
                             <span className="text-xs font-medium text-app-muted">Progress</span>
-                            <span className="text-xs font-semibold text-[#5236ab]">{progressPct}%</span>
+                            <span className="text-xs font-semibold text-cgi-purple">{progressPct}%</span>
                           </div>
                           <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
                             <motion.div
@@ -424,7 +427,7 @@ export default function LearnPage() {
                           <Clock size={16} />
                           {recommendedLesson.duration}
                         </span>
-                        <span className="inline-flex items-center gap-1 text-[#db2777] font-semibold">
+                        <span className="inline-flex items-center gap-1 text-magenta-base font-semibold">
                           <Star size={16} />
                           +{recommendedLesson.points} XP
                         </span>
@@ -441,7 +444,7 @@ export default function LearnPage() {
                       className="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-semibold text-base cursor-pointer shrink-0"
                     >
                       <Play size={20} />
-                      {unfinishedLesson ? 'Continue' : 'Start Now'}
+                      {recommendedLesson.progress ? 'Continue' : 'Start Now'}
                     </motion.button>
                   </div>
                 </motion.div>
@@ -559,7 +562,7 @@ export default function LearnPage() {
                           <Clock size={14} />
                           {micro.duration}
                         </span>
-                        <span className="inline-flex items-center gap-1 text-[#db2777] font-semibold">
+                        <span className="inline-flex items-center gap-1 text-magenta-base font-semibold">
                           <Star size={14} />
                           +{micro.points} XP
                         </span>
@@ -572,7 +575,7 @@ export default function LearnPage() {
                         <div>
                           <div className="flex justify-between items-center mb-1.5">
                             <span className="text-xs font-medium text-app-muted">Complete</span>
-                            <span className="text-xs font-semibold text-[#22c55e]">100%</span>
+                            <span className="text-xs font-semibold text-success-base">100%</span>
                           </div>
                           <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
                             <div className="progress-bar-fill progress-bar-fill-green" style={{ width: '100%' }} />
@@ -583,7 +586,7 @@ export default function LearnPage() {
                         <div>
                           <div className="flex justify-between items-center mb-1.5">
                             <span className="text-xs font-medium text-app-muted">Progress</span>
-                            <span className="text-xs font-semibold text-[#5236ab]">{progressPct}%</span>
+                            <span className="text-xs font-semibold text-cgi-purple">{progressPct}%</span>
                           </div>
                           <div className="progress-bar-bg progress-bar-bg-thick overflow-hidden">
                             <motion.div

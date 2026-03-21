@@ -124,10 +124,10 @@ export default function TrainingDetailPage() {
             onClick={handleBookmark} 
             className={clsx(
               "inline-flex items-center gap-2 px-5 py-3 rounded-lg font-semibold cursor-pointer border",
-              saved ? "border-[#5236ab] text-[#5236ab]" : "border-app-strong text-app-secondary"
+              saved ? "border-cgi-purple text-cgi-purple" : "border-app-strong text-app-secondary"
             )}
           >
-            <Bookmark size={18} fill={saved ? '#5236ab' : 'none'} /> {saved ? 'Saved' : 'Save for Later'}
+            <Bookmark size={18} fill={saved ? 'var(--cgi-purple)' : 'none'} /> {saved ? 'Saved' : 'Save for Later'}
           </button>
         </div>
 
@@ -146,7 +146,7 @@ export default function TrainingDetailPage() {
               <div>
                 <h3 className="text-sm font-semibold text-app-primary mb-2">Intro video</h3>
                 <div className="rounded-lg overflow-hidden aspect-video max-w-md bg-black/10 flex items-center justify-center">
-                  <a href={training.introVideoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-medium text-[#5236ab]">
+                  <a href={training.introVideoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-medium text-cgi-purple">
                     <Video size={18} /> Watch intro
                   </a>
                 </div>
@@ -158,7 +158,7 @@ export default function TrainingDetailPage() {
                 <ul className="space-y-2">
                   {training.reviews.map((r, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-app-secondary">
-                      <ThumbsUp size={14} className="text-[#f59e0b] mt-0.5" />
+                      <ThumbsUp size={14} className="text-archetype-trailblazer mt-0.5" />
                       <span>{r.rating}/5 — {r.text}</span>
                     </li>
                   ))}

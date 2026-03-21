@@ -175,27 +175,43 @@
     font-size: var(--font-size);
   }
 
+  /* Page heading */
   h1 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-4xl);
+    font-weight: 600;
+    line-height: 1.3;
   }
 
+  /* Main section headings */
   h2 {
-    font-size: var(--text-xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-3xl);
+    font-weight: 400;
+    line-height: 1.4;
   }
 
+  /* Sections of the page */
   h3 {
-    font-size: var(--text-lg);
-    font-weight: var(--font-weight-medium);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  /* Subsections of the page */
+  h4 {
+    font-size: var(--text-xl);
+    font-weight: 400;
     line-height: 1.5;
   }
 
-  h4 {
+  h5 {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  h6 {
     font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
+    font-weight: 600;
     line-height: 1.5;
   }
 
@@ -222,10 +238,10 @@
 .challenge-tour-spotlight-target {
   border: 2px solid var(--app-brand) !important;
   border-radius: 12px;
-  box-shadow: 0 0 0 1px rgba(82, 54, 171, 0.15), 0 2px 8px rgba(82, 54, 171, 0.12);
+  box-shadow: 0 0 0 1px rgba(var(--cgi-purple-rgb), 0.15), 0 2px 8px rgba(var(--cgi-purple-rgb), 0.12);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 /* Light purple tint only for non-button targets (cards, sections, tabs) */
 .challenge-tour-spotlight-target:not(button):not([role="button"]) {
-  background-color: rgba(82, 54, 171, 0.08) !important;
+  background-color: rgba(var(--cgi-purple-rgb), 0.08) !important;
 }

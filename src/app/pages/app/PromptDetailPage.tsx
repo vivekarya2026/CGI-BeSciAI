@@ -156,7 +156,7 @@ export default function PromptDetailPage() {
               saved ? "btn-border-brand" : "btn-border-strong"
             )}
           >
-            <Bookmark size={18} fill={saved ? '#5236ab' : 'none'} /> {saved ? 'Saved' : 'Bookmark'}
+            <Bookmark size={18} fill={saved ? 'var(--cgi-purple)' : 'none'} /> {saved ? 'Saved' : 'Bookmark'}
           </button>
           <button onClick={() => setRateModal(true)} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold cursor-pointer btn-border-strong">
             <Star size={18} /> Rate & Comment
@@ -206,7 +206,7 @@ export default function PromptDetailPage() {
                   onClick={() => setRating(s)} 
                   className={clsx("p-1 cursor-pointer", s <= rating ? "star-rating-active" : "star-rating-inactive")}
                 >
-                  <Star size={28} fill={s <= rating ? '#f59e0b' : 'none'} />
+                  <Star size={28} fill={s <= rating ? 'var(--archetype-trailblazer)' : 'none'} />
                 </button>
               ))}
             </div>

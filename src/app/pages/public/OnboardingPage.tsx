@@ -34,10 +34,10 @@ import clsx from 'clsx';
 // Storing them in arrays keeps our HTML clean—we just `.map()` over them.
 
 const goals = [
-  { id: 'productivity', title: 'Increase Productivity', desc: 'Automate tasks and save hours every week.', icon: <TrendingUp size={28} />, color: '#5236ab' },
+  { id: 'productivity', title: 'Increase Productivity', desc: 'Automate tasks and save hours every week.', icon: <TrendingUp size={28} />, color: 'var(--cgi-purple)' },
   { id: 'creativity', title: 'Enhance Creativity', desc: 'Generate fresh ideas and creative content faster.', icon: <Sparkles size={28} />, color: '#a82465' },
-  { id: 'decisions', title: 'Improve Decision Making', desc: 'Use AI-powered insights for smarter choices.', icon: <Brain size={28} />, color: '#14b8a6' },
-  { id: 'workflows', title: 'Streamline Workflows', desc: 'Build efficient processes with AI automation.', icon: <Workflow size={28} />, color: '#f59e0b' },
+  { id: 'decisions', title: 'Improve Decision Making', desc: 'Use AI-powered insights for smarter choices.', icon: <Brain size={28} />, color: 'var(--archetype-guide)' },
+  { id: 'workflows', title: 'Streamline Workflows', desc: 'Build efficient processes with AI automation.', icon: <Workflow size={28} />, color: 'var(--archetype-trailblazer)' },
 ];
 
 const focusAreas = [
@@ -314,7 +314,7 @@ export default function OnboardingPage() {
                             <motion.div
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
-                              className="w-6 h-6 rounded-full flex items-center justify-center bg-[#5236ab]"
+                              className="w-6 h-6 rounded-full flex items-center justify-center bg-cgi-purple"
                             >
                               <Check size={14} className="text-white" />
                             </motion.div>

@@ -20,7 +20,7 @@ import { PageHeader } from '../../components/PageHeader';
 import { DashboardMiniMessages } from '../../components/DashboardMiniMessages';
 
 /** Heatmap intensity 0–4; colors from guidelines (gray 50 → purple scale). */
-const HEATMAP_COLORS = ['#efefef', '#e6e3f3', '#cbc3e6', '#9e83f5', '#5236ab'] as const;
+const HEATMAP_COLORS = ['#efefef', '#e6e3f3', '#cbc3e6', '#9e83f5', 'var(--cgi-purple)'] as const;
 
 /** Build activity level per day for last 364 days (0 = none, 1–4 = intensity). Uses streak for recent days. */
 function buildYearActivity(streak: number): number[] {
@@ -163,7 +163,7 @@ export default function OfficeHoursPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="stat-card-gray">
             <div className="flex items-center gap-2 mb-1">
-              <Calendar size={18} className="text-[#333333]" aria-hidden />
+              <Calendar size={18} className="text-cgi-gray" aria-hidden />
               <p className="stat-card-label">Activities in the last year</p>
             </div>
             <p className="stat-card-value">{totalActivity} <span className="stat-card-unit">days</span></p>
@@ -171,7 +171,7 @@ export default function OfficeHoursPage() {
           </div>
           <div className="stat-card-gray">
             <div className="flex items-center gap-2 mb-1">
-              <Trophy size={18} className="text-[#333333]" aria-hidden />
+              <Trophy size={18} className="text-cgi-gray" aria-hidden />
               <p className="stat-card-label">Longest streak</p>
             </div>
             <p className="stat-card-value">{longestStreak} <span className="stat-card-unit">days</span></p>
@@ -179,7 +179,7 @@ export default function OfficeHoursPage() {
           </div>
           <div className="stat-card-gray">
             <div className="flex items-center gap-2 mb-1">
-              <Flame size={18} className="text-[#333333]" aria-hidden />
+              <Flame size={18} className="text-cgi-gray" aria-hidden />
               <p className="stat-card-label">Current streak</p>
             </div>
             <p className="stat-card-value stat-card-value-highlight">{progress.streak} <span className="stat-card-unit">days</span></p>
@@ -221,7 +221,7 @@ export default function OfficeHoursPage() {
                 <span className="live-badge">
                   <span className="live-dot" /> LIVE NOW
                 </span>
-                <button onClick={() => setOfficePostSession('Recording saved. Attendance tracked. Follow-up materials shared.')} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold bg-white cursor-pointer shrink-0 text-[#e31937]">
+                <button onClick={() => setOfficePostSession('Recording saved. Attendance tracked. Follow-up materials shared.')} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold bg-white cursor-pointer shrink-0 text-cgi-red">
                   <Video size={18} /> Join Session
                 </button>
               </div>

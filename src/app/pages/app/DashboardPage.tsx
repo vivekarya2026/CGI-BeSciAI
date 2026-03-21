@@ -157,7 +157,7 @@ export default function DashboardPage() {
               <div className="flex flex-col gap-5">
                 {/* Top row: Thumbnail + Title/Subtitle */}
                 <div className="items-center gap-5">
-                  <div className="h-28 sm:h-32 rounded-xl shrink-0 overflow-hidden bg-gradient-to-br from-[#1e1b4b] to-[#312e81] relative">
+                  <div className="h-28 sm:h-32 rounded-xl shrink-0 overflow-hidden bg-gradient-to-br from-purple-900 to-purple-800 relative">
                     <img
                       src="/assets/Frame_30-b2059e27-34a7-430f-aed1-416718844c14.png"
                       alt={currentModule.title}
@@ -241,7 +241,7 @@ export default function DashboardPage() {
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="items-center">
-                      <Target size={20} className="text-[#8b5cf6]" />
+                      <Target size={20} className="text-purple-400" />
                       <h3 className="text-base font-bold text-app-primary mt-4">
                         {todayChallenge?.title || 'Practice reflection exercise'}
                       </h3>
@@ -287,7 +287,7 @@ export default function DashboardPage() {
             className="card-base rounded-xl p-5 md:p-6"
           >
             <div className="flex items-center gap-2 mb-4">
-              <Sparkles size={20} className="text-[#8b5cf6]" />
+              <Sparkles size={20} className="text-purple-400" />
               <h2 className="text-lg sm:text-xl font-semibold text-app-primary">
                 Your Learning Journey
               </h2>
@@ -300,9 +300,9 @@ export default function DashboardPage() {
             {/* Journey Timeline */}
             <div className="relative">
               {/* Progress Bar Background */}
-              <div className="absolute top-5 left-0 right-0 h-1 rounded-full bg-[#f3f4f6] z-0">
+              <div className="absolute top-5 left-0 right-0 h-1 rounded-full bg-white-500 z-0">
                 <motion.div
-                  className="h-full rounded-full bg-[#8b5cf6]"
+                  className="h-full rounded-full bg-purple-400"
                   initial={{ width: 0 }}
                   animate={{ width: `${journeyProgress}%` }}
                   transition={{ duration: 1.2, ease: 'easeOut', delay: 0.4 }}
@@ -352,12 +352,12 @@ export default function DashboardPage() {
             </div>
 
             {/* Journey Stats */}
-            <div className="mt-6 pt-4 border-t border-[#f3f4f6]">
+            <div className="mt-6 pt-4 border-t border-white-500">
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-app-secondary">
                   3 of 6 modules completed
                 </span>
-                <span className="text-sm font-bold text-[#8b5cf6]">
+                <span className="text-sm font-bold text-purple-400">
                   50% complete
                 </span>
               </div>
@@ -384,7 +384,7 @@ export default function DashboardPage() {
                 <h3 className="text-sm font-semibold text-app-secondary">
                   Activity in the last year
                 </h3>
-                <span className="text-xs font-medium text-[#8b5cf6]">
+                <span className="text-xs font-medium text-purple-400">
                   {HEATMAP_DATA.flat().reduce((sum, v) => sum + v, 0)} total activities
                 </span>
               </div>
@@ -501,7 +501,7 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + idx * 0.05 }}
-                className="rounded-lg p-4 cursor-pointer bg-[#f9fafb] border border-app"
+                className="rounded-lg p-4 cursor-pointer bg-white-200 border border-app"
                 onClick={() => navigate('/app/office-hours')}
               >
                 <div className="flex items-start gap-3">
@@ -524,7 +524,7 @@ export default function DashboardPage() {
                         e.stopPropagation();
                         navigate('/app/office-hours');
                       }}
-                      className="text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer bg-white text-[#8b5cf6] border border-app"
+                      className="text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer bg-white text-purple-400 border border-app"
                     >
                       {idx === 0 ? 'Start' : idx === 1 ? 'Join' : 'View'}
                     </motion.button>
@@ -548,7 +548,7 @@ export default function DashboardPage() {
             {/* Platform Update */}
             <motion.div
               {...cardHoverMotion()}
-              className="rounded-lg p-4 cursor-pointer bg-[#f9fafb] border border-app"
+              className="rounded-lg p-4 cursor-pointer bg-white-200 border border-app"
             >
               <div className="flex items-start gap-3">
                 <div className="icon-container icon-container-sm icon-container-blue">
@@ -571,14 +571,14 @@ export default function DashboardPage() {
             {/* Quick Survey */}
             <motion.div
               {...cardHoverMotion()}
-              className="rounded-lg p-4 cursor-pointer bg-[#fef3c7] border border-[#fde68a]"
+              className="rounded-lg p-4 cursor-pointer bg-warning-100 border border-warning-100"
             >
               <div className="flex items-start gap-3">
                 <div className="icon-container icon-container-sm icon-container-yellow">
                   <MessageSquare size={16} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="badge-base inline-block mb-1 bg-[#fde68a] text-[#92400e]">
+                  <span className="badge-base inline-block mb-1 bg-warning-100 text-warning-900">
                     Action Needed
                   </span>
                   <h4 className="text-sm font-semibold mb-1 text-app-primary">
@@ -589,7 +589,7 @@ export default function DashboardPage() {
                   </p>
                   <motion.button
                     {...secondaryButtonMotion()}
-                    className="text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer bg-white text-[#f59e0b] border border-[#fde68a]"
+                    className="text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer bg-white text-archetype-trailblazer border border-warning-100"
                   >
                     Take Survey
                   </motion.button>
@@ -600,7 +600,7 @@ export default function DashboardPage() {
             {/* Instructor Announcement */}
             <motion.div
               {...cardHoverMotion()}
-              className="rounded-lg p-4 cursor-pointer bg-[#f9fafb] border border-app"
+              className="rounded-lg p-4 cursor-pointer bg-white-200 border border-app"
             >
               <div className="flex items-start gap-3">
                 <div className="icon-container icon-container-sm bg-[#e0e7ff] text-[#6366f1]">

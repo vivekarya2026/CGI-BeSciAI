@@ -61,7 +61,7 @@ export default function RevealPage() {
   if (!arch) {
     return (
       <div className="min-h-screen flex items-center justify-center font-primary">
-        <p>Archetype not found. <button onClick={() => navigate('/survey')} className="text-[#5236ab] underline">Retake survey</button></p>
+        <p>Archetype not found. <button onClick={() => navigate('/survey')} className="text-cgi-purple underline">Retake survey</button></p>
       </div>
     );
   }
@@ -187,12 +187,12 @@ export default function RevealPage() {
               </div>
               <div className="reveal-insight-card">
                 <h3 className="reveal-insight-title">
-                  <Shield size={20} className="text-[#f59e0b]" /> Growth Areas
+                  <Shield size={20} className="text-archetype-trailblazer" /> Growth Areas
                 </h3>
                 <ul className="space-y-2">
                   {arch.challenges.map((c, i) => (
                     <li key={i} className="flex items-start gap-2 reveal-insight-text">
-                      <span className="text-[#f59e0b] mt-1">•</span>{c}
+                      <span className="text-archetype-trailblazer mt-1">•</span>{c}
                     </li>
                   ))}
                 </ul>
@@ -200,7 +200,7 @@ export default function RevealPage() {
             </div>
 
             {/* Actionable Tips */}
-            <h3 className="text-xl font-semibold text-[#151515] mb-4">Quick Tips for You</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Tips for You</h3>
             <div className="grid sm:grid-cols-3 gap-4">
               {arch.tips.map((tip, i) => (
                 <motion.div
