@@ -114,6 +114,7 @@
   --gradient-a-vertical: linear-gradient(to bottom, rgba(227,25,55) 0%, rgba(168,36,101) 60%, rgba(82,54,171) 100%);
   --gradient-a-vertical-counter: linear-gradient(to bottom, rgba(82,54,171) 0%, rgba(168,36,101) 40%, rgba(227,25,55) 100%);
   --gradient-a-horizontal: linear-gradient(to right, rgba(227,25,55) 0%, rgba(168,36,101) 60%, rgba(82,54,171) 100%);
+  --gradient-a-45: linear-gradient(45deg, rgba(227,25,55) 0%, rgba(168,36,101) 60%, rgba(82,54,171) 100%);
   --gradient-b-vertical: linear-gradient(to bottom, rgba(153,31,61) 0%, rgba(227,25,55) 33%, rgba(255,106,0) 66%, rgba(255,205,210) 100%);
 
   /* ========================================

@@ -85,9 +85,12 @@ export default function DashboardPage() {
   const dayIndex = Math.floor(Date.now() / 86400000);
   const todayChallenge = challenges[dayIndex % challenges.length];
 
-  // Calculate journey progress
+  // Calculate journey progress — fill bar up to the last completed node position
   const completedStages = LEARNING_JOURNEY_STAGES.filter(s => s.done).length;
-  const journeyProgress = Math.round((completedStages / LEARNING_JOURNEY_STAGES.length) * 100);
+  const totalStages = LEARNING_JOURNEY_STAGES.length;
+  const journeyProgress = totalStages > 1
+    ? Math.round(((completedStages - 0.5) / (totalStages - 1)) * 100)
+    : 0;
 
   return (
     <div className="font-primary bg-app-bg min-h-screen">
@@ -157,7 +160,7 @@ export default function DashboardPage() {
               <div className="flex flex-col gap-5">
                 {/* Top row: Thumbnail + Title/Subtitle */}
                 <div className="items-center gap-5">
-                  <div className="h-28 sm:h-32 rounded-xl shrink-0 overflow-hidden bg-gradient-to-br from-purple-900 to-purple-800 relative">
+                  <div className="h-28 sm:h-32 rounded-xl shrink-0 overflow-hidden bg-gradient-cgi relative">
                     <img
                       src="/assets/Frame_30-b2059e27-34a7-430f-aed1-416718844c14.png"
                       alt={currentModule.title}
@@ -241,7 +244,7 @@ export default function DashboardPage() {
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="items-center">
-                      <Target size={20} className="text-purple-400" />
+                      <Target size={20} className="text-cgi-red" />
                       <h3 className="text-base font-bold text-app-primary mt-4">
                         {todayChallenge?.title || 'Practice reflection exercise'}
                       </h3>
@@ -287,7 +290,7 @@ export default function DashboardPage() {
             className="card-base rounded-xl p-5 md:p-6"
           >
             <div className="flex items-center gap-2 mb-4">
-              <Sparkles size={20} className="text-purple-400" />
+              <Sparkles size={20} className="text-cgi-red" />
               <h2 className="text-lg sm:text-xl font-semibold text-app-primary">
                 Your Learning Journey
               </h2>
@@ -300,9 +303,9 @@ export default function DashboardPage() {
             {/* Journey Timeline */}
             <div className="relative">
               {/* Progress Bar Background */}
-              <div className="absolute top-5 left-0 right-0 h-1 rounded-full bg-white-500 z-0">
+              <div className="absolute top-5 left-0 right-0 h-1 rounded-full bg-gray-50 z-0">
                 <motion.div
-                  className="h-full rounded-full bg-purple-400"
+                  className="h-full rounded-full bg-gradient-cgi"
                   initial={{ width: 0 }}
                   animate={{ width: `${journeyProgress}%` }}
                   transition={{ duration: 1.2, ease: 'easeOut', delay: 0.4 }}
@@ -357,7 +360,7 @@ export default function DashboardPage() {
                 <span className="text-sm font-medium text-app-secondary">
                   3 of 6 modules completed
                 </span>
-                <span className="text-sm font-bold text-purple-400">
+                <span className="text-sm font-bold text-cgi-red">
                   50% complete
                 </span>
               </div>
@@ -384,7 +387,7 @@ export default function DashboardPage() {
                 <h3 className="text-sm font-semibold text-app-secondary">
                   Activity in the last year
                 </h3>
-                <span className="text-xs font-medium text-purple-400">
+                <span className="text-xs font-medium text-cgi-red">
                   {HEATMAP_DATA.flat().reduce((sum, v) => sum + v, 0)} total activities
                 </span>
               </div>
@@ -524,7 +527,7 @@ export default function DashboardPage() {
                         e.stopPropagation();
                         navigate('/app/office-hours');
                       }}
-                      className="text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer bg-white text-purple-400 border border-app"
+                      className="text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer bg-white text-cgi-red border border-app"
                     >
                       {idx === 0 ? 'Start' : idx === 1 ? 'Join' : 'View'}
                     </motion.button>

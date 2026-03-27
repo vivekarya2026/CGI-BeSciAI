@@ -67,7 +67,7 @@ const fadeUp = {
 
 /** Returns the brand color for a given archetype name. */
 function getArchetypeColor(name: string): string {
-  return archetypes[name.toLowerCase()]?.color || 'var(--cgi-purple)';
+  return archetypes[name.toLowerCase()]?.color || 'var(--cgi-red)';
 }
 
 // ─── Sub-tab navigation config ────────────────────────────────────────────────

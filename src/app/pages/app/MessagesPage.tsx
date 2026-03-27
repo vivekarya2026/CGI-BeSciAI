@@ -253,7 +253,7 @@ export default function MessagesPage() {
           >
             <div className="suggestions-panel">
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles size={18} className="text-cgi-purple" />
+                <Sparkles size={18} className="text-cgi-red" />
                 <h3 className="suggestions-title">
                   Suggested Connections
                 </h3>

@@ -34,7 +34,7 @@ import clsx from 'clsx';
 // Storing them in arrays keeps our HTML clean—we just `.map()` over them.
 
 const goals = [
-  { id: 'productivity', title: 'Increase Productivity', desc: 'Automate tasks and save hours every week.', icon: <TrendingUp size={28} />, color: 'var(--cgi-purple)' },
+  { id: 'productivity', title: 'Increase Productivity', desc: 'Automate tasks and save hours every week.', icon: <TrendingUp size={28} />, color: 'var(--cgi-red)' },
   { id: 'creativity', title: 'Enhance Creativity', desc: 'Generate fresh ideas and creative content faster.', icon: <Sparkles size={28} />, color: '#a82465' },
   { id: 'decisions', title: 'Improve Decision Making', desc: 'Use AI-powered insights for smarter choices.', icon: <Brain size={28} />, color: 'var(--archetype-guide)' },
   { id: 'workflows', title: 'Streamline Workflows', desc: 'Build efficient processes with AI automation.', icon: <Workflow size={28} />, color: 'var(--archetype-trailblazer)' },
@@ -208,7 +208,7 @@ export default function OnboardingPage() {
                     return (
                       <motion.button
                         key={goal.id}
-                        whileHover={{ y: -3 }}
+                        whileHover={{ y: -3, transition: { duration: 0.2 } }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setSelectedGoal(goal.id)}
                         className={clsx('onboarding-goal-card', isSelected ? 'onboarding-goal-card-selected' : 'onboarding-goal-card-unselected')}
@@ -222,11 +222,13 @@ export default function OnboardingPage() {
                         </div>
                         <h3 className="onboarding-goal-title">{goal.title}</h3>
                         <p className="onboarding-goal-desc">{goal.desc}</p>
-                        {isSelected && (
-                          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="onboarding-goal-checkmark" style={{ backgroundColor: goal.color }}>
-                            <Check size={14} className="text-white" />
-                          </motion.div>
-                        )}
+                        <div className="onboarding-goal-checkmark">
+                          {isSelected && (
+                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="onboarding-goal-checkmark-inner" style={{ backgroundColor: goal.color }}>
+                              <Check size={14} className="text-white" />
+                            </motion.div>
+                          )}
+                        </div>
                       </motion.button>
                     );
                   })}
@@ -314,7 +316,7 @@ export default function OnboardingPage() {
                             <motion.div
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
-                              className="w-6 h-6 rounded-full flex items-center justify-center bg-cgi-purple"
+                              className="w-6 h-6 rounded-full flex items-center justify-center bg-gradient-cgi"
                             >
                               <Check size={14} className="text-white" />
                             </motion.div>

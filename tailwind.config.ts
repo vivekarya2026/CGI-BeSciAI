@@ -154,7 +154,7 @@ export default {
         'app': 'var(--app-shadow)',
       },
       backgroundImage: {
-        'gradient-cgi': 'var(--gradient-a-horizontal)',
+        'gradient-cgi': 'var(--gradient-a-45)',
         'gradient-cgi-vertical': 'var(--gradient-a-vertical)',
         'gradient-cgi-counter': 'var(--gradient-a-vertical-counter)',
         'gradient-cgi-b': 'var(--gradient-b-vertical)',
